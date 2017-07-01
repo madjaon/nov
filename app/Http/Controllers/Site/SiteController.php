@@ -1,0 +1,960 @@
+<?php
+
+namespace App\Http\Controllers\Site;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use DB;
+use Cache;
+use App\Helpers\CommonMethod;
+use App\Helpers\CommonOption;
+use Validator;
+use App\Models\Contact;
+
+class SiteController extends Controller
+{
+    public function index()
+    {
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'index';
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        $query = $this->getEpchapLatest();
+        // epchap moi nhat
+        $data = $query->take(PAGINATE_LIST)->get();
+
+        // epchap moi nhat tiep theo
+        $data2 = $query->offset(PAGINATE_LIST)->take(PAGINATE_TABLE)->get();
+
+        //seo meta
+        $seo = DB::table('configs')->where('status', ACTIVE)->first();
+        
+        if(CACHE == 1) {
+            //put cache
+            $html = view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo])->render();
+            Cache::forever($cacheName, $html);
+        }
+        //return view
+        return view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo]);
+    }
+    public function author()
+    {
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'taglist_tac-gia';
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        $data = DB::table('post_tags')
+            ->join('post_tag_relations', 'post_tags.id', '=', 'post_tag_relations.tag_id')
+            ->select('post_tags.id', 'post_tags.name', 'post_tags.slug', 'post_tags.image')
+            ->where('post_tags.status', ACTIVE)
+            ->groupBy('post_tag_relations.tag_id')
+            ->orderBy('post_tags.name')
+            ->get();
+        if(count($data) > 0) {
+            //auto meta for seo
+            $seo = new \stdClass();
+            $seo->h1 = 'Danh sách tác giả';
+            $seo->meta_title = 'Danh sách tác giả';
+            $seo->meta_keyword = 'tác giả truyện, tac gia truyen';
+            $seo->meta_description = 'Danh sách các tác giả truyện, tiểu thuyết';
+            $seo->meta_image = '/img/noimage600x315.jpg';
+            
+            if(CACHE == 1) {
+                //put cache
+                $html = view('site.post.author', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
+            //return view
+            return view('site.post.author', ['data' => $data, 'seo' => $seo]);
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function tag(Request $request, $slug)
+    {
+        trimRequest($request);
+        //check page
+        $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'tag_'.$slug.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        $tag = DB::table('post_tags')
+            ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
+            ->where('slug', $slug)
+            ->where('status', ACTIVE)
+            ->first();
+        // posts tags
+        if(isset($tag)) {
+            $tag->patterns = CommonMethod::replaceText($tag->patterns);
+            $tag->summary = CommonMethod::replaceText($tag->summary);
+            $tag->description = CommonMethod::replaceText($tag->description);
+            $data = $this->getPostByRelationsQuery('tag', $tag->id)->paginate(PAGINATE);
+            if($data->total() > 0) {
+                //auto meta tag for seo
+                $tagName = ucwords(mb_strtolower($tag->name));
+                $tag->h1 = 'Tác giả ' . $tagName;
+                if(empty($tag->meta_title)) {
+                    if($page > 1) {
+                        $tag->meta_title = 'Đọc truyện của ' . $tagName.' trang '.$page;
+                    } else {
+                        $tag->meta_title = 'Đọc truyện của ' . $tagName;
+                    }
+                }
+                if(empty($tag->meta_keyword)) {
+                    // $tagNameNoLatin = CommonMethod::convert_string_vi_to_en($tagName);
+                    // $tag->meta_keyword = $tagNameNoLatin.','.$tagName;
+                    $tag->meta_keyword = $tagName;
+                }
+                if(empty($tag->meta_description)) {
+                    $tag->meta_description = $tagName;
+                }
+                if(empty($tag->meta_image)) {
+                    $tag->meta_image = '/img/noimage600x315.jpg';
+                }
+
+                if(CACHE == 1) {
+                    //put cache
+                    $html = view('site.post.tag', ['data' => $data, 'tag' => $tag])->render();
+                    Cache::forever($cacheName, $html);    
+                }
+                //return view
+                return view('site.post.tag', ['data' => $data, 'tag' => $tag]);
+            }
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function type(Request $request, $slug)
+    {
+        trimRequest($request);
+        //check page
+        $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'type_'.$slug.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        $type = DB::table('post_types')
+            ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
+            ->where('slug', $slug)
+            ->where('status', ACTIVE)
+            ->first();
+        // posts types
+        if(isset($type)) {
+            $type->patterns = CommonMethod::replaceText($type->patterns);
+            $type->summary = CommonMethod::replaceText($type->summary);
+            $type->description = CommonMethod::replaceText($type->description);
+            $data = $this->getPostByRelationsQuery('type', $type->id)->paginate(PAGINATE);
+            if($data->total() > 0) {
+                //auto meta type for seo
+                $typeName = ucwords(mb_strtolower($type->name));
+                $type->h1 = 'Thể loại ' . $typeName;
+                if(empty($type->meta_title)) {
+                    if($page > 1) {
+                        $type->meta_title = 'Đọc truyện thể loại ' . $typeName.' trang '.$page;
+                    } else {
+                        $type->meta_title = 'Đọc truyện thể loại ' . $typeName;
+                    }
+                }
+                if(empty($type->meta_keyword)) {
+                    // $typeNameNoLatin = CommonMethod::convert_string_vi_to_en($typeName);
+                    // $type->meta_keyword = $typeNameNoLatin.','.$typeName;
+                    $type->meta_keyword = $typeName;
+                }
+                if(empty($type->meta_description)) {
+                    $type->meta_description = $typeName;
+                }
+                if(empty($type->meta_image)) {
+                    $type->meta_image = '/img/noimage600x315.jpg';
+                }
+
+                if(CACHE == 1) {
+                    //put cache
+                    $html = view('site.post.type', ['data' => $data, 'type' => $type])->render();
+                    Cache::forever($cacheName, $html);    
+                }
+                //return view
+                return view('site.post.type', ['data' => $data, 'type' => $type]);
+            }
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function seri(Request $request, $slug)
+    {
+        trimRequest($request);
+        //check page
+        $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'seri_'.$slug.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        $seri = DB::table('post_series')
+            ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
+            ->where('slug', $slug)
+            ->where('status', ACTIVE)
+            ->first();
+        // posts seris
+        if(isset($seri)) {
+            $seri->patterns = CommonMethod::replaceText($seri->patterns);
+            $seri->summary = CommonMethod::replaceText($seri->summary);
+            $seri->description = CommonMethod::replaceText($seri->description);
+            $data = $this->getPostBySeriQuery($seri->id)->paginate(PAGINATE);
+            if($data->total() > 0) {
+                //auto meta seri for seo
+                $seriName = ucwords(mb_strtolower($seri->name));
+                $seri->h1 = 'Seri truyện ' . $seriName;
+                if(empty($seri->meta_title)) {
+                    if($page > 1) {
+                        $seri->meta_title = 'Seri truyện ' . $seriName.' trang '.$page;
+                    } else {
+                        $seri->meta_title = 'Seri truyện ' . $seriName;
+                    }
+                }
+                if(empty($seri->meta_keyword)) {
+                    // $seriNameNoLatin = CommonMethod::convert_string_vi_to_en($seriName);
+                    // $seri->meta_keyword = $seriNameNoLatin.','.$seriName;
+                    $seri->meta_keyword = $seriName;
+                }
+                if(empty($seri->meta_description)) {
+                    $seri->meta_description = $seriName;
+                }
+                if(empty($seri->meta_image)) {
+                    $seri->meta_image = '/img/noimage600x315.jpg';
+                }
+
+                if(CACHE == 1) {
+                    //put cache
+                    $html = view('site.post.seri', ['data' => $data, 'seri' => $seri])->render();
+                    Cache::forever($cacheName, $html);    
+                }
+                //return view
+                return view('site.post.seri', ['data' => $data, 'seri' => $seri]);
+            }
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function nation(Request $request, $slug)
+    {
+        if(!in_array($slug, [SLUG_NATION_JAPAN, SLUG_NATION_USA, SLUG_NATION_KOREAN, SLUG_NATION_CHINA, SLUG_NATION_VIETNAM, SLUG_NATION_OTHER])) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        trimRequest($request);
+        //check page
+        $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'nation_'.$slug.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        $data = DB::table('posts')
+            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
+            ->where('nation', $slug)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->orderBy('start_date', 'desc')
+            ->paginate(PAGINATE);
+        // posts
+        if($data->total() > 0) {
+            //auto meta for seo
+            $seo = new \stdClass();
+            $seo->h1 = 'Danh sách truyện ' . CommonOption::getNation($slug);
+            if($page > 1) {
+                $seo->meta_title = 'Danh sách truyện ' . CommonOption::getNation($slug) . 'hay nhất trang ' . $page;
+            } else {
+                $seo->meta_title = 'Danh sách truyện ' . CommonOption::getNation($slug) . 'hay nhất';
+            }
+            $seo->meta_keyword = 'truyện ' . CommonOption::getNation($slug);
+            $seo->meta_description = 'Danh sách truyện ' . CommonOption::getNation($slug) . ' hay nhất';
+            $seo->meta_image = '/img/noimage600x315.jpg';
+
+            if(CACHE == 1) {
+                //put cache
+                $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
+            //return view
+            return view('site.post.box', ['data' => $data, 'seo' => $seo]);
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function kind(Request $request, $slug)
+    {
+        if(!in_array($slug, [SLUG_POST_KIND_FULL, SLUG_POST_KIND_UPDATING])) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        trimRequest($request);
+        //check page
+        $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'kind_'.$slug.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        
+        //query
+        $data = DB::table('posts')
+            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
+            ->where('kind', $slug)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->orderBy('start_date', 'desc')
+            ->paginate(PAGINATE);
+        // posts
+        if($data->total() > 0) {
+            //auto meta for seo
+            $seo = new \stdClass();
+            $seo->h1 = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
+            if($page > 1) {
+                $seo->meta_title = 'Danh sách truyện ' . CommonOption::getKindPost($slug) . ' trang ' . $page;
+            } else {
+                $seo->meta_title = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
+            }
+            $seo->meta_keyword = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
+            $seo->meta_description = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
+            $seo->meta_image = '/img/noimage600x315.jpg';
+
+            if(CACHE == 1) {
+                //put cache
+                $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
+            //return view
+            return view('site.post.box', ['data' => $data, 'seo' => $seo]);
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function page($slug)
+    {
+        self::forgetCache('lien-he');
+        
+        //update count view post
+        // DB::table('posts')->where('slug', $slug)->increment('view');
+
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'page_'.$slug;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        
+        // IF SLUG IS PAGE
+        //query
+        $singlePage = DB::table('pages')->where('slug', $slug)->where('status', ACTIVE)->first();
+        // page
+        if(isset($singlePage)) {
+            $singlePage->patterns = CommonMethod::replaceText($singlePage->patterns);
+            $singlePage->summary = CommonMethod::replaceText($singlePage->summary);
+            $singlePage->description = CommonMethod::replaceText($singlePage->description);
+
+            //auto meta singlePage for seo
+            $singlePageName = ucwords(mb_strtolower($singlePage->name));
+            $singlePage->h1 = $singlePageName;
+            if(empty($singlePage->meta_title)) {
+                $singlePage->meta_title = $singlePageName;
+            }
+            if(empty($singlePage->meta_keyword)) {
+                // $singlePageNameNoLatin = CommonMethod::convert_string_vi_to_en($singlePageName);
+                // $singlePage->meta_keyword = $singlePageNameNoLatin.','.$singlePageName;
+                $singlePage->meta_keyword = $singlePageName;
+            }
+            if(empty($singlePage->meta_description)) {
+                $singlePage->meta_description = $singlePageName;
+            }
+            if(empty($singlePage->meta_image)) {
+                $singlePage->meta_image = '/img/noimage600x315.jpg';
+            }
+
+            if(CACHE == 1) {
+                //put cache
+                $html = view('site.page', ['data' => $singlePage])->render();
+                Cache::forever($cacheName, $html);    
+            }
+            //return view
+            return view('site.page', ['data' => $singlePage]);
+        }
+
+        // IF SLUG IS A POST
+        // post
+        $post = DB::table('posts')
+            ->where('slug', $slug)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->first();
+        if(isset($post)) {
+            $post->patterns = CommonMethod::replaceText($post->patterns);
+            $post->summary = CommonMethod::replaceText($post->summary);
+            $post->description = CommonMethod::replaceText($post->description);
+
+            //auto meta post for seo
+            $postName = ucwords(mb_strtolower($post->name));
+            $post->h1 = $postName;
+            if(empty($post->meta_title)) {
+                $post->meta_title = 'Đọc truyện '.$postName;
+            }
+            if(empty($post->meta_keyword)) {
+                $post->meta_keyword = 'Đọc truyện '.$postName.', doc truyen '.$post->name2;
+            }
+            if(empty($post->meta_description)) {
+                $post->meta_description = limit_text(strip_tags($post->description), 200);
+            }
+            if(empty($post->meta_image)) {
+                $post->meta_image = '/img/noimage600x315.jpg';
+            }
+
+            // tinh trang kind
+            $post->kindName = CommonOption::getKindPost($post->kind);
+     
+            // nation
+            $post->nationName = CommonOption::getNation($post->nation);
+
+            // seri
+            $seri = DB::table('post_series')
+                    ->select('id', 'name', 'slug')
+                    ->where('id', $post->seri)
+                    ->where('status', ACTIVE)
+                    ->first();
+            $post->seriInfo = $seri;
+
+            // seri data: danh sach thuoc seri nay
+            $post->seriData = $this->getPostBySeriQuery($post->seri, $post->id)->get();
+
+            // list tags
+            $tags = $this->getRelationsByPostQuery('tag', $post->id);
+
+            // list type
+            $types = $this->getRelationsByPostQuery('type', $post->id);
+
+            // list post by type 
+            $related = $this->getPostRelated($post->id, [$post->id], $post->type_main_id);
+
+            // first & last epchap
+            $epFirst = DB::table('post_eps')
+                ->where('post_id', $post->id)
+                ->where('status', ACTIVE)
+                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                ->orderByRaw(DB::raw("position = '0', position"))
+                ->orderBy('start_date', 'asc')
+                ->orderBy('name', 'asc')
+                ->first();
+            if(isset($epFirst)) {
+                $post->epFirst = $epFirst;
+            }
+            $epLast = DB::table('post_eps')
+                ->where('post_id', $post->id)
+                ->where('status', ACTIVE)
+                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                ->orderByRaw(DB::raw("position = '0', position desc"))
+                ->orderBy('start_date', 'desc')
+                ->orderBy('name', 'desc')
+                ->first();
+            if(isset($epLast)) {
+                $post->epLast = $epLast;
+            }
+
+            if(CACHE == 1) {
+                //put cache
+                $html = view('site.post.book', [
+                        'post' => $post, 
+                        'tags' => $tags, 
+                        'types' => $types, 
+                        'related' => $related, 
+                    ])->render();
+                Cache::forever($cacheName, $html);
+            }
+            //return view
+            return view('site.post.book', [
+                    'post' => $post, 
+                    'tags' => $tags, 
+                    'types' => $types, 
+                    'related' => $related, 
+                ]);
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function page2($slug1, $slug2)
+    {
+        // set cookie epchap reading
+        // $cookie = cookie()->forever(COOKIE_NAME, $slug1 . '_' . $slug2);
+
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'page2_'.$slug1.'_'.$slug2;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+                // return response(Cache::get($cacheName))->withCookie($cookie);
+            }
+        }
+        //query
+        // post
+        $post = DB::table('posts')
+            ->select('id', 'name', 'slug', 'name2', 'type', 'description')
+            ->where('slug', $slug1)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->first();
+        if(isset($post)) {
+            // current epchap
+            $data = DB::table('post_eps')
+                ->where('post_id', $post->id)
+                ->where('slug', $slug2)
+                ->where('status', ACTIVE)
+                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                ->first();
+            if(isset($data)) {
+                //auto meta post for seo
+                $postName = ucwords(mb_strtolower($post->name));
+                $data->h1 = $postName . ' - ' . $data->name;
+                if(empty($data->meta_title)) {
+                    $data->meta_title = $postName.' - '.$data->name;
+                }
+                if(empty($data->meta_keyword)) {
+                    $data->meta_keyword = $postName.' - '.$data->name;
+                }
+                if(empty($data->meta_description)) {
+                    $data->meta_description = limit_text(strip_tags($post->description), 200);
+                }
+                if(empty($data->meta_image)) {
+                    $data->meta_image = '/img/noimage600x315.jpg';
+                }
+
+                // list type
+                $types = $this->getRelationsByPostQuery('type', $post->id);
+
+                // epchap list
+                $epsQuery = $this->getEpchapListByPostId($post->id);
+
+                $eps = $epsQuery->get();
+
+                // PREV & NEXT EPCHAP
+                // prev & next epchap (phai dua vao key trong array $eps o tren)
+                // array list eps id
+                $epsIdArray = $epsQuery->lists('id');
+                // array key hien tai
+                $currentEpchapKey = array_search($data->id, $epsIdArray);
+                // array key list
+                $epsIdKeyArray = array_keys($epsIdArray);
+                // set array key hien tai
+                setArrayKey($epsIdKeyArray, $currentEpchapKey);
+                // epPrev
+                $epPrevIdKey = prev($epsIdKeyArray);
+                if($epPrevIdKey !== false) {
+                    $epPrev = $eps[$epPrevIdKey];
+                } else {
+                    $epPrev = null;
+                }
+                // set array key hien tai lai 1 lan nua (do prev o tren lam thay doi array key hien tai)
+                setArrayKey($epsIdKeyArray, $currentEpchapKey);
+                // epNext
+                $epNextIdKey = next($epsIdKeyArray);
+                if($epNextIdKey !== false) {
+                    $epNext = $eps[$epNextIdKey];
+                } else {
+                    $epNext = null;
+                }
+                // gan gia tri vao $data
+                if(isset($epPrev)) {
+                    $data->epPrev = $epPrev;
+                }
+                if(isset($epNext)) {
+                    $data->epNext = $epNext;
+                }
+                // END PREV & NEXT EPCHAP
+
+                // SELECT BOX EPCHAP
+                $epchapArray = array();
+                foreach($eps as $key => $value) {
+                    $epchapUrl = url($post->slug . '/' . $value->slug);
+                    if($value->volume > 0) {
+                      $epchap = 'Quyển ' . $value->volume . ' chương ' . $value->epchap;
+                    } else {
+                      $epchap = 'Chương ' . $value->epchap;
+                    }
+                    $epchapArray[$epchapUrl] = $epchap;
+                }
+
+                // END SELECT BOX EPCHAP
+
+                if(CACHE == 1) {
+                    //put cache
+                    $html = view('site.post.epchap', [
+                            'post' => $post, 
+                            'types' => $types, 
+                            'eps' => $eps, 
+                            'data' => $data, 
+                            'epchapArray' => $epchapArray, 
+                        ])->render();
+                    Cache::forever($cacheName, $html);
+                }
+                //return view
+                return response()->view('site.post.epchap', [
+                        'post' => $post, 
+                        'types' => $types, 
+                        'eps' => $eps, 
+                        'data' => $data, 
+                        'epchapArray' => $epchapArray, 
+                    ]);
+                // ->withCookie($cookie);
+            }
+        }
+        return response()->view('errors.404', [], 404);
+    }
+    public function search(Request $request)
+    {
+        trimRequest($request);
+
+        //check page
+        $page = ($request->page)?$request->page:1;
+
+        //auto meta tag for seo
+        $seo = new \stdClass();
+        $seo->h1 = 'Kết quả tìm kiếm ' . $request->s;
+        if($page > 1) {
+            $seo->meta_title = 'Kết quả tìm kiếm ' . $request->s . ' trang ' . $page;
+        } else {
+            $seo->meta_title = 'Kết quả tìm kiếm ' . $request->s;
+        }
+        $seo->meta_keyword = 'tìm truyện ' . $request->s . ', tim truyen ' . $request->s;
+        $seo->meta_description = 'Kết quả tìm kiếm từ khóa ' . $request->s . ', tìm truyện ' . $request->s;
+        $seo->meta_image = '/img/noimage600x315.jpg';
+
+        if($request->s == '') {
+            return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);
+        }
+        
+        if(CACHE == 1) {
+            //cache name
+            $cacheName = 'search_'.$request->s.'_'.$page;
+            $device = getDevice();
+            if($device == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        //query
+        // post
+        $slug = CommonMethod::convert_string_vi_to_en($request->s);
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $data = DB::table('posts')
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->where('slug', 'like', '%'.$slug.'%')
+            ->orWhere('name', 'like', '%'.$request->s.'%')
+            ->orWhere('name2', 'like', '%'.$request->s.'%')
+            ->orderBy('start_date', 'desc')
+            ->paginate(PAGINATE);
+        if(CACHE == 1) {
+            //put cache
+            $html = view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'request' => $request])->render();
+            Cache::forever($cacheName, $html);
+        }
+        //return view
+        return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'request' => $request]);
+    }
+    public function livesearch(Request $request)
+    {
+        if($request->s == '') {
+            return null;
+        }
+        trimRequest($request);
+        if(CACHE == 1) {
+            //cache name
+            // $cacheName = 'livesearch_suggestion_response_json_all_post';
+            $cacheName = 'livesearch_suggestion_response_json_'.$request->s;
+            //get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        $array = array();
+        // GET ALL POST
+        // $data = DB::table('posts')
+        //     ->select('name', 'slug')
+        //     ->where('status', ACTIVE)
+        //     ->where('start_date', '<=', date('Y-m-d H:i:s'))
+        //     ->orderBy('start_date', 'desc')
+        //     ->orderBy('name', 'asc')
+        //     ->get();
+        // AJAX SEARCH
+        $slug = CommonMethod::convert_string_vi_to_en($request->s);
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $data = DB::table('posts')
+            ->select('name', 'slug')
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->where('slug', 'like', '%'.$slug.'%')
+            ->orWhere('name', 'like', '%'.$request->s.'%')
+            ->orWhere('name2', 'like', '%'.$request->s.'%')
+            ->orderBy('start_date', 'desc')
+            ->orderBy('name', 'asc')
+            ->take(PAGINATE_RELATED)
+            ->get();
+        if(count($data) > 0) {
+            foreach($data as $value) {
+                $array[] = [
+                    'suggestion' => $value->name,
+                    'url' => url($value->slug),
+                ];
+            }
+        }
+        $res = ['results' => $array];
+        if(CACHE == 1) {
+            //put cache
+            $jsonData = response()->json($res);
+            Cache::forever($cacheName, $jsonData);
+        }
+        return response()->json($res);
+    }
+    public function sitemap()
+    {
+        if(CACHE == 1) {
+            ///cache name
+            $cacheName = 'sitemap';
+            //get cache
+            if(Cache::has($cacheName)) {
+                $content = Cache::get($cacheName);
+                return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
+            }
+        }
+        //return view
+        $content = view('site.sitemap');
+        if(CACHE == 1) {
+            //put cache
+            $html = $content->render();
+            Cache::forever($cacheName, $html);
+        }
+        return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
+    }
+    //asuna: lay tat ca du lieu post (null) / hay chi lay danh sach id cua post (not null)
+    private function getPostRelated($id, $ids, $typeId, $asuna = null)
+    {
+        //lay danh sach posts
+        if($asuna == null) {
+            //post moi hon
+            $post1Query = $this->getPostTypeQuery($id, $ids, $typeId);
+            $post1 = $post1Query->get();
+            //post cu hon
+            $post2Query = $this->getPostTypeQuery($id, $ids, $typeId, 1);
+            $post2 = $post2Query->get();
+            $posts = array_merge($post1, $post2);
+            return $posts;
+        }
+        //lay danh sach id posts
+        else {
+            //post moi hon
+            $post1Query = $this->getPostTypeQuery($id, $ids, $typeId);
+            $post1 = $post1Query->pluck('id');
+            //post cu hon
+            $post2Query = $this->getPostTypeQuery($id, $ids, $typeId, 1);
+            $post2 = $post2Query->pluck('id');
+            $posts = array_merge($post1, $post2);
+            return $posts;
+        }
+    }
+    //lay ra post cu hon (time not null) va moi hon (time null) theo id
+    //id: id post hien tai
+    //typeId: id type main / related cua post hien tai. ids: danh sach id da lay ra (tranh trung lap)
+    private function getPostTypeQuery($id, $ids, $typeId, $time = null)
+    {
+        $data = DB::table('posts')
+            ->join('post_type_relations', 'posts.id', '=', 'post_type_relations.post_id')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view')
+            ->where('post_type_relations.type_id', $typeId)
+            ->where('posts.status', ACTIVE)
+            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'));
+        if($time == null) {
+            $data = $data->where('posts.id', '>', $id);
+        } else {
+            $data = $data->where('posts.id', '<', $id);
+        }
+        $data = $data->whereNotIn('post_type_relations.post_id', $ids)
+            ->orderBy('posts.id', 'desc')
+            ->take(PAGINATE_RELATED);
+        return $data;
+    }
+    // get post by seri field in posts table
+    private function getPostBySeriQuery($id, $currentPostId = null, $orderColumn = 'start_date', $orderSort = 'desc')
+    {
+        $data = DB::table('posts')
+            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
+            ->where('seri', $id)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'));
+        if($currentPostId != null) {
+            $data = $data->where('id', '!=', $currentPostId);
+        }
+        $data = $data->orderBy($orderColumn, $orderSort);
+        return $data;
+    }
+    // element: tag or type / id: id of tag or type
+    private function getPostByRelationsQuery($element, $id, $orderColumn = 'start_date', $orderSort = 'desc')
+    {
+        $data = DB::table('posts')
+            ->join('post_'.$element.'_relations', 'posts.id', '=', 'post_'.$element.'_relations.post_id')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view')
+            ->where('post_'.$element.'_relations.'.$element.'_id', $id)
+            ->where('posts.status', ACTIVE)
+            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
+            ->orderBy('posts.'.$orderColumn, $orderSort);
+        return $data;
+    }
+    // element: tag or type / id: id of post
+    private function getRelationsByPostQuery($element, $id)
+    {
+        $data = DB::table('post_'.$element.'s')
+            ->join('post_'.$element.'_relations', 'post_'.$element.'s.id', '=', 'post_'.$element.'_relations.'.$element.'_id')
+            ->select('post_'.$element.'s.id', 'post_'.$element.'s.name', 'post_'.$element.'s.slug')
+            ->where('post_'.$element.'_relations.post_id', $id)
+            ->where('post_'.$element.'s.status', ACTIVE)
+            ->orderBy('post_'.$element.'s.name')
+            ->get();
+        return $data;
+    }
+    // list post_eps moi nhat
+    private function getEpchapLatest()
+    {
+        $data = DB::table('post_eps')
+            ->join('posts', 'post_eps.post_id', '=', 'posts.id')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view', 'post_eps.id AS ep_id', 'post_eps.name AS ep_name', 'post_eps.slug AS ep_slug', 'post_eps.volume AS ep_volume', 'post_eps.epchap AS ep_epchap', 'post_eps.start_date AS ep_start_date')
+            ->where('post_eps.status', ACTIVE)
+            ->where('posts.status', ACTIVE)
+            ->where('post_eps.start_date', '<=', date('Y-m-d H:i:s'))
+            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
+            ->orderBy('post_eps.start_date', 'desc')
+            ->orderBy('post_eps.id', 'desc');
+        return $data;
+    }
+    // $id: $post_id
+    private function getEpchapListByPostId($id)
+    {
+        $data = DB::table('post_eps')
+                ->select('id', 'name', 'slug', 'volume', 'epchap')
+                ->where('post_id', $id)
+                ->where('status', ACTIVE)
+                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                ->orderByRaw(DB::raw("position = '0', position"))
+                ->orderBy('start_date', 'desc');
+        return $data;
+    }
+    /* 
+    * contact
+    */
+    public function contact(Request $request)
+    {
+        self::forgetCache('lien-he');
+        //
+        $ip = get_client_ip();
+        $now = strtotime(date('Y-m-d H:i:s'));
+        $range = 120; //second
+        $time = $now - $range;
+        $past = date('Y-m-d H:i:s', $time);
+        // check ip with time
+        $checkIP = DB::table('contacts')->where('ip', $ip)->where('created_at', '>', $past)->count();
+        if($checkIP > 0) {
+            return redirect()->back()->with('warning', 'Hệ thống đang bận. Xin bạn hãy thử lại sau ít phút.');
+        }
+        //
+        trimRequest($request);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'tel' => 'max:255',
+            'msg' => 'max:1000',
+        ]);
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        Contact::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'tel' => $request->tel,
+                'msg' => $request->msg,
+                'ip' => $ip
+            ]);
+        return redirect()->back()->with('success', 'Cảm ơn bạn đã gửi thông tin liên hệ cho chúng tôi.');
+    }
+    // remove cache page if exist message validator
+    private function forgetCache($slug)
+    {
+        //delete cache for contact page before redirect to remove message validator
+        $cacheName = 'page_'.$slug;
+        $cacheNameMobile = 'page_'.$slug.'_mobile';
+        Cache::forget($cacheName);
+        Cache::forget($cacheNameMobile);
+    }
+
+}
