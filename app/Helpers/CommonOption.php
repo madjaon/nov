@@ -90,14 +90,14 @@ class CommonOption
             12 => 'Trên box xu hướng - Mobile',
             13 => 'Dưới box xu hướng - PC',
             14 => 'Dưới box xu hướng - Mobile',
-            15 => 'Trang nội dung - Trên danh sách chương - PC',
-            16 => 'Trang nội dung - Trên danh sách chương - Mobile',
-            17 => 'Trang nội dung - Dưới danh sách chương - PC',
-            18 => 'Trang nội dung - Dưới danh sách chương - Mobile',
-            19 => 'Trang đọc truyện - Trên khung nội dung - PC',
-            20 => 'Trang đọc truyện - Trên khung nội dung - Mobile',
-            21 => 'Trang đọc truyện - Dưới khung nội dung - PC',
-            22 => 'Trang đọc truyện - Dưới khung nội dung - Mobile',
+            15 => 'Trang nội dung - Trên nội dung - PC',
+            16 => 'Trang nội dung - Trên nội dung - Mobile',
+            17 => 'Trang nội dung - Dưới nội dung - PC',
+            18 => 'Trang nội dung - Dưới nội dung - Mobile',
+            19 => 'Trang đọc truyện - Trên nội dung - PC',
+            20 => 'Trang đọc truyện - Trên nội dung - Mobile',
+            21 => 'Trang đọc truyện - Dưới nội dung - PC',
+            22 => 'Trang đọc truyện - Dưới nội dung - Mobile',
             
         );
     }

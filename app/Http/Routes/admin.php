@@ -48,6 +48,8 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::post('page/updateStatus', 'PageController@updateStatus');
     Route::resource('page', 'PageController');
     //contact
+    Route::post('contact/calldelete', 'ContactController@calldelete');
+    Route::post('contact/callupdatestatus', 'ContactController@callupdatestatus');
     Route::resource('contact', 'ContactController');
     //slider
     Route::post('slider/updateStatus', 'SliderController@updateStatus');

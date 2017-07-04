@@ -18,7 +18,7 @@
 
 <?php 
   $breadcrumb = array();
-  foreach($types as $value) {
+  foreach($post->types as $value) {
     $breadcrumb[] = ['name' => $value->name, 'link' => CommonUrl::getUrlPostType($value->slug)];
   }
   $breadcrumb[] = ['name' => $h1, 'link' => ''];
@@ -27,8 +27,13 @@
 
 <div class="row book mb-4">
   <div class="col-sm-4">
+
     <img src="{!! url($image) !!}" class="img-fluid rounded mb-4 w-100" alt="{!! $post->name !!}">
-    @include('site.common.social')
+
+    <div class="social mb-4">
+      <div class="fb-like" data-share="true" data-show-faces="false" data-layout="button_count"></div>
+    </div>
+    
   </div>
   <div class="col-sm">
 
@@ -38,14 +43,25 @@
       <div class="mb-2 text-muted">{!! $post->name2 !!}</div>
     @endif
 
-    <div class="book-epchap mb-3"><span class="badge badge-primary p-2">
-      @if(!empty($post->epchap))
-        Chương {!! $post->epchap !!}
-      @else
+    <?php 
+      if($post->kind == SLUG_POST_KIND_UPDATING) {
+        $badge = 'primary';
+      } else {
+        $badge = 'success';
+      }
+    ?>
+    <div class="book-epchap mb-3"><span class="badge badge-{!! $badge !!} p-2">
         {!! $post->kindName !!}
-      @endif    
     </span></div>
    
+    <div class="book-info mb-3">Mới nhất: 
+      @if(!empty($post->epchap))
+        {!! $post->epchap !!}
+      @else 
+        Không rõ
+      @endif
+    </div>
+
     <div class="book-info mb-3">Quốc Gia: 
       @if(!empty($post->nation))
         <a href="{!! CommonUrl::getUrlPostNation($post->nation) !!}" title="Đọc truyện {!! $post->nationName !!}">{!! $post->nationName !!}</a>
@@ -55,8 +71,8 @@
     </div>
 
     <div class="book-info mb-3">Tác Giả: 
-      @if(!empty($tags))
-        @foreach($tags as $key => $value)
+      @if(!empty($post->tags))
+        @foreach($post->tags as $key => $value)
           <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostTag($value->slug) !!}" title="Đọc truyện của {!! $value->name !!}">{!! $value->name !!}</a>
         @endforeach
       @else
@@ -65,7 +81,7 @@
     </div>
 
     <div class="book-info mb-3">Thể Loại: 
-      @foreach($types as $key => $value)
+      @foreach($post->types as $key => $value)
         <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostType($value->slug) !!}" title="Đọc truyện thể loại {!! $value->name !!}">{!! $value->name !!}</a>
       @endforeach
     </div>
@@ -111,35 +127,49 @@
 
     @include('site.common.ad', ['posPc' => 15, 'posMobile' => 16])
 
+    @if(!empty($post->epsLastest))
+    <div class="mb-3">
+      <h3>Chương mới nhất</h3>
+      <blockquote class="blockquote">
+        <ul class="list-unstyled">
+          @foreach($post->epsLastest as $value)
+            <li class="blur">
+              <a href="{!! CommonUrl::getUrl2($post->slug, $value->slug) !!}" title="{!! $value->name !!}"><i class="fa fa-dot-circle-o mr-2" aria-hidden="true"></i>{!! $value->name !!}</a>
+            </li>
+          @endforeach
+        </ul>
+      </blockquote>
+    </div>
+    @endif
+
+    @include('site.post.booklist')
+
     @if(!empty($post->patterns))<div class="description mb-3">{!! $post->patterns !!}</div>@endif
     @if(!empty($post->summary))<div class="description mb-3">{!! $post->summary !!}</div>@endif
     @if(!empty($post->description))<div class="description mb-3">{!! $post->description !!}</div>@endif
 
     @if(!empty($post->seriInfo))
-      <div class="seri mb-4">Seri: <a href="{!! CommonUrl::getUrlPostSeri($post->seriInfo->slug) !!}" title="Xem seri anime {!! $post->seriInfo->name !!}">{!! $post->seriInfo->name !!}</a></div>
+      <div class="seri mb-3">Seri: <a href="{!! CommonUrl::getUrlPostSeri($post->seriInfo->slug) !!}" title="Seri truyện {!! $post->seriInfo->name !!}">{!! $post->seriInfo->name !!}</a></div>
       @if(!empty($post->seriData))
-        <table class="table table-bordered mb-4">
-          <thead>
-            <tr>
-              <th><a href="{!! CommonUrl::getUrlPostSeri($post->seriInfo->slug) !!}" title="Xem seri anime {!! $post->seriInfo->name !!}">Danh sách phim cùng seri {!! $post->seriInfo->name !!}</a></th>
-              <th>Tình trạng</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($post->seriData as $value)
-              <tr>
-                <td>
-                  <div><a href="{!! url($value->slug) !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></div>
-                  @if(!empty($value->name2))
-                    <div class="text-muted">{!! $value->name2 !!}</div>
-                  @endif
-                </td>
-                <td>{!! CommonOption::getKindPost($value->kind) !!}</td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
+      <blockquote class="blockquote">
+        <ul class="list-unstyled">
+          @foreach($post->seriData as $value)
+          <?php 
+            $url = url($value->slug);
+            $kind = CommonOption::getKindPost($value->kind);
+            if($value->kind == SLUG_POST_KIND_UPDATING) {
+              $badge = 'primary';
+            } else {
+              $badge = 'success';
+            }
+          ?>
+            <li class="blur">
+              <a href="{!! $url !!}" title="{!! $value->name !!}"><i class="fa fa-angle-right mr-2" aria-hidden="true"></i>{!! $value->name !!}<span class="badge badge-{!! $badge !!} ml-2 align-middle hidden-xs-down">{!! $kind !!}</span></a>
+            </li>
+          @endforeach
+        </ul>
       @endif
+      </blockquote>
     @endif
 
     @include('site.common.ad', ['posPc' => 17, 'posMobile' => 18])

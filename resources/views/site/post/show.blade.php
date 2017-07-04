@@ -49,7 +49,9 @@
 </div>
 @endif
 
-@include('site.common.social')
+<div class="social mb-4">
+  <div class="fb-like" data-share="true" data-show-faces="false" data-layout="button_count"></div>
+</div>
 
 <div class="comment mb-5">
   <div class="fb-comments" data-numposts="10" data-colorscheme="dark" data-width="100%" data-href="{!! url($post->slug) !!}"></div>

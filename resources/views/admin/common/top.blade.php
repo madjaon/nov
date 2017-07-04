@@ -16,7 +16,7 @@
 		<div class="navbar-custom-menu">
 			<ul class="nav navbar-nav">
 				<li class="user">
-					<a href="#" data-toggle="modal" data-target="#myModal"><i class="fa fa-bell-o"></i><span class="label label-warning">2</span>Chú ý</a>
+					<a href="#" data-toggle="modal" data-target="#myModal"><i class="fa fa-bell-o"></i><span class="label label-warning">{{ CommonQuery::contactUnRead() }}</span>Chú ý</a>
 				</li>
 				<li class="user">
 					<a href="/" target="_blank"><i class="fa fa-home"></i>Trang chủ</a>

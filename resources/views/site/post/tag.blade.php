@@ -18,13 +18,13 @@
 
 <?php
   $breadcrumb = array(
-    ['name' => 'Danh sách hãng phim', 'link' => url('hang-phim')],
+    ['name' => 'Danh sách tác giả', 'link' => url('tac-gia')],
     ['name' => $h1, 'link' => '']
   );
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3">{!! $h1 !!}</h1>
+<h1 class="mb-3 pb-2">{!! $h1 !!}</h1>
 
 @if($tag->patterns)<div class="description mb-3">{!! $tag->patterns !!}</div>@endif
 @if($tag->summary)<div class="description mb-3">{!! $tag->summary !!}</div>@endif

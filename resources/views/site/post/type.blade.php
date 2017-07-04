@@ -23,7 +23,7 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3">{!! $h1 !!}</h1>
+<h1 class="mb-3 pb-2">{!! $h1 !!}</h1>
 
 @if($type->patterns)<div class="description mb-3">{!! $type->patterns !!}</div>@endif
 @if($type->summary)<div class="description mb-3">{!! $type->summary !!}</div>@endif

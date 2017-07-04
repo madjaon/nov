@@ -6,6 +6,13 @@
 
 @include('admin.contact.search')
 
+<div class="row margin-bottom">
+	<div class="col-xs-12">
+		<a onclick="actionSelected(3);" class="btn btn-danger btn-sm" id="loadMsg3">Xóa mục đã chọn</a>
+		<a onclick="actionSelected(1);" class="btn btn-default btn-sm" id="loadMsg1">Đánh dấu đã đọc mục đã chọn</a>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-xs-12">
 		<div class="box">
@@ -15,6 +22,7 @@
 			<div class="box-body table-responsive no-padding">
 				<table class="table table-hover">
 					<tr>
+						<th><input type="checkbox" id="checkall" onClick="toggle(this)"></th>
 						<th>Name</th>
 						<th>Email</th>
 						<th>Tel</th>
@@ -23,7 +31,15 @@
 						<th style="width:100px;">Action</th>
 					</tr>
 					@foreach($data as $key => $value)
-					<tr>
+					<?php 
+						if($value->status == INACTIVE) {
+							$trStyle = 'style="font-weight: bold !important;"';
+						} else {
+							$trStyle = '';
+						}
+					?>
+					<tr {!! $trStyle !!}>
+						<td><input type="checkbox" class="id" name="id[]" value="{{ $value->id }}"></td>
 						<td>{{ $value->name }}</td>
 						<td>{{ $value->email }}</td>
 						<td>{{ $value->tel }}</td>
@@ -44,5 +60,7 @@
 		{!! $data->appends($request->except('page'))->render() !!}
 	</div>
 </div>
+
+@include('admin.contact.script')
 
 @stop

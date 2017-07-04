@@ -9,9 +9,10 @@ $(document).ready(function () {
     leftOffset: 4,
     topOffset: 0,
     menuWidth: 'constrain', // auto
+    // highlightMatch: true,
     heading:"Gợi ý tìm kiếm",
     results: 6,
-    delay: 400,
+    delay: 200,
     paramName: 's',
     url: '/livesearch',
   }).loadSuggestions('/livesearch');

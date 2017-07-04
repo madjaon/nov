@@ -69,7 +69,7 @@ class SiteController extends Controller
             ->groupBy('post_tag_relations.tag_id')
             ->orderBy('post_tags.name')
             ->get();
-        if(count($data) > 0) {
+        if(!empty($data)) {
             //auto meta for seo
             $seo = new \stdClass();
             $seo->h1 = 'Danh sách tác giả';
@@ -108,8 +108,8 @@ class SiteController extends Controller
         //query
         $tag = DB::table('post_tags')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
-            ->where('slug', $slug)
             ->where('status', ACTIVE)
+            ->where('slug', $slug)
             ->first();
         // posts tags
         if(isset($tag)) {
@@ -171,8 +171,8 @@ class SiteController extends Controller
         //query
         $type = DB::table('post_types')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
-            ->where('slug', $slug)
             ->where('status', ACTIVE)
+            ->where('slug', $slug)
             ->first();
         // posts types
         if(isset($type)) {
@@ -234,8 +234,8 @@ class SiteController extends Controller
         //query
         $seri = DB::table('post_series')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
-            ->where('slug', $slug)
             ->where('status', ACTIVE)
+            ->where('slug', $slug)
             ->first();
         // posts seris
         if(isset($seri)) {
@@ -386,7 +386,7 @@ class SiteController extends Controller
     }
     public function page($slug)
     {
-        self::forgetCache('lien-he');
+        $this->forgetCache('lien-he');
         
         //update count view post
         // DB::table('posts')->where('slug', $slug)->increment('view');
@@ -480,61 +480,48 @@ class SiteController extends Controller
                     ->where('id', $post->seri)
                     ->where('status', ACTIVE)
                     ->first();
-            $post->seriInfo = $seri;
-
-            // seri data: danh sach thuoc seri nay
-            $post->seriData = $this->getPostBySeriQuery($post->seri, $post->id)->get();
+            if(isset($seri)) {
+                $post->seriInfo = $seri;
+                // seri data: danh sach thuoc seri nay
+                $post->seriData = $this->getPostBySeriQuery($post->seri, $post->id)->get();
+            }
 
             // list tags
             $tags = $this->getRelationsByPostQuery('tag', $post->id);
+            $post->tags = $tags;
 
             // list type
             $types = $this->getRelationsByPostQuery('type', $post->id);
+            $post->types = $types;
+
+            // epchap list
+            $eps = $this->getEpchapListByPostId($post->id, 'asc')->take(PAGINATE_BOX)->get();
+            $post->eps = $eps;
+
+            // epchap list latest
+            $epsLastest = $this->getEpchapListByPostId($post->id, 'desc')->take(PAGINATE_RELATED)->get();
+            $post->epsLastest = $epsLastest;
 
             // list post by type 
-            $related = $this->getPostRelated($post->id, [$post->id], $post->type_main_id);
+            // $related = $this->getPostRelated($post->id, [$post->id], $post->type_main_id);
 
             // first & last epchap
-            $epFirst = DB::table('post_eps')
-                ->where('post_id', $post->id)
-                ->where('status', ACTIVE)
-                ->where('start_date', '<=', date('Y-m-d H:i:s'))
-                ->orderByRaw(DB::raw("position = '0', position"))
-                ->orderBy('start_date', 'asc')
-                ->orderBy('name', 'asc')
-                ->first();
-            if(isset($epFirst)) {
-                $post->epFirst = $epFirst;
+            // $epFirst = $this->getEpchapListByPostId($post->id, 'asc')->first();
+            if(!empty($eps)) {
+                $post->epFirst = $eps[0];
             }
-            $epLast = DB::table('post_eps')
-                ->where('post_id', $post->id)
-                ->where('status', ACTIVE)
-                ->where('start_date', '<=', date('Y-m-d H:i:s'))
-                ->orderByRaw(DB::raw("position = '0', position desc"))
-                ->orderBy('start_date', 'desc')
-                ->orderBy('name', 'desc')
-                ->first();
-            if(isset($epLast)) {
-                $post->epLast = $epLast;
+            // $epLast = $this->getEpchapListByPostId($post->id, 'desc')->first();
+            if(!empty($epsLastest)) {
+                $post->epLast = $epsLastest[0];
             }
 
             if(CACHE == 1) {
                 //put cache
-                $html = view('site.post.book', [
-                        'post' => $post, 
-                        'tags' => $tags, 
-                        'types' => $types, 
-                        'related' => $related, 
-                    ])->render();
+                $html = view('site.post.book', ['post' => $post])->render();
                 Cache::forever($cacheName, $html);
             }
             //return view
-            return view('site.post.book', [
-                    'post' => $post, 
-                    'tags' => $tags, 
-                    'types' => $types, 
-                    'related' => $related, 
-                ]);
+            return view('site.post.book', ['post' => $post]);
         }
         return response()->view('errors.404', [], 404);
     }
@@ -559,7 +546,7 @@ class SiteController extends Controller
         //query
         // post
         $post = DB::table('posts')
-            ->select('id', 'name', 'slug', 'name2', 'type', 'description')
+            ->select('id', 'name', 'slug', 'name2')
             ->where('slug', $slug1)
             ->where('status', ACTIVE)
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
@@ -567,8 +554,8 @@ class SiteController extends Controller
         if(isset($post)) {
             // current epchap
             $data = DB::table('post_eps')
-                ->where('post_id', $post->id)
                 ->where('slug', $slug2)
+                ->where('post_id', $post->id)
                 ->where('status', ACTIVE)
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
                 ->first();
@@ -583,7 +570,7 @@ class SiteController extends Controller
                     $data->meta_keyword = $postName.' - '.$data->name;
                 }
                 if(empty($data->meta_description)) {
-                    $data->meta_description = limit_text(strip_tags($post->description), 200);
+                    $data->meta_description = limit_text(strip_tags($data->description), 200);
                 }
                 if(empty($data->meta_image)) {
                     $data->meta_image = '/img/noimage600x315.jpg';
@@ -591,46 +578,10 @@ class SiteController extends Controller
 
                 // list type
                 $types = $this->getRelationsByPostQuery('type', $post->id);
+                $post->types = $types;
 
                 // epchap list
-                $epsQuery = $this->getEpchapListByPostId($post->id);
-
-                $eps = $epsQuery->get();
-
-                // PREV & NEXT EPCHAP
-                // prev & next epchap (phai dua vao key trong array $eps o tren)
-                // array list eps id
-                $epsIdArray = $epsQuery->lists('id');
-                // array key hien tai
-                $currentEpchapKey = array_search($data->id, $epsIdArray);
-                // array key list
-                $epsIdKeyArray = array_keys($epsIdArray);
-                // set array key hien tai
-                setArrayKey($epsIdKeyArray, $currentEpchapKey);
-                // epPrev
-                $epPrevIdKey = prev($epsIdKeyArray);
-                if($epPrevIdKey !== false) {
-                    $epPrev = $eps[$epPrevIdKey];
-                } else {
-                    $epPrev = null;
-                }
-                // set array key hien tai lai 1 lan nua (do prev o tren lam thay doi array key hien tai)
-                setArrayKey($epsIdKeyArray, $currentEpchapKey);
-                // epNext
-                $epNextIdKey = next($epsIdKeyArray);
-                if($epNextIdKey !== false) {
-                    $epNext = $eps[$epNextIdKey];
-                } else {
-                    $epNext = null;
-                }
-                // gan gia tri vao $data
-                if(isset($epPrev)) {
-                    $data->epPrev = $epPrev;
-                }
-                if(isset($epNext)) {
-                    $data->epNext = $epNext;
-                }
-                // END PREV & NEXT EPCHAP
+                $eps = $this->getEpchapListByPostId($post->id, 'asc')->get();
 
                 // SELECT BOX EPCHAP
                 $epchapArray = array();
@@ -643,27 +594,34 @@ class SiteController extends Controller
                     }
                     $epchapArray[$epchapUrl] = $epchap;
                 }
+                $post->epchapArray = $epchapArray;
 
-                // END SELECT BOX EPCHAP
+                // PREV & NEXT EPCHAP
+                // epchap dua vao position (bat buoc phai nhap dung position)
+                $epPrev = $this->getEpchapListByPostId($post->id, 'desc')->where('position', '<', $data->position)->first();
+                $epNext = $this->getEpchapListByPostId($post->id, 'asc')->where('position', '>', $data->position)->first();
+                
+                // gan gia tri vao $data
+                if(isset($epPrev)) {
+                    $data->epPrev = $epPrev;
+                }
+                if(isset($epNext)) {
+                    $data->epNext = $epNext;
+                }
+                // END PREV & NEXT EPCHAP
 
                 if(CACHE == 1) {
                     //put cache
                     $html = view('site.post.epchap', [
                             'post' => $post, 
-                            'types' => $types, 
-                            'eps' => $eps, 
                             'data' => $data, 
-                            'epchapArray' => $epchapArray, 
                         ])->render();
                     Cache::forever($cacheName, $html);
                 }
                 //return view
                 return response()->view('site.post.epchap', [
                         'post' => $post, 
-                        'types' => $types, 
-                        'eps' => $eps, 
                         'data' => $data, 
-                        'epchapArray' => $epchapArray, 
                     ]);
                 // ->withCookie($cookie);
             }
@@ -689,7 +647,7 @@ class SiteController extends Controller
         $seo->meta_description = 'Kết quả tìm kiếm từ khóa ' . $request->s . ', tìm truyện ' . $request->s;
         $seo->meta_image = '/img/noimage600x315.jpg';
 
-        if($request->s == '') {
+        if($request->s == '' || strlen($request->s) < 2) {
             return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);
         }
         
@@ -707,33 +665,43 @@ class SiteController extends Controller
         }
         //query
         // post
-        $slug = CommonMethod::convert_string_vi_to_en($request->s);
-        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
-        $data = DB::table('posts')
-            ->where('status', ACTIVE)
-            ->where('start_date', '<=', date('Y-m-d H:i:s'))
-            ->where('slug', 'like', '%'.$slug.'%')
-            ->orWhere('name', 'like', '%'.$request->s.'%')
-            ->orWhere('name2', 'like', '%'.$request->s.'%')
-            ->orderBy('start_date', 'desc')
-            ->paginate(PAGINATE);
+        $data = $this->searchQueryPostTag($request->s)->paginate(PAGINATE);
+        $authors = array();
+        if(!empty($data)) {
+            foreach($data as $value) {
+                $author = '';
+                // list tags
+                $tags = $this->getRelationsByPostQuery('tag', $value->id);
+                if(!empty($tags)) {
+                    foreach($tags as $k => $v) {
+                        if($k > 0) {
+                            $author .= ' - ';
+                        }
+                        $author .= '<a href="'.url('tac-gia/'.$v->slug).'" title="'.$v->name.'">'.$v->name.'</a>';
+                    }
+                }
+                $authors[] = $author;
+            }
+        }
+
         if(CACHE == 1) {
             //put cache
-            $html = view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'request' => $request])->render();
+            $html = view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request])->render();
             Cache::forever($cacheName, $html);
         }
         //return view
-        return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'request' => $request]);
+        return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request]);
     }
     public function livesearch(Request $request)
     {
-        if($request->s == '') {
+        trimRequest($request);
+
+        if($request->s == '' || strlen($request->s) < 2) {
             return null;
         }
-        trimRequest($request);
+        
         if(CACHE == 1) {
             //cache name
-            // $cacheName = 'livesearch_suggestion_response_json_all_post';
             $cacheName = 'livesearch_suggestion_response_json_'.$request->s;
             //get cache
             if(Cache::has($cacheName)) {
@@ -741,33 +709,28 @@ class SiteController extends Controller
             }
         }
         $array = array();
-        // GET ALL POST
-        // $data = DB::table('posts')
-        //     ->select('name', 'slug')
-        //     ->where('status', ACTIVE)
-        //     ->where('start_date', '<=', date('Y-m-d H:i:s'))
-        //     ->orderBy('start_date', 'desc')
-        //     ->orderBy('name', 'asc')
-        //     ->get();
         // AJAX SEARCH
-        $slug = CommonMethod::convert_string_vi_to_en($request->s);
-        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
-        $data = DB::table('posts')
-            ->select('name', 'slug')
-            ->where('status', ACTIVE)
-            ->where('start_date', '<=', date('Y-m-d H:i:s'))
-            ->where('slug', 'like', '%'.$slug.'%')
-            ->orWhere('name', 'like', '%'.$request->s.'%')
-            ->orWhere('name2', 'like', '%'.$request->s.'%')
-            ->orderBy('start_date', 'desc')
-            ->orderBy('name', 'asc')
-            ->take(PAGINATE_RELATED)
-            ->get();
-        if(count($data) > 0) {
+        // Search theo ten post va ten tac gia
+        $data = $this->searchQueryPostTag($request->s)->take(PAGINATE_RELATED)->get();
+
+        if(!empty($data)) {
             foreach($data as $value) {
+                // neu search theo ten post & ten tac gia thi them authors!
+                $authors = '';
+                // list tags
+                $tags = $this->getRelationsByPostQuery('tag', $value->id);
+                if(!empty($tags)) {
+                    foreach($tags as $k => $v) {
+                        if($k > 0) {
+                            $authors .= ' - ';
+                        }
+                        $authors .= $v->name;
+                    }
+                }
                 $array[] = [
-                    'suggestion' => $value->name,
+                    'suggestion' => $value->name.'<br>'.'<small>Tác giả: '.$authors.'</small>',
                     'url' => url($value->slug),
+                    // "attr" => [["class" => "suggestion"]]
                 ];
             }
         }
@@ -781,6 +744,7 @@ class SiteController extends Controller
     }
     public function sitemap()
     {
+        dd('Too big');
         if(CACHE == 1) {
             ///cache name
             $cacheName = 'sitemap';
@@ -833,7 +797,6 @@ class SiteController extends Controller
         $data = DB::table('posts')
             ->join('post_type_relations', 'posts.id', '=', 'post_type_relations.post_id')
             ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view')
-            ->where('post_type_relations.type_id', $typeId)
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'));
         if($time == null) {
@@ -841,13 +804,14 @@ class SiteController extends Controller
         } else {
             $data = $data->where('posts.id', '<', $id);
         }
-        $data = $data->whereNotIn('post_type_relations.post_id', $ids)
+        $data = $data->where('post_type_relations.type_id', $typeId)
+            ->whereNotIn('post_type_relations.post_id', $ids)
             ->orderBy('posts.id', 'desc')
             ->take(PAGINATE_RELATED);
         return $data;
     }
     // get post by seri field in posts table
-    private function getPostBySeriQuery($id, $currentPostId = null, $orderColumn = 'start_date', $orderSort = 'desc')
+    private function getPostBySeriQuery($id, $currentPostId = null)
     {
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
@@ -857,19 +821,17 @@ class SiteController extends Controller
         if($currentPostId != null) {
             $data = $data->where('id', '!=', $currentPostId);
         }
-        $data = $data->orderBy($orderColumn, $orderSort);
         return $data;
     }
     // element: tag or type / id: id of tag or type
-    private function getPostByRelationsQuery($element, $id, $orderColumn = 'start_date', $orderSort = 'desc')
+    private function getPostByRelationsQuery($element, $id)
     {
         $data = DB::table('posts')
             ->join('post_'.$element.'_relations', 'posts.id', '=', 'post_'.$element.'_relations.post_id')
             ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view')
             ->where('post_'.$element.'_relations.'.$element.'_id', $id)
             ->where('posts.status', ACTIVE)
-            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
-            ->orderBy('posts.'.$orderColumn, $orderSort);
+            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'));
         return $data;
     }
     // element: tag or type / id: id of post
@@ -880,7 +842,6 @@ class SiteController extends Controller
             ->select('post_'.$element.'s.id', 'post_'.$element.'s.name', 'post_'.$element.'s.slug')
             ->where('post_'.$element.'_relations.post_id', $id)
             ->where('post_'.$element.'s.status', ACTIVE)
-            ->orderBy('post_'.$element.'s.name')
             ->get();
         return $data;
     }
@@ -889,25 +850,48 @@ class SiteController extends Controller
     {
         $data = DB::table('post_eps')
             ->join('posts', 'post_eps.post_id', '=', 'posts.id')
-            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view', 'post_eps.id AS ep_id', 'post_eps.name AS ep_name', 'post_eps.slug AS ep_slug', 'post_eps.volume AS ep_volume', 'post_eps.epchap AS ep_epchap', 'post_eps.start_date AS ep_start_date')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view', 'post_eps.id AS ep_id', 'post_eps.name AS ep_name', 'post_eps.slug AS ep_slug', 'post_eps.volume AS ep_volume', 'post_eps.epchap AS ep_epchap', 'post_eps.start_date AS ep_start_date')
             ->where('post_eps.status', ACTIVE)
-            ->where('posts.status', ACTIVE)
             ->where('post_eps.start_date', '<=', date('Y-m-d H:i:s'))
+            ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
-            ->orderBy('post_eps.start_date', 'desc')
-            ->orderBy('post_eps.id', 'desc');
+            ->orderBy('post_eps.start_date', 'desc');
         return $data;
     }
     // $id: $post_id
-    private function getEpchapListByPostId($id)
+    private function getEpchapListByPostId($id, $orderSort = 'desc')
     {
         $data = DB::table('post_eps')
                 ->select('id', 'name', 'slug', 'volume', 'epchap')
                 ->where('post_id', $id)
                 ->where('status', ACTIVE)
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
-                ->orderByRaw(DB::raw("position = '0', position"))
-                ->orderBy('start_date', 'desc');
+                ->orderByRaw(DB::raw("position = '0', position ".$orderSort));
+        return $data;
+    }
+    // search query
+    // to full text search (mysql) working
+    // my.ini (my.cnf) add after line [mysqld] before restart sql service: 
+    // innodb_ft_min_token_size = 2
+    // ft_min_word_len = 2
+    // run: mysql> REPAIR TABLE tbl_name QUICK;
+    // UNION 2 SELECT with paginate:
+    // https://stackoverflow.com/questions/25338456/laravel-union-paginate-at-the-same-time
+    private function searchQueryPostTag($s)
+    {
+        $slug = CommonMethod::convert_string_vi_to_en($s);
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $data = DB::table('posts')
+            ->leftJoin('post_tag_relations', 'posts.id', '=', 'post_tag_relations.post_id')
+            ->leftJoin('post_tags', 'post_tag_relations.tag_id', '=', 'post_tags.id')
+            ->select('posts.id', 'posts.name AS name', 'posts.slug AS slug',  'posts.name2 AS name2', 'posts.patterns', 'posts.image', 'posts.type', 'posts.kind', 'posts.epchap', 'posts.view')
+            ->where('posts.status', ACTIVE)
+            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
+            ->whereRaw('MATCH('.env('DB_PREFIX').'posts.slug,'.env('DB_PREFIX').'posts.name,'.env('DB_PREFIX').'posts.name2) AGAINST ("'.$s.'")')
+            // ->orWhereRaw('MATCH('.env('DB_PREFIX').'post_tags.slug,'.env('DB_PREFIX').'post_tags.name) AGAINST ("'.$s.'")')
+            ->orWhere('post_tags.slug', 'like', '%'.$slug.'%')
+            ->orWhere('post_tags.name', 'like', '%'.$s.'%')
+            ->groupBy('posts.id');
         return $data;
     }
     /* 
@@ -915,15 +899,14 @@ class SiteController extends Controller
     */
     public function contact(Request $request)
     {
-        self::forgetCache('lien-he');
+        $this->forgetCache('lien-he');
         //
-        $ip = get_client_ip();
         $now = strtotime(date('Y-m-d H:i:s'));
-        $range = 120; //second
+        $range = 600; //second
         $time = $now - $range;
         $past = date('Y-m-d H:i:s', $time);
         // check ip with time
-        $checkIP = DB::table('contacts')->where('ip', $ip)->where('created_at', '>', $past)->count();
+        $checkIP = DB::table('contacts')->where('ip', $request->ip())->where('created_at', '>', $past)->count();
         if($checkIP > 0) {
             return redirect()->back()->with('warning', 'Hệ thống đang bận. Xin bạn hãy thử lại sau ít phút.');
         }
@@ -943,9 +926,29 @@ class SiteController extends Controller
                 'email' => $request->email,
                 'tel' => $request->tel,
                 'msg' => $request->msg,
-                'ip' => $ip
+                'ip' => $request->ip()
             ]);
         return redirect()->back()->with('success', 'Cảm ơn bạn đã gửi thông tin liên hệ cho chúng tôi.');
+    }
+    public function errorreporting(Request $request)
+    {
+        $now = strtotime(date('Y-m-d H:i:s'));
+        $range = 600; //second
+        $time = $now - $range;
+        $past = date('Y-m-d H:i:s', $time);
+        // check ip with time
+        $checkIP = DB::table('contacts')->where('ip', $request->ip())->where('created_at', '>', $past)->count();
+        if($checkIP > 0) {
+            return 1;
+        }
+        //
+        trimRequest($request);
+        Contact::create([
+                'name' => 'Báo lỗi chương',
+                'msg' => $request->url,
+                'ip' => $request->ip()
+            ]);
+        return 1;
     }
     // remove cache page if exist message validator
     private function forgetCache($slug)

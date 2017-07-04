@@ -19,7 +19,7 @@
         </ul>
         <form action="{!! route('site.search') !!}" method="GET" class="form-inline my-2 my-lg-0">
           <div class="input-group">
-          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm" id="search">
+          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm theo tên hoặc tác giả truyện" id="search">
             <span class="input-group-btn">
               <button class="btn btn-success" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </span>

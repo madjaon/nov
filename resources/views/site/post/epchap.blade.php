@@ -21,7 +21,7 @@
 
     <?php 
       $breadcrumb = array();
-      foreach($types as $value) {
+      foreach($post->types as $value) {
         $breadcrumb[] = ['name' => $value->name, 'link' => CommonUrl::getUrlPostType($value->slug)];
       }
       $breadcrumb[] = ['name' => $post->name, 'link' => url($post->slug)];
@@ -29,57 +29,90 @@
     ?>
     @include('site.common.breadcrumb', $breadcrumb)
     
-    <h1 class="mb-3 align-center">{!! $h1 !!}</h1>
+    <h1 class="mb-3 text-center">{!! $h1 !!}</h1>
 
     @if(!empty($post->name2))
-      <div class="mb-3 text-muted align-center">{!! $post->name2 !!}</div>
+      <div class="mb-3 text-muted text-center">{!! $post->name2 !!}</div>
     @endif
 
-    <div class="align-center mb-3 d-flex justify-content-center align-items-center">
+    <div class="text-center mb-3 d-flex justify-content-center align-items-center">
       @if(isset($data->epPrev))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
 
-      {!! Form::select(null, $epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
+      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @endif
     </div>
-    
+
     @include('site.common.ad', ['posPc' => 19, 'posMobile' => 20])
 
-    @if(!empty($data->description))<div class="mb-3">{!! $data->description !!}</div>@endif
+    @if(!empty($data->description))<div class="mb-3" style="font-size: 1.250rem; line-height: 2;">{!! $data->description !!}</div>@endif
 
     @include('site.common.ad', ['posPc' => 21, 'posMobile' => 22])
 
-    <h2 class="mb-3 text-muted align-center">{!! $data->name !!}</h2>
+    <h2 class="mb-3 text-muted text-center">{!! $data->name !!}</h2>
 
-    <div class="align-center mb-3 d-flex justify-content-center align-items-center">
+    <div class="text-center mb-3 d-flex justify-content-center align-items-center">
       @if(isset($data->epPrev))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
 
-      {!! Form::select('epchapUrl', $epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control', 'style'=>'width:200px;')) !!}
+      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @endif
     </div>
 
-    @include('site.common.social')
+    <div class="mb-3 text-center" id="errormessage">
+      <button class="btn btn-secondary btn-sm" onclick="errorreporting()" id="errorreporting"><i class="fa fa-exclamation-triangle mr-2" aria-hidden="true"></i>Báo lỗi chương</button>
+    </div>
+
+    <div class="social mb-4">
+      <div class="fb-like" data-share="true" data-show-faces="false" data-layout="button_count"></div>
+    </div>
 
     <div class="comment mb-5">
       <div class="fb-comments" data-numposts="10" data-colorscheme="dark" data-width="100%" data-href="{!! url($post->slug) !!}"></div>
     </div>
+
+    <script>
+      function errorreporting()
+      {
+        $.ajax(
+        {
+          type: 'post',
+          url: '{{ url("errorreporting") }}',
+          data: {
+            'url': window.location.href,
+            '_token': '{{ csrf_token() }}'
+          },
+          beforeSend: function() {
+            $('#errorreporting').prop('disabled', true);
+            $('#errorreporting').html('...');
+          },
+          success: function()
+          {
+            $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
+          },
+          error: function(xhr)
+          {
+            $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
+          }
+        });
+      }
+    </script>
 
   </div>
 </div>
