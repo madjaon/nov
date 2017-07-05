@@ -27,7 +27,7 @@ define('PAGINATE', 32);
 define('PAGINATE_LIST', 12);
 define('PAGINATE_TABLE', 34);
 define('PAGINATE_RELATED', 6);
-define('PAGINATE_BOX', 12);
+define('PAGINATE_BOX', 36);
 //device
 define('MOBILE', 1);
 define('PC', 2);

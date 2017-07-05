@@ -42,7 +42,7 @@
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
 
-      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
+      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'custom-select m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
         <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
@@ -66,7 +66,7 @@
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
 
-      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'form-control m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
+      {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'custom-select m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
         <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
@@ -76,6 +76,7 @@
     </div>
 
     <div class="mb-3 text-center" id="errormessage">
+      <div class="spinner ml-2"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
       <button class="btn btn-secondary btn-sm" onclick="errorreporting()" id="errorreporting"><i class="fa fa-exclamation-triangle mr-2" aria-hidden="true"></i>Báo lỗi chương</button>
     </div>
 
@@ -99,15 +100,17 @@
             '_token': '{{ csrf_token() }}'
           },
           beforeSend: function() {
-            $('#errorreporting').prop('disabled', true);
-            $('#errorreporting').html('...');
+            $('#errorreporting').attr('style', 'display:none');
+            $('.spinner').attr('style', 'display:inline-block');
           },
           success: function()
           {
+            $('.spinner').attr('style', 'display:none');
             $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
           },
           error: function(xhr)
           {
+            $('.spinner').attr('style', 'display:none');
             $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
           }
         });

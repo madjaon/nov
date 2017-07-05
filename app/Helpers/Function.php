@@ -21,10 +21,10 @@ function getDevice2($device = null)
     }
     //agent check tablet mobile desktop
     $agent = new Agent();
-    if($agent->isMobile()) {
-        return MOBILE;
-    } else if($agent->isTablet()) {
+    if($agent->isTablet()) {
         return TABLET;
+    } else if($agent->isMobile()) {
+        return MOBILE;
     } else {
         return PC;
     }

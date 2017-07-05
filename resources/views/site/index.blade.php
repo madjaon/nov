@@ -28,7 +28,7 @@
 @include('site.common.ad', ['posPc' => 7, 'posMobile' => 8])
 
 <div class="box-style mb-4">
-  <div class="title">Mới Cập Nhật</div>
+  <div class="d-inline-flex title">Mới Cập Nhật</div>
 </div>
 
 @include('site.post.list', array('data' => $data))

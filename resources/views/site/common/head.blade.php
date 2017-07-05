@@ -1,6 +1,6 @@
 <!doctype html>
-<html>
-<head lang="vi">
+<html lang="vi">
+<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,10 +25,13 @@
 	<link rel="shortcut icon" href="{!! url('img/favicon.png') !!}" type="image/x-icon">
 	<link rel="alternate" hreflang="vi" href="{!! env('APP_URL', 'https://truyenon.com') !!}" />
 	@if(isset($pagePrev))
-	<link rel="prev" href="{!! $pagePrev !!}">
+	<link rel="prev" href="{!! preg_replace('/(\?|&)page=1/', '', $pagePrev) !!}">
 	@endif
 	@if(isset($pageNext))
 	<link rel="next" href="{!! $pageNext !!}">
+	@endif
+	@if(!isset($pagePrev) && isset($pageNext))
+	<link rel="canonical" href="{!! preg_replace('/(\?|&)page=2/', '', $pageNext) !!}">
 	@endif
 	<title>@yield('title')</title>
 	@if($configcode)

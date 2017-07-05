@@ -21,7 +21,7 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3 pb-2">{!! $h1 !!}</h1>
+<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
 
 <p class="mb-3">Tìm nhanh tên tác giả, bạn ấn CTRL + F để sử dụng ô tìm kiếm.</p>
 

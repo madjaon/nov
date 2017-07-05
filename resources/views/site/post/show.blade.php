@@ -24,7 +24,7 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3">{!! $h1 !!}</h1>
+<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
 
 @if(!empty($post->patterns))<div class="description mb-3">{!! $post->patterns !!}</div>@endif
 

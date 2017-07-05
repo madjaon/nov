@@ -15,21 +15,25 @@ use App\Models\Contact;
 
 class SiteController extends Controller
 {
+    // public function __construct()
+    // {
+    //     //
+    // }
+
     public function index()
     {
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'index';
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         $query = $this->getEpchapLatest();
         // epchap moi nhat
         $data = $query->take(PAGINATE_LIST)->get();
@@ -41,23 +45,22 @@ class SiteController extends Controller
         $seo = DB::table('configs')->where('status', ACTIVE)->first();
         
         if(CACHE == 1) {
-            //put cache
+            // put cache
             $html = view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo])->render();
             Cache::forever($cacheName, $html);
         }
-        //return view
+        // return view
         return view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo]);
     }
     public function author()
     {
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'taglist_tac-gia';
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
@@ -70,7 +73,7 @@ class SiteController extends Controller
             ->orderBy('post_tags.name')
             ->get();
         if(!empty($data)) {
-            //auto meta for seo
+            // auto meta for seo
             $seo = new \stdClass();
             $seo->h1 = 'Danh sách tác giả';
             $seo->meta_title = 'Danh sách tác giả';
@@ -79,11 +82,11 @@ class SiteController extends Controller
             $seo->meta_image = '/img/noimage600x315.jpg';
             
             if(CACHE == 1) {
-                //put cache
+                // put cache
                 $html = view('site.post.author', ['data' => $data, 'seo' => $seo])->render();
                 Cache::forever($cacheName, $html);    
             }
-            //return view
+            // return view
             return view('site.post.author', ['data' => $data, 'seo' => $seo]);
         }
         return response()->view('errors.404', [], 404);
@@ -91,21 +94,20 @@ class SiteController extends Controller
     public function tag(Request $request, $slug)
     {
         trimRequest($request);
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'tag_'.$slug.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         $tag = DB::table('post_tags')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
             ->where('status', ACTIVE)
@@ -118,7 +120,7 @@ class SiteController extends Controller
             $tag->description = CommonMethod::replaceText($tag->description);
             $data = $this->getPostByRelationsQuery('tag', $tag->id)->paginate(PAGINATE);
             if($data->total() > 0) {
-                //auto meta tag for seo
+                // auto meta tag for seo
                 $tagName = ucwords(mb_strtolower($tag->name));
                 $tag->h1 = 'Tác giả ' . $tagName;
                 if(empty($tag->meta_title)) {
@@ -141,11 +143,11 @@ class SiteController extends Controller
                 }
 
                 if(CACHE == 1) {
-                    //put cache
+                    // put cache
                     $html = view('site.post.tag', ['data' => $data, 'tag' => $tag])->render();
                     Cache::forever($cacheName, $html);    
                 }
-                //return view
+                // return view
                 return view('site.post.tag', ['data' => $data, 'tag' => $tag]);
             }
         }
@@ -154,21 +156,20 @@ class SiteController extends Controller
     public function type(Request $request, $slug)
     {
         trimRequest($request);
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'type_'.$slug.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         $type = DB::table('post_types')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
             ->where('status', ACTIVE)
@@ -181,7 +182,7 @@ class SiteController extends Controller
             $type->description = CommonMethod::replaceText($type->description);
             $data = $this->getPostByRelationsQuery('type', $type->id)->paginate(PAGINATE);
             if($data->total() > 0) {
-                //auto meta type for seo
+                // auto meta type for seo
                 $typeName = ucwords(mb_strtolower($type->name));
                 $type->h1 = 'Thể loại ' . $typeName;
                 if(empty($type->meta_title)) {
@@ -204,11 +205,11 @@ class SiteController extends Controller
                 }
 
                 if(CACHE == 1) {
-                    //put cache
+                    // put cache
                     $html = view('site.post.type', ['data' => $data, 'type' => $type])->render();
                     Cache::forever($cacheName, $html);    
                 }
-                //return view
+                // return view
                 return view('site.post.type', ['data' => $data, 'type' => $type]);
             }
         }
@@ -217,21 +218,20 @@ class SiteController extends Controller
     public function seri(Request $request, $slug)
     {
         trimRequest($request);
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'seri_'.$slug.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         $seri = DB::table('post_series')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
             ->where('status', ACTIVE)
@@ -244,7 +244,7 @@ class SiteController extends Controller
             $seri->description = CommonMethod::replaceText($seri->description);
             $data = $this->getPostBySeriQuery($seri->id)->paginate(PAGINATE);
             if($data->total() > 0) {
-                //auto meta seri for seo
+                // auto meta seri for seo
                 $seriName = ucwords(mb_strtolower($seri->name));
                 $seri->h1 = 'Seri truyện ' . $seriName;
                 if(empty($seri->meta_title)) {
@@ -267,11 +267,11 @@ class SiteController extends Controller
                 }
 
                 if(CACHE == 1) {
-                    //put cache
+                    // put cache
                     $html = view('site.post.seri', ['data' => $data, 'seri' => $seri])->render();
                     Cache::forever($cacheName, $html);    
                 }
-                //return view
+                // return view
                 return view('site.post.seri', ['data' => $data, 'seri' => $seri]);
             }
         }
@@ -284,21 +284,20 @@ class SiteController extends Controller
         }
 
         trimRequest($request);
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'nation_'.$slug.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
             ->where('nation', $slug)
@@ -308,7 +307,7 @@ class SiteController extends Controller
             ->paginate(PAGINATE);
         // posts
         if($data->total() > 0) {
-            //auto meta for seo
+            // auto meta for seo
             $seo = new \stdClass();
             $seo->h1 = 'Danh sách truyện ' . CommonOption::getNation($slug);
             if($page > 1) {
@@ -321,11 +320,11 @@ class SiteController extends Controller
             $seo->meta_image = '/img/noimage600x315.jpg';
 
             if(CACHE == 1) {
-                //put cache
+                // put cache
                 $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
                 Cache::forever($cacheName, $html);    
             }
-            //return view
+            // return view
             return view('site.post.box', ['data' => $data, 'seo' => $seo]);
         }
         return response()->view('errors.404', [], 404);
@@ -337,22 +336,21 @@ class SiteController extends Controller
         }
 
         trimRequest($request);
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'kind_'.$slug.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
         
-        //query
+        // query
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'epchap', 'view')
             ->where('kind', $slug)
@@ -362,7 +360,7 @@ class SiteController extends Controller
             ->paginate(PAGINATE);
         // posts
         if($data->total() > 0) {
-            //auto meta for seo
+            // auto meta for seo
             $seo = new \stdClass();
             $seo->h1 = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
             if($page > 1) {
@@ -375,11 +373,11 @@ class SiteController extends Controller
             $seo->meta_image = '/img/noimage600x315.jpg';
 
             if(CACHE == 1) {
-                //put cache
+                // put cache
                 $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
                 Cache::forever($cacheName, $html);    
             }
-            //return view
+            // return view
             return view('site.post.box', ['data' => $data, 'seo' => $seo]);
         }
         return response()->view('errors.404', [], 404);
@@ -392,20 +390,19 @@ class SiteController extends Controller
         // DB::table('posts')->where('slug', $slug)->increment('view');
 
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'page_'.$slug;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
         
         // IF SLUG IS PAGE
-        //query
+        // query
         $singlePage = DB::table('pages')->where('slug', $slug)->where('status', ACTIVE)->first();
         // page
         if(isset($singlePage)) {
@@ -413,7 +410,7 @@ class SiteController extends Controller
             $singlePage->summary = CommonMethod::replaceText($singlePage->summary);
             $singlePage->description = CommonMethod::replaceText($singlePage->description);
 
-            //auto meta singlePage for seo
+            // auto meta singlePage for seo
             $singlePageName = ucwords(mb_strtolower($singlePage->name));
             $singlePage->h1 = $singlePageName;
             if(empty($singlePage->meta_title)) {
@@ -432,11 +429,11 @@ class SiteController extends Controller
             }
 
             if(CACHE == 1) {
-                //put cache
+                // put cache
                 $html = view('site.page', ['data' => $singlePage])->render();
                 Cache::forever($cacheName, $html);    
             }
-            //return view
+            // return view
             return view('site.page', ['data' => $singlePage]);
         }
 
@@ -452,7 +449,7 @@ class SiteController extends Controller
             $post->summary = CommonMethod::replaceText($post->summary);
             $post->description = CommonMethod::replaceText($post->description);
 
-            //auto meta post for seo
+            // auto meta post for seo
             $postName = ucwords(mb_strtolower($post->name));
             $post->h1 = $postName;
             if(empty($post->meta_title)) {
@@ -515,12 +512,28 @@ class SiteController extends Controller
                 $post->epLast = $epsLastest[0];
             }
 
+            $countEps = $this->countEpchapListByPostId($post->id);
+            $totalPageEps = ceil($countEps / PAGINATE_BOX);
+            $currentPageEps = 1;
+            $listPageEps = null;
+            if($totalPageEps > 0) {
+                for($i = 1; $i <= $totalPageEps; $i++) {
+                    $listPageEps[$i] = 'Trang ' . $i;
+                }
+            }
+            $post->countEps = $countEps;
+            $post->totalPageEps = $totalPageEps;
+            $post->currentPageEps = $currentPageEps;
+            $post->listPageEps = $listPageEps;
+            $post->prevPageEps = ($currentPageEps > 1)?($currentPageEps - 1):null;
+            $post->nextPageEps = ($currentPageEps < $totalPageEps)?($currentPageEps + 1):null;
+
             if(CACHE == 1) {
-                //put cache
+                // put cache
                 $html = view('site.post.book', ['post' => $post])->render();
                 Cache::forever($cacheName, $html);
             }
-            //return view
+            // return view
             return view('site.post.book', ['post' => $post]);
         }
         return response()->view('errors.404', [], 404);
@@ -528,22 +541,21 @@ class SiteController extends Controller
     public function page2($slug1, $slug2)
     {
         // set cookie epchap reading
-        // $cookie = cookie()->forever(COOKIE_NAME, $slug1 . '_' . $slug2);
+        $cookie = cookie()->forever(COOKIE_NAME, $slug1 . '_' . $slug2);
 
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'page2_'.$slug1.'_'.$slug2;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
-                return Cache::get($cacheName);
-                // return response(Cache::get($cacheName))->withCookie($cookie);
+                // return Cache::get($cacheName);
+                return response(Cache::get($cacheName))->withCookie($cookie);
             }
         }
-        //query
+        // query
         // post
         $post = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2')
@@ -560,7 +572,7 @@ class SiteController extends Controller
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
                 ->first();
             if(isset($data)) {
-                //auto meta post for seo
+                // auto meta post for seo
                 $postName = ucwords(mb_strtolower($post->name));
                 $data->h1 = $postName . ' - ' . $data->name;
                 if(empty($data->meta_title)) {
@@ -611,19 +623,18 @@ class SiteController extends Controller
                 // END PREV & NEXT EPCHAP
 
                 if(CACHE == 1) {
-                    //put cache
+                    // put cache
                     $html = view('site.post.epchap', [
                             'post' => $post, 
                             'data' => $data, 
                         ])->render();
                     Cache::forever($cacheName, $html);
                 }
-                //return view
+                // return view
                 return response()->view('site.post.epchap', [
                         'post' => $post, 
                         'data' => $data, 
-                    ]);
-                // ->withCookie($cookie);
+                    ])->withCookie($cookie);
             }
         }
         return response()->view('errors.404', [], 404);
@@ -632,10 +643,10 @@ class SiteController extends Controller
     {
         trimRequest($request);
 
-        //check page
+        // check page
         $page = ($request->page)?$request->page:1;
 
-        //auto meta tag for seo
+        // auto meta tag for seo
         $seo = new \stdClass();
         $seo->h1 = 'Kết quả tìm kiếm ' . $request->s;
         if($page > 1) {
@@ -652,18 +663,17 @@ class SiteController extends Controller
         }
         
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'search_'.$request->s.'_'.$page;
-            $device = getDevice();
-            if($device == MOBILE) {
+            if(getDevice2() == MOBILE) {
                 $cacheName = $cacheName.'_mobile';
             }
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
         }
-        //query
+        // query
         // post
         $data = $this->searchQueryPostTag($request->s)->paginate(PAGINATE);
         $authors = array();
@@ -685,11 +695,11 @@ class SiteController extends Controller
         }
 
         if(CACHE == 1) {
-            //put cache
+            // put cache
             $html = view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request])->render();
             Cache::forever($cacheName, $html);
         }
-        //return view
+        // return view
         return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request]);
     }
     public function livesearch(Request $request)
@@ -701,9 +711,9 @@ class SiteController extends Controller
         }
         
         if(CACHE == 1) {
-            //cache name
+            // cache name
             $cacheName = 'livesearch_suggestion_response_json_'.$request->s;
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 return Cache::get($cacheName);
             }
@@ -736,7 +746,7 @@ class SiteController extends Controller
         }
         $res = ['results' => $array];
         if(CACHE == 1) {
-            //put cache
+            // put cache
             $jsonData = response()->json($res);
             Cache::forever($cacheName, $jsonData);
         }
@@ -746,52 +756,52 @@ class SiteController extends Controller
     {
         dd('Too big');
         if(CACHE == 1) {
-            ///cache name
+            // cache name
             $cacheName = 'sitemap';
-            //get cache
+            // get cache
             if(Cache::has($cacheName)) {
                 $content = Cache::get($cacheName);
                 return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
             }
         }
-        //return view
+        // return view
         $content = view('site.sitemap');
         if(CACHE == 1) {
-            //put cache
+            // put cache
             $html = $content->render();
             Cache::forever($cacheName, $html);
         }
         return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
     }
-    //asuna: lay tat ca du lieu post (null) / hay chi lay danh sach id cua post (not null)
+    // asuna: lay tat ca du lieu post (null) / hay chi lay danh sach id cua post (not null)
     private function getPostRelated($id, $ids, $typeId, $asuna = null)
     {
-        //lay danh sach posts
+        // lay danh sach posts
         if($asuna == null) {
-            //post moi hon
+            // post moi hon
             $post1Query = $this->getPostTypeQuery($id, $ids, $typeId);
             $post1 = $post1Query->get();
-            //post cu hon
+            // post cu hon
             $post2Query = $this->getPostTypeQuery($id, $ids, $typeId, 1);
             $post2 = $post2Query->get();
             $posts = array_merge($post1, $post2);
             return $posts;
         }
-        //lay danh sach id posts
+        // lay danh sach id posts
         else {
-            //post moi hon
+            // post moi hon
             $post1Query = $this->getPostTypeQuery($id, $ids, $typeId);
             $post1 = $post1Query->pluck('id');
-            //post cu hon
+            // post cu hon
             $post2Query = $this->getPostTypeQuery($id, $ids, $typeId, 1);
             $post2 = $post2Query->pluck('id');
             $posts = array_merge($post1, $post2);
             return $posts;
         }
     }
-    //lay ra post cu hon (time not null) va moi hon (time null) theo id
-    //id: id post hien tai
-    //typeId: id type main / related cua post hien tai. ids: danh sach id da lay ra (tranh trung lap)
+    // lay ra post cu hon (time not null) va moi hon (time null) theo id
+    // id: id post hien tai
+    // typeId: id type main / related cua post hien tai. ids: danh sach id da lay ra (tranh trung lap)
     private function getPostTypeQuery($id, $ids, $typeId, $time = null)
     {
         $data = DB::table('posts')
@@ -867,6 +877,15 @@ class SiteController extends Controller
                 ->where('status', ACTIVE)
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
                 ->orderByRaw(DB::raw("position = '0', position ".$orderSort));
+        return $data;
+    }
+    private function countEpchapListByPostId($id)
+    {
+        $data = DB::table('post_eps')
+                ->where('post_id', $id)
+                ->where('status', ACTIVE)
+                ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                ->count();
         return $data;
     }
     // search query
@@ -950,10 +969,70 @@ class SiteController extends Controller
             ]);
         return 1;
     }
+    public function bookpaging(Request $request)
+    {
+        trimRequest($request);
+        // check page
+        $page = ($request->page)?$request->page:1;
+        $id = ($request->id)?$request->id:1;
+
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'bookpaging_'.$id.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+
+        // query
+        // post
+        $post = DB::table('posts')
+            ->where('id', $id)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->first();
+        if(isset($post)) {
+            $countEps = $this->countEpchapListByPostId($post->id);
+            $totalPageEps = ceil($countEps / PAGINATE_BOX);
+            $currentPageEps = ($page > 0 && $page <= $totalPageEps)?$page:1;
+            $listPageEps = null;
+            if($totalPageEps > 0) {
+                for($i = 1; $i <= $totalPageEps; $i++) {
+                    $listPageEps[$i] = 'Trang ' . $i;
+                }
+            }
+            $post->countEps = $countEps;
+            $post->totalPageEps = $totalPageEps;
+            $post->currentPageEps = $currentPageEps;
+            $post->listPageEps = $listPageEps;
+            $post->prevPageEps = ($currentPageEps > 1)?($currentPageEps - 1):null;
+            $post->nextPageEps = ($currentPageEps < $totalPageEps)?($currentPageEps + 1):null;
+
+            // offset
+            $offset = ($page - 1) * PAGINATE_BOX;
+
+            // epchap list
+            $eps = $this->getEpchapListByPostId($post->id, 'asc')->skip($offset)->take(PAGINATE_BOX)->get();
+            $post->eps = $eps;
+
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.booklist', ['post' => $post])->render();
+                Cache::forever($cacheName, $html);
+            }
+            // return view
+            return view('site.post.booklist', ['post' => $post]);
+        }
+        return '<p>Đang cập nhật</p>';
+    }
     // remove cache page if exist message validator
     private function forgetCache($slug)
     {
-        //delete cache for contact page before redirect to remove message validator
+        // delete cache for contact page before redirect to remove message validator
         $cacheName = 'page_'.$slug;
         $cacheNameMobile = 'page_'.$slug.'_mobile';
         Cache::forget($cacheName);

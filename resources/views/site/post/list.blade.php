@@ -21,12 +21,12 @@
           <div class="row">
             <div class="col-9 col-sm-10">
               <h3 class="mt-0 mb-1 list-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h3>
-              <p class="mb-1 list-item-epchap">{!! $value->ep_name !!}</p>
+              <p class="mb-1 list-item-epchap hidden-xs-down">{!! $value->ep_name !!}</p>
               <span class="badge badge-primary">{!! $epchap !!}</span>
-              <span class="ml-0 ml-sm-2 mt-2 mt-sm-0 time">{!! CommonMethod::time_elapsed_string($value->ep_start_date) !!}</span>
+              <small class="ml-0 ml-sm-2 mt-2 mt-sm-0 d-block d-sm-inline-block">{!! CommonMethod::time_elapsed_string($value->ep_start_date) !!}</small>
             </div>
             <div class="col-3 col-sm-2">
-              <a href="{!! $url2 !!}" title="{!! $value->ep_name !!}" class="mt-2 p-1 p-sm-2 float-right list-item-read">Chương<span>{!! $value->ep_epchap !!}</span></a>
+              <a href="{!! $url2 !!}" title="{!! $value->ep_name !!}" class="mt-2 p-1 p-sm-2 float-right list-item-read">Chương<span class="d-block">{!! $value->ep_epchap !!}</span></a>
             </div>
           </div>
         </div>

@@ -197,7 +197,7 @@ class CommonQuery
         }
         return;
     }
-    //get 1 field array
+    // get 1 field array
     static function getArrayField($table, $field)
     {
         $data = DB::table($table)->select($field)->groupBy($field)->lists($field, $field);
@@ -212,6 +212,65 @@ class CommonQuery
         $data = DB::table('contacts')->where('status', INACTIVE)->count();
         if($data > 0) {
             return $data;
+        }
+        return '';
+    }
+    // HISTORY READING
+    static function historyFromCookie()
+    {
+        $cookie = request()->cookie(COOKIE_NAME);
+        if(!empty($cookie)) {
+            // nemo-earum-quidem-earum-quaerat-sit-sit-_chuong-31
+            $cookieArray = explode('_', $cookie);
+            if(!empty($cookieArray)) {
+                $slug1 = $cookieArray[0];
+                $slug2 = $cookieArray[1];
+                if(CACHE == 1) {
+                    // cache name
+                    $cacheName = 'history_'.$slug1.'_'.$slug2;
+                    if(getDevice2() == MOBILE) {
+                        $cacheName = $cacheName.'_mobile';
+                    }
+                    // get cache
+                    if(Cache::has($cacheName)) {
+                        return Cache::get($cacheName);
+                    }
+                }
+                // query
+                // post
+                $post = DB::table('posts')
+                    ->select('id', 'name', 'slug')
+                    ->where('slug', $slug1)
+                    ->where('status', ACTIVE)
+                    ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                    ->first();
+                if(isset($post)) {
+                    // current epchap
+                    $data = DB::table('post_eps')
+                        ->select('id', 'name', 'slug', 'volume', 'epchap')
+                        ->where('slug', $slug2)
+                        ->where('post_id', $post->id)
+                        ->where('status', ACTIVE)
+                        ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                        ->first();
+                    if(isset($data)) {
+                        $data->postName = $post->name;
+                        $data->url = CommonUrl::getUrl2($post->slug, $data->slug);
+                        if($data->volume > 0) {
+                            $data->epchapName = 'Quyển ' . $data->volume . ' chương ' . $data->epchap;
+                        } else {
+                            $data->epchapName = 'Chương ' . $data->epchap;
+                        }
+                        if(CACHE == 1) {
+                            // put cache
+                            $html = view('site.common.history', ['data' => $data])->render();
+                            Cache::forever($cacheName, $html);
+                        }
+                        // return view
+                        return view('site.common.history', ['data' => $data]);
+                    }
+                }
+            }
         }
         return '';
     }

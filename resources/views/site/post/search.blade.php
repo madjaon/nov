@@ -23,7 +23,7 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3 pb-2">{!! $h1 !!}</h1>
+<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
 
 <p class="mb-3">Danh sách kết quả tìm kiếm theo tên truyện hoặc tên tác giả viết truyện.</p>
 

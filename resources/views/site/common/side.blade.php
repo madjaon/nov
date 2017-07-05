@@ -1,3 +1,5 @@
+{!! CommonQuery::historyFromCookie() !!}
+
 @include('site.common.ad', ['posPc' => 11, 'posMobile' => 12])
 <div class="side mb-5">
   <h2 class="mb-3">Xu Hướng <small class="text-muted">Top Trending</small></h2>

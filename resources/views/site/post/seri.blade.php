@@ -23,7 +23,7 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="mb-3 pb-2">{!! $h1 !!}</h1>
+<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
 
 @if($seri->patterns)<div class="description mb-3">{!! $seri->patterns !!}</div>@endif
 @if($seri->summary)<div class="description mb-3">{!! $seri->summary !!}</div>@endif

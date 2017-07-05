@@ -16,9 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $cookie = request()->cookie(COOKIE_NAME);
-        // view()->share('cookieValue', $cookie);
-
         // get config data
         if(CACHE == 1) {
             if(Cache::has('configsite')) {
@@ -41,18 +38,31 @@ class AppServiceProvider extends ServiceProvider
         view()->share('configtoptotal', self::getPostTop($config->top_total, 'top_total'));
         view()->share('configtoptrending', self::getPostTop($config->top_trending, 'top_trending'));
 
-        // getMenuOfTypes
+        // getMenuTypes
         if(CACHE == 1) {
-            if(Cache::has('menuoftypes')) {
-                $menuoftypes = Cache::get('menuoftypes');
+            if(Cache::has('menutypes')) {
+                $menutypes = Cache::get('menutypes');
             } else {
-                $menuoftypes = self::getMenuOfTypes();
-                Cache::forever('menuoftypes', $menuoftypes);
+                $menutypes = self::getMenuTypes();
+                Cache::forever('menutypes', $menutypes);
             }
         } else {
-            $menuoftypes = self::getMenuOfTypes();
+            $menutypes = self::getMenuTypes();
         }
-        view()->share('menuoftypes', $menuoftypes);
+        view()->share('menutypes', $menutypes);
+        // getMenuMobile
+        if(CACHE == 1) {
+            if(Cache::has('menumobile')) {
+                $menumobile = Cache::get('menumobile');
+            } else {
+                $menumobile = self::getMenuMobile();
+                Cache::forever('menumobile', $menumobile);
+            }
+        } else {
+            $menumobile = self::getMenuMobile();
+        }
+        view()->share('menumobile', $menumobile);
+
         // all menu
         // current url
         // $currentUrl = url()->current();
@@ -135,12 +145,22 @@ class AppServiceProvider extends ServiceProvider
         return $data;
     }
 
-    private function getMenuOfTypes()
+    private function getMenuMobile()
     {
         $string = '';
         $data = self::getTypes();
         if(count($data) > 0) {
-            $string .= view('site.common.topmenuoftypes', ['data' => $data])->render();
+            $string .= view('site.common.menumobile', ['data' => $data])->render();
+        }
+        return $string;
+    }
+
+    private function getMenuTypes()
+    {
+        $string = '';
+        $data = self::getTypes();
+        if(count($data) > 0) {
+            $string .= view('site.common.menutypes', ['data' => $data])->render();
         }
         return $string;
     }

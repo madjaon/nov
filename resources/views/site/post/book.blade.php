@@ -28,7 +28,7 @@
 <div class="row book mb-4">
   <div class="col-sm-4">
 
-    <img src="{!! url($image) !!}" class="img-fluid rounded mb-4 w-100" alt="{!! $post->name !!}">
+    <img src="{!! url($image) !!}" class="img-thumbnail img-fluid rounded mb-4 w-100" alt="{!! $post->name !!}">
 
     <div class="social mb-4">
       <div class="fb-like" data-share="true" data-show-faces="false" data-layout="button_count"></div>
@@ -142,7 +142,49 @@
     </div>
     @endif
 
-    @include('site.post.booklist')
+    @if(!empty($post->eps))
+      <div class="card card-outline-info mb-3" id="booklistbox">
+        <h3 class="card-header">Danh sách chương<div class="spinner ml-2"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div></h3>
+        <div class="card-block" id="booklist">
+          @include('site.post.booklist')
+        </div>
+      </div>
+      @if($post->totalPageEps > 1)
+      <script>
+        function bookpaging(page, p)
+        {
+          $.ajax(
+          {
+            type: 'post',
+            url: '{{ url("bookpaging") }}',
+            data: {
+              'id': {{ $post->id }},
+              'page': page,
+              '_token': '{{ csrf_token() }}'
+            },
+            beforeSend: function() {
+              scrollTo();
+              $('.spinner').attr('style', 'display:inline-block');
+            },
+            success: function(data)
+            {
+              $('.spinner').attr('style', 'display:none');
+              $('#booklist').html(data);
+            },
+            error: function(xhr)
+            {
+              $('.spinner').attr('style', 'display:none');
+              // $('#booklist').html(xhr);
+            }
+          });
+        }
+        function scrollTo() {
+          $('html, body').animate({ scrollTop: $('#booklistbox').offset().top }, 'fast');
+          return false;
+        }
+      </script>
+      @endif
+    @endif
 
     @if(!empty($post->patterns))<div class="description mb-3">{!! $post->patterns !!}</div>@endif
     @if(!empty($post->summary))<div class="description mb-3">{!! $post->summary !!}</div>@endif
