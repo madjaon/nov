@@ -4,7 +4,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="format-detection" content="telephone=no">
+
+	@if(isset($is404))
 	<meta name="robots" content="noindex,nofollow" />
+	@else
+	<meta name="robots" content="noindex,nofollow" />
+	@endif
+
 	<meta name="revisit-after" content="1 days">
 	<meta name="language" content="vietnamese" />
 	<meta name="title" content="{!! $meta_title !!}">
@@ -14,25 +20,33 @@
 	<meta property="og:title" content="{!! $meta_title !!}" />
 	<meta property="og:description" content="{!! $meta_description !!}" />
 	<meta property="og:type" content="website"/>
+
 	@if(!empty($meta_image))
 	<meta property="og:image" content="{!! url($meta_image) !!}" />
 	@endif
+
 	{{-- getImageDimensionsOg($meta_image) --}}
+
 	@if(isset($configfbappid) && $configfbappid != '')
 	<meta property="fb:app_id" content="{!! $configfbappid !!}" />
 	@endif
 	
 	<title>@yield('title')</title>
+	
 	<link rel="alternate" hreflang="vi" href="{!! env('APP_URL', 'https://truyenon.com') !!}" />
+
 	@if(isset($pagePrev))
 	<link rel="prev" href="{!! preg_replace('/(\?|&)page=1/', '', $pagePrev) !!}">
 	@endif
+
 	@if(isset($pageNext))
 	<link rel="next" href="{!! $pageNext !!}">
 	@endif
+
 	@if(!isset($pagePrev) && isset($pageNext))
 	<link rel="canonical" href="{!! preg_replace('/(\?|&)page=2/', '', $pageNext) !!}">
 	@endif
+
 	@if($configcode)
 	{!! $configcode !!}
 	@endif

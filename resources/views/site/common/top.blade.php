@@ -1,10 +1,17 @@
+<?php 
+  if(isset($isHome)) {
+    $effect = 'animated swing';
+  } else {
+    $effect = '';
+  }
+?>
 @if(getDevice2() == MOBILE)
 <header class="mb-4">
   <div class="container">
     <div class="row">
       <div class="col-8">
         <a href="{!! url('/') !!}" class="d-flex justify-content-start align-items-center py-2 logo" title="Truyện On">
-          <img src="{!! url('img/logomobile.png') !!}" alt="Truyen On" class="mr-2 animated tada"><span class="pt-2 animated swing">Truyện On</span>
+          <img src="{!! url('img/logomobile.png') !!}" alt="Truyen On" class="mr-2 animated tada"><span class="pt-2 {!! $effect !!}">Truyện On</span>
         </a>  
       </div>
       <div class="col-4">
@@ -15,7 +22,7 @@
       <div class="col">
         <form action="{!! route('site.search') !!}" method="GET" class="form-inline my-3">
           <div class="input-group">
-          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm theo tên hoặc tác giả truyện" id="search">
+          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm theo tên hoặc tác giả truyện" id="search" maxlength="255">
             <span class="input-group-btn">
               <button class="btn btn-success" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </span>
@@ -32,7 +39,7 @@
 <header class="mb-4">
   <nav class="navbar navbar-toggleable-sm py-1">
     <div class="container">
-      <a class="navbar-brand p-0 d-flex align-items-center" href="{!! url('/') !!}" title="Truyện On"><img src="{!! url('img/logo.png') !!}" alt="Truyen On" class="mr-2 animated tada"><span class="animated swing">Truyện On</span></a>
+      <a class="navbar-brand p-0 d-flex align-items-center" href="{!! url('/') !!}" title="Truyện On"><img src="{!! url('img/logo.png') !!}" alt="Truyen On" class="mr-2 animated tada"><span class="{!! $effect !!}">Truyện On</span></a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item dropdown">
@@ -50,7 +57,7 @@
         </ul>
         <form action="{!! route('site.search') !!}" method="GET" class="form-inline my-2 my-lg-0">
           <div class="input-group">
-          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm theo tên hoặc tác giả truyện" id="search">
+          <input name="s" type="text" value="" class="form-control search-input" placeholder="Tìm kiếm theo tên hoặc tác giả truyện" id="search" maxlength="255">
             <span class="input-group-btn">
               <button class="btn btn-success" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
             </span>

@@ -658,7 +658,7 @@ class SiteController extends Controller
         $seo->meta_description = 'Kết quả tìm kiếm từ khóa ' . $request->s . ', tìm truyện ' . $request->s;
         $seo->meta_image = '/img/noimage600x315.jpg';
 
-        if($request->s == '' || strlen($request->s) < 2) {
+        if($request->s == '' || strlen($request->s) < 2 || strlen($request->s) > 255) {
             return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);
         }
         
@@ -706,7 +706,7 @@ class SiteController extends Controller
     {
         trimRequest($request);
 
-        if($request->s == '' || strlen($request->s) < 2) {
+        if($request->s == '' || strlen($request->s) < 2 || strlen($request->s) > 255) {
             return null;
         }
         
@@ -900,6 +900,9 @@ class SiteController extends Controller
     {
         $slug = CommonMethod::convert_string_vi_to_en($s);
         $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        // addslashes: xu ly chuoi gay loi cau lenh sql. 
+        // co the k dung, thay $s -> $slug (nhung k biet co search chinh xac hay khong)
+        $s = addslashes($s);
         $data = DB::table('posts')
             ->leftJoin('post_tag_relations', 'posts.id', '=', 'post_tag_relations.post_id')
             ->leftJoin('post_tags', 'post_tag_relations.tag_id', '=', 'post_tags.id')
