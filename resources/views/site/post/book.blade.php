@@ -58,7 +58,7 @@
       @if(!empty($post->epchap))
         {!! $post->epchap !!}
       @else 
-        Không rõ
+        Cập nhật
       @endif
     </div>
 
