@@ -921,7 +921,7 @@ class SiteController extends Controller
         $this->forgetCache('lien-he');
         //
         $now = strtotime(date('Y-m-d H:i:s'));
-        $range = 600; //second
+        $range = 300; //second
         $time = $now - $range;
         $past = date('Y-m-d H:i:s', $time);
         // check ip with time

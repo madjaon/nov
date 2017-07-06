@@ -89,15 +89,13 @@
     </div>
 
     <script>
-      function errorreporting()
-      {
+      function errorreporting() {
         $.ajax(
         {
           type: 'post',
           url: '{{ url("errorreporting") }}',
           data: {
-            'url': window.location.href,
-            '_token': '{{ csrf_token() }}'
+            'url': window.location.href
           },
           beforeSend: function() {
             $('#errorreporting').attr('style', 'display:none');

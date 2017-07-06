@@ -3,12 +3,12 @@
 Route::resource('test', 'TestController');
 // Route::get('mixdb/{typeId}', 'TestController@mixdb');
 
-Route::post('/bookpaging', 'SiteController@bookpaging');
-Route::post('/errorreporting', 'SiteController@errorreporting');
-Route::post('/contact', 'SiteController@contact');
-Route::get('/sitemap.xml', 'SiteController@sitemap');
-Route::get('/livesearch', 'SiteController@livesearch');
-Route::get('/tim-kiem', ['uses' => 'SiteController@search', 'as' => 'site.search']);
+Route::post('bookpaging', 'SiteController@bookpaging');
+Route::post('errorreporting', 'SiteController@errorreporting');
+Route::post('contact', 'SiteController@contact');
+Route::get('sitemap.xml', 'SiteController@sitemap');
+Route::get('livesearch', 'SiteController@livesearch');
+Route::get('tim-kiem', ['uses' => 'SiteController@search', 'as' => 'site.search']);
 Route::get('/', 'SiteController@index');
 Route::get('the-loai/{slug}', 'SiteController@type');
 Route::get('seri/{slug}', 'SiteController@seri');

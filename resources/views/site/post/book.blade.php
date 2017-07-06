@@ -151,16 +151,14 @@
       </div>
       @if($post->totalPageEps > 1)
       <script>
-        function bookpaging(page, p)
-        {
+        function bookpaging(page) {
           $.ajax(
           {
             type: 'post',
             url: '{{ url("bookpaging") }}',
             data: {
               'id': {{ $post->id }},
-              'page': page,
-              '_token': '{{ csrf_token() }}'
+              'page': page
             },
             beforeSend: function() {
               scrollTo();
