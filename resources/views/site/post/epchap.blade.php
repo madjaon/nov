@@ -61,16 +61,20 @@
 
     <div class="text-center mb-3 d-flex justify-content-center align-items-center">
       @if(isset($data->epPrev))
+        <input type="hidden" id="prev" value="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}">
         <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @else
+        <input type="hidden" id="prev" value="">
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
 
       {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'custom-select m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
+        <input type="hidden" id="next" value="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}">
         <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @else
+        <input type="hidden" id="next" value="">
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @endif
     </div>
@@ -115,6 +119,20 @@
           }
         });
       }
+      $(function () {
+        var prev = document.getElementById('prev').value;
+        var next = document.getElementById('next').value;
+        document.onkeydown = function(e) {
+          switch (e.keyCode) {
+            case 37:
+                window.location.href = prev;
+                break;
+            case 39:
+                window.location.href = next;
+                break;
+          }
+        };
+      })
     </script>
 
   </div>

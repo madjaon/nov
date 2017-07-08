@@ -4,7 +4,7 @@
   @foreach($data as $key => $value)
     <?php 
       $url = url($value->slug);
-      $image = ($value->image)?CommonMethod::getThumbnail($value->image, 1):'/img/noimage160x210.jpg';
+      $image = ($value->image)?CommonMethod::getThumbnail($value->image, 1):'/img/noimage185x240.jpg';
       if($key == count($data) - 1) {
         $objL .= 'L' . $value->id . ':"' . $value->summary . '"';
       } else {

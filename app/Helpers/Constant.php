@@ -88,9 +88,9 @@ define('TITLETYPE1', 1); // Lấy tiêu đề bài tự động theo mẫu thẻ
 define('TITLETYPE2', 2); // Lấy tiêu đề tự động theo danh sách slug tương ứng ds link nguồn
 define('TITLETYPE3', 3); // Lấy tiêu đề theo danh sách tiêu đề tương ứng ds link nguồn
 // thumbnail image size
-define('THUMB_DIMENSIONS', '320x420 / 160x210 / 80x80');
-define('IMAGE_WIDTH', 160);
-define('IMAGE_HEIGHT', 210);
+define('THUMB_DIMENSIONS', '320x420 / 185x240 / 80x80');
+define('IMAGE_WIDTH', 185);
+define('IMAGE_HEIGHT', 240);
 define('IMAGE_WIDTH_2', 80);
 define('IMAGE_HEIGHT_2', 80);
 define('IMAGE_WIDTH_3', 320);
