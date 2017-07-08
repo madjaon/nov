@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Helpers\CommonMethod;
+use App\Helpers\CommonQuery;
 use App\Models\PostSeri;
 use App\Models\Post;
 use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\CommonMethod;
-use App\Helpers\CommonQuery;
 use Cache;
 
 class PostSeriController extends Controller

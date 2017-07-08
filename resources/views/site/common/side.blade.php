@@ -1,4 +1,4 @@
-{!! CommonQuery::historyFromCookie() !!}
+<!--history-->
 
 @include('site.common.ad', ['posPc' => 11, 'posMobile' => 12])
 <div class="side mb-5">

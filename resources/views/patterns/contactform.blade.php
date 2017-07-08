@@ -1,5 +1,5 @@
 <form class="contact-form" method="POST" action="/contact">
-  {!! csrf_field() !!}
+  <input type="hidden" name="_token" value="%%csrf_token%%">
   <div class="row">
     <div class="col-sm">
       <div class="form-group"><label for="contact-name">Họ Tên / Name <span style="color: red;">(*)</span></label><input type="text" id="contact-name" name="name" maxlength="255" class="form-control" required /></div>

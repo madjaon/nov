@@ -14,7 +14,5 @@ class VerifyCsrfToken extends BaseVerifier
     protected $except = [
         //
     	'bookpaging',
-    	'errorreporting',
-    	'contact',
     ];
 }

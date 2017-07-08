@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Helpers\CommonMethod;
 use App\Models\Config;
 use Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\CommonMethod;
 use Cache;
 
 class ConfigController extends Controller

@@ -93,7 +93,7 @@
         $.ajax(
         {
           type: 'post',
-          url: '{{ url("errorreporting") }}',
+          url: '{!! url("errorreporting") !!}',
           data: {
             'url': window.location.href
           },
@@ -105,11 +105,13 @@
           {
             $('.spinner').attr('style', 'display:none');
             $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
+            return false;
           },
           error: function(xhr)
           {
             $('.spinner').attr('style', 'display:none');
             $('#errormessage').html('<span class="badge badge-pill badge-success">Báo lỗi thành công! Cảm ơn bạn rất nhiều!</span>');
+            return false;
           }
         });
       }

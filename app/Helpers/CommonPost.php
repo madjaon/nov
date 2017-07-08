@@ -2,7 +2,6 @@
 namespace App\Helpers;
 
 use DB;
-use App\Helpers\CommonMethod;
 
 class CommonPost
 {

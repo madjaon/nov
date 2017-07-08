@@ -50,13 +50,20 @@
         $badge = 'success';
       }
     ?>
-    <div class="book-epchap mb-3"><span class="badge badge-{!! $badge !!} p-2">
+    <div class="book-kind mb-3"><span class="badge badge-{!! $badge !!} p-2">
         {!! $post->kindName !!}
     </span></div>
    
     <div class="book-info mb-3">Mới nhất: 
-      @if(!empty($post->epchap))
-        {!! $post->epchap !!}
+      @if(!empty($post->epLast))
+        <?php 
+          if($post->epLast->volume > 0) {
+            $epchap = 'Quyển ' . $post->epLast->volume . ' chương ' . $post->epLast->epchap;
+          } else {
+            $epchap = 'Chương ' . $post->epLast->epchap;
+          }
+        ?>
+        {!! $epchap !!}
       @else 
         Cập nhật
       @endif
@@ -155,9 +162,9 @@
           $.ajax(
           {
             type: 'post',
-            url: '{{ url("bookpaging") }}',
+            url: '{!! url("bookpaging") !!}',
             data: {
-              'id': {{ $post->id }},
+              'id': {!! $post->id !!},
               'page': page
             },
             beforeSend: function() {
@@ -168,11 +175,12 @@
             {
               $('.spinner').attr('style', 'display:none');
               $('#booklist').html(data);
+              return false;
             },
             error: function(xhr)
             {
               $('.spinner').attr('style', 'display:none');
-              // $('#booklist').html(xhr);
+              return false;
             }
           });
         }

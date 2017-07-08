@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Helpers\CommonMethod;
 use App\Models\Post;
 use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\CommonMethod;
 use Cache;
 
 class PostController extends Controller
@@ -105,7 +105,6 @@ class PostController extends Controller
             'patterns' => 'max:255',
             'type_main_id' => 'required',
             'kind' => 'max:255',
-            'epchap' => 'max:255',
             'summary' => 'max:1000',
             'image' => 'max:255',
             'meta_title' => 'max:255',
@@ -128,7 +127,6 @@ class PostController extends Controller
                 'type' => $request->type,
                 'kind' => $request->kind,
                 'nation' => $request->nation,
-                'epchap' => $request->epchap,
                 'summary' => $request->summary,
                 'description' => $request->description,
                 'image' => CommonMethod::removeDomainUrl($request->image),
@@ -194,7 +192,6 @@ class PostController extends Controller
             'patterns' => 'max:255',
             'type_main_id' => 'required',
             'kind' => 'max:255',
-            'epchap' => 'max:255',
             'summary' => 'max:1000',
             'image' => 'max:255',
             'meta_title' => 'max:255',
@@ -221,7 +218,6 @@ class PostController extends Controller
                 'type' => $request->type,
                 'kind' => $request->kind,
                 'nation' => $request->nation,
-                'epchap' => $request->epchap,
                 'summary' => $request->summary,
                 'description' => $request->description,
                 'image' => CommonMethod::removeDomainUrl($request->image),

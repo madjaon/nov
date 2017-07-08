@@ -42,7 +42,7 @@
 						<td>{{ $value->name }}</td>
 						<td>{{ $value->slug }}</td>
 						<td>{{ CommonUrl::getUrl2($request->post_slug, $value->slug, 1) }}</td>
-						<!-- <td>{{-- getZero($value->view) --}}</td> -->
+						<!-- <td>{{-- CommonMethod::getZero($value->view) --}}</td> -->
 						<td>{!! CommonMethod::startDateLabel($value->start_date) !!}</td>
 						<td><a id="status_{{ $value->id }}" onclick="updateStatus({{ $value->id }}, 'status')" style="cursor: pointer;" title="Click to change">{!! CommonOption::getStatus($value->status) !!}</a></td>
 						<td><input type="text" name="position" value="{{ $value->position }}" size="5" class="onlyNumber" style="text-align: center;"></td>

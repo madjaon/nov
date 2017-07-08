@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Helpers\CommonMethod;
+use App\Helpers\CommonQuery;
 use App\Models\PostType;
 use App\Models\PostTypeRelation;
 use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\CommonMethod;
-use App\Helpers\CommonQuery;
 use Cache;
 
 class PostTypeController extends Controller

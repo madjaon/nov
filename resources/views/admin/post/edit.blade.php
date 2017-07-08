@@ -51,17 +51,7 @@
 								</div>
 							</div>
 							<div class="row">
-								<div class="col-sm-3">
-									<div class="form-group">
-										<label>Patterns</label>
-										<div class="row">
-											<div class="col-sm-12">
-												<input name="patterns" type="text" value="{{ $data->patterns }}" class="form-control">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-3">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label>Loại bài</label>
 										<div class="row">
@@ -71,7 +61,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-3">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label>Tình trạng hoàn thành</label>
 										<div class="row">
@@ -81,7 +71,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-3">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label>Quốc gia</label>
 										<div class="row">
@@ -120,10 +110,10 @@
 								</div>
 								<div class="col-sm-4">
 									<div class="form-group">
-										<label>Số quyển/chap hiện tại</label>
+										<label>Patterns</label>
 										<div class="row">
 											<div class="col-sm-12">
-												<input name="epchap" type="text" value="{{ $data->epchap }}" class="form-control">
+												<input name="patterns" type="text" value="{{ $data->patterns }}" class="form-control">
 											</div>
 										</div>
 									</div>

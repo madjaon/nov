@@ -217,6 +217,7 @@ return [
         'CommonUrl' => App\Helpers\CommonUrl::class,
         'CommonPost' => App\Helpers\CommonPost::class,
         'CommonMethod' => App\Helpers\CommonMethod::class,
+        'CommonProvider' => App\Helpers\CommonProvider::class,
 
     ],
 

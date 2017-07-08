@@ -175,11 +175,9 @@ return [
         'embed' => [
             'required' => 'Bắt buộc phải có mã nhúng embed',
         ],
-        'episode' => [
-            'max' => 'Số chương không được nhập quá :max ký tự',
-        ],
         'epchap' => [
             'required' => 'Bắt buộc phải có số chương',
+            'max' => 'Số chương không được nhập quá :max ký tự',
             'numeric' => 'Số chương phải là một số',
         ],
     ],

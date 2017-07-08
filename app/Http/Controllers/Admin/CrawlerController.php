@@ -329,13 +329,13 @@ class CrawlerController extends Controller
                 $postDescription = html_entity_decode($postDescription);
                 //slug
                 if($request->slug_type == SLUGTYPE2) {
-                    $slug = getSlugFromUrl($link);
+                    $slug = CommonMethod::getSlugFromUrl($link);
                 } else if($request->slug_type == SLUGTYPE3) {
                     if(!empty($request->post_slugs)) {
                         $slugs = explode(',', $request->post_slugs);
                         $slug = $slugs[$key];
                     } else {
-                        $slug = getSlugFromUrl($link);
+                        $slug = CommonMethod::getSlugFromUrl($link);
                     }
                 } else {
                     $slug = CommonMethod::convert_string_vi_to_en($postName);

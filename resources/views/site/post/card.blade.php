@@ -23,9 +23,6 @@
               <h2 class="mt-0 mb-2 list-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h2>
               <div class="mb-2 d-flex align-items-center">
                 <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
-                @if(!empty($value->epchap))
-                <small class="ml-2">Mới nhất: {!! $value->epchap !!}</small>
-                @endif
               </div>
               @if(!empty($authors[$key]))
               <div class="authors">Tác giả: {!! $authors[$key] !!}</div>

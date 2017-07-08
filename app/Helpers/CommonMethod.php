@@ -4,6 +4,97 @@ use Image;
 
 class CommonMethod
 {
+	// FUNCTION FILE (Function.php deleted)
+
+	// show 0 for null
+	static function getZero($number = null)
+	{
+		if($number != '') {
+			return $number;
+		}
+		return 0;
+	}
+	//cut trim text
+	static function limit_text($text, $len) {
+	    if (strlen($text) < $len) {
+	        return $text;
+	    }
+	    $text_words = explode(' ', $text);
+	    $out = null;
+	    foreach ($text_words as $word) {
+	        if ((strlen($word) > $len) && $out == null) {
+
+	            return substr($word, 0, $len) . "...";
+	        }
+	        if ((strlen($out) + strlen($word)) > $len) {
+	            return $out . "...";
+	        }
+	        $out.=" " . $word;
+	    }
+	    return $out;
+	}
+	static function image_exists($url)
+	{
+	    $c = @getimagesize($url);
+	    if($c) {
+	        return true;
+	    }
+	    return false;
+	}
+	static function UR_exists($url)
+	{
+	   $headers=get_headers($url);
+	   return stripos($headers[0],"200 OK")?true:false;
+	}
+	static function remote_file_exists($url)
+	{
+	    $ch = curl_init($url);
+	    curl_setopt($ch, CURLOPT_NOBODY, true);
+	    curl_exec($ch);
+	    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	    curl_close($ch);
+	    if( $httpCode == 200 ){return true;}
+	    return false;
+	}
+	//check file exist
+	static function remoteFileExists($url, $type = 1)
+	{
+	    $c1 = true;
+	    if($type == 1) {
+	        $c1 = self::image_exists($url);
+	    }
+	    $c2 = self::UR_exists($url);
+	    $c3 = self::remote_file_exists($url);
+	    if($c1 === true || $c2 === true || $c3 === true) {
+	        return true;
+	    }
+	    return false;
+	}
+	//upload file
+	static function uploadImageFromUrl($url, $dir, $name='') {
+	    if($name == '') {
+	        $name = basename($url);
+	    }
+	    $path = public_path().'/images/'.$dir.'/'.$name;
+	    $directory = './images/'.$dir;
+	    if (!file_exists($directory)) {
+	        mkdir($directory, 0755, true);
+	    }
+	    file_put_contents($path, file_get_contents($url));
+	    return $name;
+	}
+	//return slug from url
+	static function getSlugFromUrl($url='',$currentUrl=null) {
+	    if($currentUrl != null) {
+	        $url = url()->current();
+	    }
+	    $url = trim(parse_url($url, PHP_URL_PATH), '/');
+	    $ur = explode('/', $url);
+	    $u = explode('.', $ur[count($ur)-1]);
+	    return $u[0];
+	}
+
+	// CURRENT FILE
 	static function startDateLabel($startDate = null)
 	{
 		$now = date('Y-m-d H:i:s');
@@ -187,7 +278,7 @@ class CommonMethod
 		    	return '';
 		    }
 	    } else {
-	    	if(!remoteFileExists($imageUrl)) {
+	    	if(!self::remoteFileExists($imageUrl)) {
 				return '';
 			}
 	    }
@@ -276,7 +367,7 @@ class CommonMethod
 		    	return '';
 		    }
 	    } else {
-	    	if(!remoteFileExists($imageUrl)) {
+	    	if(!self::remoteFileExists($imageUrl)) {
 				return '';
 			}
 	    }
@@ -491,5 +582,7 @@ class CommonMethod
 	    if (!$full) $string = array_slice($string, 0, 1);
 	    return $string ? implode(', ', $string) . ' trước' : 'just now';
 	}
+
+
 	
 }

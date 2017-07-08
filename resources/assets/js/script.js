@@ -3,6 +3,11 @@
 //# sourceMappingURL=maps/suggestion-box.min.js.map
 
 $(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
   $('[data-toggle="tooltip"]').tooltip();
   $('#search').suggestionBox({
     filter: false,

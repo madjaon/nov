@@ -23,6 +23,17 @@ class SiteController extends Controller
 
     public function index()
     {
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'index';
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         $query = $this->getEpchapLatest();
         // epchap moi nhat
@@ -34,11 +45,27 @@ class SiteController extends Controller
         //seo meta
         $seo = DB::table('configs')->where('status', ACTIVE)->first();
         
+        if(CACHE == 1) {
+            // put cache
+            $html = view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo])->render();
+            Cache::forever($cacheName, $html);
+        }
         // return view
         return view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo]);
     }
     public function author()
     {
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'taglist_tac-gia';
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         $data = DB::table('post_tags')
             ->join('post_tag_relations', 'post_tags.id', '=', 'post_tag_relations.tag_id')
             ->select('post_tags.id', 'post_tags.name', 'post_tags.slug', 'post_tags.image')
@@ -55,6 +82,11 @@ class SiteController extends Controller
             $seo->meta_description = 'Danh sách các tác giả truyện, tiểu thuyết';
             $seo->meta_image = '/img/noimage600x315.jpg';
             
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.author', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
             // return view
             return view('site.post.author', ['data' => $data, 'seo' => $seo]);
         }
@@ -65,7 +97,17 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'tag_'.$slug.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         $tag = DB::table('post_tags')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -101,6 +143,11 @@ class SiteController extends Controller
                     $tag->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                if(CACHE == 1) {
+                    // put cache
+                    $html = view('site.post.tag', ['data' => $data, 'tag' => $tag])->render();
+                    Cache::forever($cacheName, $html);    
+                }
                 // return view
                 return view('site.post.tag', ['data' => $data, 'tag' => $tag]);
             }
@@ -112,7 +159,17 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'type_'.$slug.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         $type = DB::table('post_types')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -148,6 +205,11 @@ class SiteController extends Controller
                     $type->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                if(CACHE == 1) {
+                    // put cache
+                    $html = view('site.post.type', ['data' => $data, 'type' => $type])->render();
+                    Cache::forever($cacheName, $html);    
+                }
                 // return view
                 return view('site.post.type', ['data' => $data, 'type' => $type]);
             }
@@ -159,7 +221,17 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'seri_'.$slug.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         $seri = DB::table('post_series')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -195,6 +267,11 @@ class SiteController extends Controller
                     $seri->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                if(CACHE == 1) {
+                    // put cache
+                    $html = view('site.post.seri', ['data' => $data, 'seri' => $seri])->render();
+                    Cache::forever($cacheName, $html);    
+                }
                 // return view
                 return view('site.post.seri', ['data' => $data, 'seri' => $seri]);
             }
@@ -210,7 +287,17 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'nation_'.$slug.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'view')
@@ -233,6 +320,11 @@ class SiteController extends Controller
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getNation($slug) . ' hay nhất';
             $seo->meta_image = '/img/noimage600x315.jpg';
 
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
             // return view
             return view('site.post.box', ['data' => $data, 'seo' => $seo]);
         }
@@ -247,6 +339,17 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'kind_'.$slug.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         
         // query
         $data = DB::table('posts')
@@ -270,6 +373,11 @@ class SiteController extends Controller
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
             $seo->meta_image = '/img/noimage600x315.jpg';
 
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.box', ['data' => $data, 'seo' => $seo])->render();
+                Cache::forever($cacheName, $html);    
+            }
             // return view
             return view('site.post.box', ['data' => $data, 'seo' => $seo]);
         }
@@ -283,6 +391,18 @@ class SiteController extends Controller
         //update count view post
         // DB::table('posts')->where('slug', $slug)->increment('view');
 
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'page_'.$slug;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+        
         // IF SLUG IS PAGE
         // query
         $singlePage = DB::table('pages')->where('slug', $slug)->where('status', ACTIVE)->first();
@@ -310,6 +430,11 @@ class SiteController extends Controller
                 $singlePage->meta_image = '/img/noimage600x315.jpg';
             }
 
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.page', ['data' => $singlePage])->render();
+                Cache::forever($cacheName, $html);    
+            }
             // return view
             return view('site.page', ['data' => $singlePage]);
         }
@@ -405,6 +530,11 @@ class SiteController extends Controller
             $post->prevPageEps = ($currentPageEps > 1)?($currentPageEps - 1):null;
             $post->nextPageEps = ($currentPageEps < $totalPageEps)?($currentPageEps + 1):null;
 
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.book', ['post' => $post])->render();
+                Cache::forever($cacheName, $html);
+            }
             // return view
             return view('site.post.book', ['post' => $post]);
         }
@@ -412,6 +542,21 @@ class SiteController extends Controller
     }
     public function page2($slug1, $slug2)
     {
+        // set cookie epchap reading, hien tai chi luu 1 record vao cookie
+        $cookie = cookie()->forever(COOKIE_NAME, $slug1 . '_' . $slug2);
+
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'page2_'.$slug1.'_'.$slug2;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                // return Cache::get($cacheName);
+                return response(Cache::get($cacheName))->withCookie($cookie);
+            }
+        }
         // query
         // post
         $post = DB::table('posts')
@@ -479,11 +624,19 @@ class SiteController extends Controller
                 }
                 // END PREV & NEXT EPCHAP
 
+                if(CACHE == 1) {
+                    // put cache
+                    $html = view('site.post.epchap', [
+                            'post' => $post, 
+                            'data' => $data, 
+                        ])->render();
+                    Cache::forever($cacheName, $html);
+                }
                 // return view
                 return response()->view('site.post.epchap', [
                         'post' => $post, 
                         'data' => $data, 
-                    ]);
+                    ])->withCookie($cookie);
             }
         }
         return response()->view('errors.404', [], 404);
@@ -511,6 +664,17 @@ class SiteController extends Controller
             return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);
         }
         
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'search_'.$request->s.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         // query
         // post
         $data = $this->searchQueryPostTag($request->s)->paginate(PAGINATE);
@@ -532,6 +696,11 @@ class SiteController extends Controller
             }
         }
 
+        if(CACHE == 1) {
+            // put cache
+            $html = view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request])->render();
+            Cache::forever($cacheName, $html);
+        }
         // return view
         return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request]);
     }
@@ -543,6 +712,14 @@ class SiteController extends Controller
             return null;
         }
         
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'livesearch_suggestion_response_json_'.$request->s;
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
         $array = array();
         // AJAX SEARCH
         // Search theo ten post va ten tac gia
@@ -570,16 +747,32 @@ class SiteController extends Controller
             }
         }
         $res = ['results' => $array];
-        
+        if(CACHE == 1) {
+            // put cache
+            $jsonData = response()->json($res);
+            Cache::forever($cacheName, $jsonData);
+        }
         return response()->json($res);
     }
     public function sitemap()
     {
         dd('Too big');
-        
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'sitemap';
+            // get cache
+            if(Cache::has($cacheName)) {
+                $content = Cache::get($cacheName);
+                return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
+            }
+        }
         // return view
         $content = view('site.sitemap');
-        
+        if(CACHE == 1) {
+            // put cache
+            $html = $content->render();
+            Cache::forever($cacheName, $html);
+        }
         return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
     }
     // asuna: lay tat ca du lieu post (null) / hay chi lay danh sach id cua post (not null)
@@ -790,6 +983,18 @@ class SiteController extends Controller
         $page = ($request->page)?$request->page:1;
         $id = ($request->id)?$request->id:1;
 
+        if(CACHE == 1) {
+            // cache name
+            $cacheName = 'bookpaging_'.$id.'_'.$page;
+            if(getDevice2() == MOBILE) {
+                $cacheName = $cacheName.'_mobile';
+            }
+            // get cache
+            if(Cache::has($cacheName)) {
+                return Cache::get($cacheName);
+            }
+        }
+
         // query
         // post
         $post = DB::table('posts')
@@ -821,6 +1026,11 @@ class SiteController extends Controller
             $eps = $this->getEpchapListByPostId($post->id, 'asc')->skip($offset)->take(PAGINATE_BOX)->get();
             $post->eps = $eps;
 
+            if(CACHE == 1) {
+                // put cache
+                $html = view('site.post.booklist', ['post' => $post])->render();
+                Cache::forever($cacheName, $html);
+            }
             // return view
             return view('site.post.booklist', ['post' => $post]);
         }

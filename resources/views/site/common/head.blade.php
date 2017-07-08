@@ -25,11 +25,11 @@
 	<meta property="og:image" content="{!! url($meta_image) !!}" />
 	@endif
 
-	{{-- getImageDimensionsOg($meta_image) --}}
-
 	@if(isset($configfbappid) && $configfbappid != '')
 	<meta property="fb:app_id" content="{!! $configfbappid !!}" />
 	@endif
+
+	<meta name="csrf-token" content="%%csrf_token%%">
 	
 	<title>@yield('title')</title>
 	
