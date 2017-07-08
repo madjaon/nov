@@ -64,9 +64,9 @@ class CachingMiddleware
 
             $response->original = '';
 
-            \Cache::put($cacheName, $response, $this->lifeTime);
+            // \Cache::put($cacheName, $response, $this->lifeTime);
 
-            // \Cache::forever($cacheName, $response);
+            \Cache::forever($cacheName, $response);
 
             return $response;
         } else {
@@ -76,6 +76,7 @@ class CachingMiddleware
 
     protected function isCached() {
         // if(app()->environment('local')) return false;
+        if(CACHE == 1) {return true;} else {return false;}
 
         $cacheRoute = collect();
         // allow controller & deny actions (in routes)
@@ -166,8 +167,6 @@ class CachingMiddleware
         if(!empty($cookie)) {
             $cookieArray = explode('/', $cookie);
             if(!empty($cookieArray)) {
-                $slug1 = $cookieArray[1];
-                $slug2 = $cookieArray[2];
                 if(CACHE == 1) {
                     // cache name
                     $cacheName = 'history_'.$cookie;
@@ -180,7 +179,7 @@ class CachingMiddleware
                 // post
                 $post = DB::table('posts')
                     ->select('id', 'name', 'slug')
-                    ->where('slug', $slug1)
+                    ->where('slug', $cookieArray[1])
                     ->where('status', ACTIVE)
                     ->where('start_date', '<=', date('Y-m-d H:i:s'))
                     ->first();
@@ -188,7 +187,7 @@ class CachingMiddleware
                     // current epchap
                     $data = DB::table('post_eps')
                         ->select('id', 'name', 'slug', 'volume', 'epchap')
-                        ->where('slug', $slug2)
+                        ->where('slug', $cookieArray[2])
                         ->where('post_id', $post->id)
                         ->where('status', ACTIVE)
                         ->where('start_date', '<=', date('Y-m-d H:i:s'))
