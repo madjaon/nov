@@ -76,8 +76,6 @@ class CachingMiddleware
 
     protected function isCached() {
         // if(app()->environment('local')) return false;
-        if(CACHE == 1) {return true;} else {return false;}
-
         $cacheRoute = collect();
         // allow controller & deny actions (in routes)
         $cacheRoute->put('App\Http\Controllers\Site\SiteController', collect(['errorreporting','contact']));

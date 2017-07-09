@@ -6,10 +6,9 @@
 
 <div class="row margin-bottom">
 	<div class="col-xs-12">
-		<a href="{{ route('admin.post.index') }}" class="btn btn-success btn-sm">Danh sách post</a>
-		<a href="{{ route('admin.post.create') }}" class="btn btn-primary btn-sm">Thêm post</a>
 		<a href="/admin/genthumb" class="btn btn-warning btn-sm">Gen Thumb</a>
 		<a href="/admin/genwatermark" class="btn btn-danger btn-sm">Gen Watermark</a>
+		<a href="/admin/gensitemap" class="btn btn-primary btn-sm">Gen Sitemap</a>
 	</div>
 </div>
 
@@ -18,6 +17,7 @@
 		<div class="box">
 			<div class="box-header">
 				<h3 class="box-title">Generate Thumbnail Avatar Images</h3>
+				<p>Sẽ mất chút thời gian quét toàn bộ dữ liệu. Có thông báo thành công sau khi kết thúc quá trình.</p>
 			</div>
 			<div class="box-body">
 				@if(count($data) > 0)

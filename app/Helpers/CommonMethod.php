@@ -307,7 +307,7 @@ class CommonMethod
 	        if(isset($watermark)) {
 	        	$w = $img->width();
 	        	$h = $img->height();
-	        	if($w >= 300 && $h > 150) {
+	        	if($w >= WATERMARK_MINWIDTH && $h > WATERMARK_MINHEIGHT) {
 		        	if(isset($watermarkcode)) {
 	        			$base64 = $watermarkcode;
 	        		} else {
@@ -377,7 +377,7 @@ class CommonMethod
 	        // insert a watermark
         	$w = $img->width();
         	$h = $img->height();
-        	if($w >= 300 && $h > 150) {
+        	if($w >= WATERMARK_MINWIDTH && $h > WATERMARK_MINHEIGHT) {
         		if(isset($watermarkcode)) {
         			$base64 = $watermarkcode;
         		} else {
@@ -583,6 +583,12 @@ class CommonMethod
 	    return $string ? implode(', ', $string) . ' trước' : 'just now';
 	}
 
-
-	
+	// CACHE FORGET
+    static function forgetCache($cacheName)
+    {
+        // delete cache for contact page before redirect to remove message validator
+        $cacheNameMobile = $cacheName.'_mobile';
+        \Cache::forget($cacheName);
+        \Cache::forget($cacheNameMobile);
+    }
 }

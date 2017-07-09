@@ -12,7 +12,7 @@
           <ul class="nav nav-tabs">
             <li class="active"><a href="#tab_3" data-toggle="tab">Slug / đường dẫn</a></li>
             <li><a href="#tab_4" data-toggle="tab">Patterns</a></li>
-            <li><a href="#tab_5" data-toggle="tab">Cache & Thumbnail Avatar</a></li>
+            <li><a href="#tab_5" data-toggle="tab">Tiện ích</a></li>
           </ul>
           <div class="tab-content">
             <div class="tab-pane active" id="tab_3">
@@ -45,6 +45,7 @@
                     <li><a href="/admin/clearallstorage">Xóa Cache Website</a></li>
                     <li><a href="/admin/genthumb">Tạo Thumbnail cho ảnh đại diện avatar (chỉ những ảnh chưa có thumbnail)</a></li>
                     <li><a href="/admin/genwatermark">Gắn Watermark vào ảnh</a></li>
+                    <li><a href="/admin/gensitemap">Tạo mới sitemap.xml</a></li>
                 </ul>
                 <p><span class="label label-warning">Chú ý về chức năng Xóa Cache Website!</span> Hiếm khi sử dụng (ấn nhiều gây ảnh hưởng tới tốc độ load trang). Sử dụng khi có thay đổi về source code hoặc database trên host.</p>
                 <p><span class="label label-warning">Chú ý về chức năng tạo Thumbnail!</span> Có thể mất thời gian để tạo Thumbnail.</p>

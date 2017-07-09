@@ -7,7 +7,6 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use DB;
-use Cache;
 use App\Helpers\CommonMethod;
 use App\Helpers\CommonOption;
 use App\Helpers\CommonProvider;
@@ -277,8 +276,8 @@ class SiteController extends Controller
     }
     public function page($slug)
     {
-        $this->forgetCache('/lien-he');
-        $this->forgetCache('/contact');
+        CommonMethod::forgetCache('/lien-he');
+        CommonMethod::forgetCache('/contact');
         
         //update count view post
         // DB::table('posts')->where('slug', $slug)->increment('view');
@@ -575,11 +574,12 @@ class SiteController extends Controller
     }
     public function sitemap()
     {
-        dd('Too big');
-        
+        $sitemaps = array();
+        foreach (glob('*.xml.gz') as $filename) {
+            array_push($sitemaps, url($filename));
+        }
         // return view
-        $content = view('site.sitemap');
-        
+        $content = view('site.sitemap', ['sitemaps' => $sitemaps]);
         return response($content)->header('Content-Type', 'text/xml;charset=utf-8');
     }
     // asuna: lay tat ca du lieu post (null) / hay chi lay danh sach id cua post (not null)
@@ -730,8 +730,8 @@ class SiteController extends Controller
     */
     public function contact(Request $request)
     {
-        $this->forgetCache('/lien-he');
-        $this->forgetCache('/contact');
+        CommonMethod::forgetCache('/lien-he');
+        CommonMethod::forgetCache('/contact');
         
         //
         $now = strtotime(date('Y-m-d H:i:s'));
@@ -826,14 +826,5 @@ class SiteController extends Controller
         }
         return '<p>Đang cập nhật</p>';
     }
-    // remove cache page if exist message validator
-    private function forgetCache($cacheKey)
-    {
-        // delete cache for contact page before redirect to remove message validator
-        $cacheName = $cacheKey;
-        $cacheNameMobile = $cacheKey.'_mobile';
-        Cache::forget($cacheName);
-        Cache::forget($cacheNameMobile);
-    }
-
+    
 }

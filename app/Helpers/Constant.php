@@ -31,7 +31,7 @@ define('MOBILE', 1);
 define('PC', 2);
 define('TABLET', 3);
 // cache: 1: cache, 2: non cache
-define('CACHE', 2);
+define('CACHE', 1);
 // lang
 define('VI', 'vi');
 define('EN', 'en');
@@ -87,6 +87,9 @@ define('SLUGTYPE3', 3); // lay slug theo danh sach slug tuong ung voi danh sach 
 define('TITLETYPE1', 1); // Lấy tiêu đề bài tự động theo mẫu thẻ lấy tiêu đề
 define('TITLETYPE2', 2); // Lấy tiêu đề tự động theo danh sách slug tương ứng ds link nguồn
 define('TITLETYPE3', 3); // Lấy tiêu đề theo danh sách tiêu đề tương ứng ds link nguồn
+// co anh toi thieu co the tao watermark
+define('WATERMARK_MINWIDTH', 160);
+define('WATERMARK_MINHEIGHT', 150);
 // thumbnail image size
 define('THUMB_DIMENSIONS', '320x420 / 185x240 / 80x80');
 define('IMAGE_WIDTH', 185);

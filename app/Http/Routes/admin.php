@@ -55,10 +55,13 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::post('slider/updateStatus', 'SliderController@updateStatus');
     Route::post('slider/callupdate', 'SliderController@callupdate');
     Route::resource('slider', 'SliderController');
+    //utility
+    Route::get('gensitemap', 'UtilityController@gensitemap');
+    Route::post('gensitemapAction', 'UtilityController@gensitemapAction');
+    Route::get('genwatermark', 'UtilityController@genwatermark');
+    Route::post('genwatermarkAction', 'UtilityController@genwatermarkAction');
+    Route::get('genthumb', 'UtilityController@genthumb');
     //crawler
-    Route::get('genwatermark', 'CrawlerController@genwatermark');
-    Route::post('genwatermarkAction', 'CrawlerController@genwatermarkAction');
-    Route::get('genthumb', 'CrawlerController@genthumb');
     Route::post('crawler/save', 'CrawlerController@save');
     Route::post('crawler/steal', 'CrawlerController@steal');
     Route::resource('crawler', 'CrawlerController');
