@@ -42,8 +42,6 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::resource('ad', 'AdController');
     //config
     Route::resource('config', 'ConfigController');
-    //clear all cache & views
-    Route::get('clearallstorage', 'AdminController@clearallstorage');
     //page
     Route::post('page/updateStatus', 'PageController@updateStatus');
     Route::resource('page', 'PageController');
@@ -61,6 +59,8 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::get('genwatermark', 'UtilityController@genwatermark');
     Route::post('genwatermarkAction', 'UtilityController@genwatermarkAction');
     Route::get('genthumb', 'UtilityController@genthumb');
+    //clear all cache & views
+    Route::get('clearallstorage', 'UtilityController@clearallstorage');
     //crawler
     Route::post('crawler/save', 'CrawlerController@save');
     Route::post('crawler/steal', 'CrawlerController@steal');

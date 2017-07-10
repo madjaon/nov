@@ -20,6 +20,14 @@ class UtilityController extends Controller
             dd('Permission denied! Please back!');
         }
     }
+
+    public function clearallstorage()
+    {
+        $url = url()->previous();
+        \Cache::flush();
+        \Artisan::call('view:clear');
+        return redirect($url);
+    }
     
     public function genthumb()
     {
