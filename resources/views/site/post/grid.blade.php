@@ -23,7 +23,7 @@
     </div>
   @endforeach
   <?php $objL .= '}'; ?>
-  <script type="text/javascript">
+  <script>
     dw_Tooltip.defaultProps = {
       supportTouch: true
     }

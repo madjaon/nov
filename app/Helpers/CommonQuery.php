@@ -31,7 +31,7 @@ class CommonQuery
     {
         $data = DB::table($table)->where('id', $id);
         $data = $data->first();
-        if($data) {
+        if(isset($data)) {
             return $data->$field;
         }
         if(isset($fieldIsNumber)) {
@@ -48,10 +48,24 @@ class CommonQuery
             ->where('position', $position)
             ->where('status', ACTIVE)
             ->first();
-        if($data) {
-            return '<div class="my-3"><div class="container"><div class="text-center">'.$data->code.'</div></div></div>';
+        if(isset($data)) {
+            return '<div class="text-center">'.$data->code.'</div>';
         }
         return '';
+    }
+    static function checkAdByPosition($position=null)
+    {
+        if($position == null) {
+            return false;
+        }
+        $data = DB::table('ads')
+            ->where('position', $position)
+            ->where('status', ACTIVE)
+            ->first();
+        if(isset($data)) {
+            return true;
+        }
+        return false;
     }
     static function getArrayParentZero($table, $currentId=0)
     {
