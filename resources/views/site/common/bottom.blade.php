@@ -1,4 +1,11 @@
-<footer>
+<?php 
+  if(isset($_COOKIE['themesmenu'])) {
+    $themesmenuDisplay = 'style=display:none;';
+  } else {
+    $themesmenuDisplay = '';
+  }
+?>
+<footer {!! $themesmenuDisplay !!}>
   <div class="container">
     @if($configcredit)
       <div class="my-3 hidden-xs-down">{!! $configcredit !!}</div>

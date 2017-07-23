@@ -9,6 +9,15 @@
     'isPost' => true,
     'isEpchap' => true
   );
+  $themescolor = isset($_COOKIE['themescolor'])?$_COOKIE['themescolor']:null;
+  $themesfontsize = isset($_COOKIE['themesfontsize'])?$_COOKIE['themesfontsize']:null;
+  $themeslineheight = isset($_COOKIE['themeslineheight'])?$_COOKIE['themeslineheight']:null;
+  $themesmenu = isset($_COOKIE['themesmenu'])?$_COOKIE['themesmenu']:null;
+  if(isset($themesfontsize) || isset($themeslineheight)) {
+    $themestext = 'style="font-size: '.$themesfontsize.'; line-height: '.$themeslineheight.';"';
+  } else {
+    $themestext = 'style="font-size: 1.250rem; line-height: 2;"';
+  }
 ?>
 @extends('site.layouts.default', $extendData)
 
@@ -28,7 +37,7 @@
       $breadcrumb[] = ['name' => $data->name, 'link' => ''];
     ?>
     @include('site.common.breadcrumb', $breadcrumb)
-    
+
     <h1 class="my-3 text-center">{!! $h1 !!}</h1>
 
     @if(!empty($post->name2))
@@ -53,7 +62,7 @@
 
     @include('site.common.ad', ['posPc' => 19, 'posMobile' => 20])
 
-    @if(!empty($data->description))<div class="mb-3" style="font-size: 1.250rem; line-height: 2;">{!! $data->description !!}</div>@endif
+    @if(!empty($data->description))<div class="mb-3" {!! $themestext !!}>{!! $data->description !!}</div>@endif
 
     @include('site.common.ad', ['posPc' => 21, 'posMobile' => 22])
 
@@ -81,7 +90,7 @@
 
     <div class="mb-3 text-center" id="errormessage">
       <div class="spinner ml-2"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
-      <button class="btn btn-secondary btn-sm" onclick="errorreporting()" id="errorreporting"><i class="fa fa-exclamation-triangle mr-2" aria-hidden="true"></i>Báo lỗi chương</button>
+      <button class="btn btn-danger btn-sm" onclick="errorreporting()" id="errorreporting"><i class="fa fa-exclamation-triangle mr-2" aria-hidden="true"></i>Báo lỗi chương</button>
     </div>
 
     <div class="social mb-4">
@@ -125,18 +134,18 @@
         document.onkeydown = function(e) {
           switch (e.keyCode) {
             case 37:
-                window.location.href = prev;
-                break;
+              window.location.href = prev;
+              break;
             case 39:
-                window.location.href = next;
-                break;
+              window.location.href = next;
+              break;
           }
         };
         $(window).scroll(function() {
           if ($(this).scrollTop() == 0) {
-              document.getElementById('themes').style.display='block';
+            document.getElementById('themes').style.display='block';
           } else {
-              document.getElementById('themes').style.display='none';
+            document.getElementById('themes').style.display='none';
           }
         });
         $('#themesbtn').click(function() {
@@ -152,16 +161,19 @@
         $("#themescolor").change(function(event) {
           var themescolor = document.getElementById('themescolor').value;
           document.getElementsByTagName("body")[0].className=themescolor;
+          setCookie('themescolor', themescolor, 3650);
           return false;
         });
         $("#themesfontsize").change(function(event) {
           var themesfontsize = document.getElementById('themesfontsize').value;
           document.getElementsByClassName("mb-3")[1].style.fontSize=themesfontsize;
+          setCookie('themesfontsize', themesfontsize, 3650);
           return false;
         });
         $("#themeslineheight").change(function(event) {
           var themeslineheight = document.getElementById('themeslineheight').value;
           document.getElementsByClassName("mb-3")[1].style.lineHeight=themeslineheight;
+          setCookie('themeslineheight', themeslineheight, 3650);
           return false;
         });
         $("#themesmenu").change(function(event) {
@@ -169,17 +181,24 @@
             document.getElementsByTagName("header")[0].style.display='none';
             document.getElementsByTagName("footer")[0].style.display='none';
             document.getElementsByTagName("ol")[0].style.display='none';
+            setCookie('themesmenu', 1, 3650);
           } else {
             document.getElementsByTagName("header")[0].style.display='block';
             document.getElementsByTagName("footer")[0].style.display='block';
             document.getElementsByTagName("ol")[0].style.display='block';
+            document.cookie = "themesmenu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           }
           return false;
         });
 
       })
+      function setCookie(cname,cvalue,exdays) {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
     </script>
-
   </div>
 </div>
 
@@ -187,26 +206,26 @@
   <button id="themesbtn" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Tùy chỉnh văn bản"><i class="fa fa-cogs" aria-hidden="true"></i></button>
   <div id="themesbox" class="p-3 animated bounceInLeft">
     <select id="themescolor" class="custom-select mb-3">
-      <option value="themelight">Nền Sáng</option>
-      <option value="themedark">Nền Tối</option>
-      <option value="themegray">Nền Xám</option>
+      <option value="themelight" @if($themescolor == 'themelight') selected="selected" @endif>Nền Sáng</option>
+      <option value="themedark" @if($themescolor == 'themedark') selected="selected" @endif>Nền Tối</option>
+      <option value="themegray" @if($themescolor == 'themegray') selected="selected" @endif>Nền Xám</option>
     </select>
     <select id="themesfontsize" class="custom-select mb-3">
-      <option value="20px">Cỡ chữ 20</option>
-      <option value="22px">Cỡ chữ 22</option>
-      <option value="24px">Cỡ chữ 24</option>
-      <option value="26px">Cỡ chữ 26</option>
-      <option value="28px">Cỡ chữ 28</option>
+      <option value="1.250rem" @if($themesfontsize == '1.250rem') selected="selected" @endif>Cỡ chữ 20</option>
+      <option value="1.375rem" @if($themesfontsize == '1.375rem') selected="selected" @endif>Cỡ chữ 22</option>
+      <option value="1.500rem" @if($themesfontsize == '1.500rem') selected="selected" @endif>Cỡ chữ 24</option>
+      <option value="1.625rem" @if($themesfontsize == '1.625rem') selected="selected" @endif>Cỡ chữ 26</option>
+      <option value="1.750rem" @if($themesfontsize == '1.750rem') selected="selected" @endif>Cỡ chữ 28</option>
     </select>
     <select id="themeslineheight" class="custom-select mb-3">
-      <option value="2">Cách dòng 2</option>
-      <option value="2.2">Cách dòng 2.2</option>
-      <option value="2.4">Cách dòng 2.4</option>
-      <option value="2.6">Cách dòng 2.6</option>
-      <option value="2.8">Cách dòng 2.8</option>
+      <option value="2" @if($themeslineheight == '2') selected="selected" @endif>Cách dòng 2</option>
+      <option value="2.2" @if($themeslineheight == '2.2') selected="selected" @endif>Cách dòng 2.2</option>
+      <option value="2.4" @if($themeslineheight == '2.4') selected="selected" @endif>Cách dòng 2.4</option>
+      <option value="2.6" @if($themeslineheight == '2.6') selected="selected" @endif>Cách dòng 2.6</option>
+      <option value="2.8" @if($themeslineheight == '2.8') selected="selected" @endif>Cách dòng 2.8</option>
     </select>
     <label class="custom-control custom-checkbox mb-3 d-flex align-items-center">
-      <input type="checkbox" id="themesmenu" class="custom-control-input">
+      <input type="checkbox" id="themesmenu" class="custom-control-input" @if(isset($themesmenu)) checked="checked" @endif>
       <span class="custom-control-indicator"></span>
       <span class="custom-control-description">Ẩn Menu</span>
     </label>

@@ -201,7 +201,7 @@ footer {
     text-align: center;
     &:hover {
       color: $color-white;
-      border-bottom: 5px solid $bg-base-second-color;
+      border-bottom: 5px solid $success-color;
     }
     span {
       font-size: 1.125rem;
@@ -397,6 +397,8 @@ div#themes {
     position: absolute;
     background-color: $bg-box-color;
     border: 1px solid $bg-color;
+    border-top-right-radius: .25rem;
+    border-bottom-right-radius: .25rem;
     -moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
     box-shadow: 0 6px 12px rgba(0,0,0,0.175);
@@ -404,6 +406,9 @@ div#themes {
     z-index: 99;
     .custom-control-description {
       color: $text-base-color;
+    }
+    select, button {
+      width: 160px;
     }
   }
 }
@@ -419,8 +424,21 @@ body.themedark {
     color: $secondary-color;
   }
   footer {
-    background: $bg-color2;
-    border-top: 1px solid $color-muted;
+    background: $footer-bg-color2;
+    border-top: 1px solid $text-base-color;
+  }
+  .col select {
+    background-color: $bg-color2;
+    border-color: $border-color;
+  }
+  a.btn.disabled {
+    background-color: $text-base-color2;
+    color: $primary-color;
+    border-color: $border-color;
+  }
+  a.btn-primary {
+    background-color: $bg-color2;
+    border-color: $border-color;
   }
 }
 body.themegray {

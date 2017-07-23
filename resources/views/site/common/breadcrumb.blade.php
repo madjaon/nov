@@ -1,5 +1,12 @@
+<?php 
+  if(isset($_COOKIE['themesmenu'])) {
+    $themesmenuDisplay = 'style=display:none;';
+  } else {
+    $themesmenuDisplay = '';
+  }
+?>
 @if($breadcrumb)
-<ol class="breadcrumb px-0 py-2">
+<ol class="breadcrumb px-0 py-2" {!! $themesmenuDisplay !!}>
   <li class="breadcrumb-item"><a href="{!! url('/') !!}" title="Trang chủ">Trang chủ</a></li>
   @foreach($breadcrumb as $value)
     @if($value['link'])

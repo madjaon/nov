@@ -1,5 +1,17 @@
 @include('site.common.head')
+@if(isset($isEpchap))
+<?php 
+  $themescolor = isset($_COOKIE['themescolor'])?$_COOKIE['themescolor']:null;
+  if(isset($themescolor)) {
+    $themescolorClass = 'class="'.$themescolor.'"';
+  } else {
+    $themescolorClass = '';
+  }
+?>
+<body {!! $themescolorClass !!}>
+@else
 <body>
+@endif
 
 @if(isset($isPost) && $isPost == true && isset($configfbappid) && $configfbappid != '')
 <script>

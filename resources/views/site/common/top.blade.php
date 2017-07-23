@@ -4,9 +4,14 @@
   } else {
     $effect = '';
   }
+  if(isset($_COOKIE['themesmenu'])) {
+    $themesmenuDisplay = 'style=display:none;';
+  } else {
+    $themesmenuDisplay = '';
+  }
 ?>
 @if(getDevice2() == MOBILE)
-<header class="mb-4">
+<header class="mb-4" {!! $themesmenuDisplay !!}>
   <div class="container">
     <div class="row">
       <div class="col-8">
@@ -36,7 +41,7 @@
   {!! $menumobile !!}
 </div>
 @else
-<header class="mb-4">
+<header class="mb-4" {!! $themesmenuDisplay !!}>
   <nav class="navbar navbar-toggleable-sm py-1">
     <div class="container">
       <a class="navbar-brand p-0 d-flex align-items-center" href="{!! url('/') !!}" title="Truyện On"><img src="{!! url('img/logo.png') !!}" alt="Truyen On" class="mr-2 animated tada"><span class="{!! $effect !!}">Truyện On</span></a>
