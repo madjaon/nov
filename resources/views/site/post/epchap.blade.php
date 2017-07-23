@@ -29,10 +29,10 @@
     ?>
     @include('site.common.breadcrumb', $breadcrumb)
     
-    <h1 class="mb-3 text-center">{!! $h1 !!}</h1>
+    <h1 class="my-3 text-center">{!! $h1 !!}</h1>
 
     @if(!empty($post->name2))
-      <div class="mb-3 text-muted text-center">{!! $post->name2 !!}</div>
+      <div class="mb-2 text-muted text-center">{!! $post->name2 !!}</div>
     @endif
 
     <div class="text-center mb-3 d-flex justify-content-center align-items-center">
@@ -132,9 +132,85 @@
                 break;
           }
         };
+        $(window).scroll(function() {
+          if ($(this).scrollTop() == 0) {
+              document.getElementById('themes').style.display='block';
+          } else {
+              document.getElementById('themes').style.display='none';
+          }
+        });
+        $('#themesbtn').click(function() {
+          document.getElementById('themesbtn').style.display='none';
+          document.getElementById('themesbox').style.display='block';
+          return false;
+        });
+        $('#themesboxbtn').click(function() {
+          document.getElementById('themesbtn').style.display='block';
+          document.getElementById('themesbox').style.display='none';
+          return false;
+        });
+        $("#themescolor").change(function(event) {
+          var themescolor = document.getElementById('themescolor').value;
+          document.getElementsByTagName("body")[0].className=themescolor;
+          return false;
+        });
+        $("#themesfontsize").change(function(event) {
+          var themesfontsize = document.getElementById('themesfontsize').value;
+          document.getElementsByClassName("mb-3")[1].style.fontSize=themesfontsize;
+          return false;
+        });
+        $("#themeslineheight").change(function(event) {
+          var themeslineheight = document.getElementById('themeslineheight').value;
+          document.getElementsByClassName("mb-3")[1].style.lineHeight=themeslineheight;
+          return false;
+        });
+        $("#themesmenu").change(function(event) {
+          if (event.target.checked) {
+            document.getElementsByTagName("header")[0].style.display='none';
+            document.getElementsByTagName("footer")[0].style.display='none';
+            document.getElementsByTagName("ol")[0].style.display='none';
+          } else {
+            document.getElementsByTagName("header")[0].style.display='block';
+            document.getElementsByTagName("footer")[0].style.display='block';
+            document.getElementsByTagName("ol")[0].style.display='block';
+          }
+          return false;
+        });
+
       })
     </script>
 
+  </div>
+</div>
+
+<div id="themes" class="animated fadeInLeft">
+  <button id="themesbtn" class="btn btn-primary" data-toggle="tooltip" data-placement="right" title="Tùy chỉnh văn bản"><i class="fa fa-cogs" aria-hidden="true"></i></button>
+  <div id="themesbox" class="p-3 animated bounceInLeft">
+    <select id="themescolor" class="custom-select mb-3">
+      <option value="themelight">Nền Sáng</option>
+      <option value="themedark">Nền Tối</option>
+      <option value="themegray">Nền Xám</option>
+    </select>
+    <select id="themesfontsize" class="custom-select mb-3">
+      <option value="20px">Cỡ chữ 20</option>
+      <option value="22px">Cỡ chữ 22</option>
+      <option value="24px">Cỡ chữ 24</option>
+      <option value="26px">Cỡ chữ 26</option>
+      <option value="28px">Cỡ chữ 28</option>
+    </select>
+    <select id="themeslineheight" class="custom-select mb-3">
+      <option value="2">Cách dòng 2</option>
+      <option value="2.2">Cách dòng 2.2</option>
+      <option value="2.4">Cách dòng 2.4</option>
+      <option value="2.6">Cách dòng 2.6</option>
+      <option value="2.8">Cách dòng 2.8</option>
+    </select>
+    <label class="custom-control custom-checkbox mb-3 d-flex align-items-center">
+      <input type="checkbox" id="themesmenu" class="custom-control-input">
+      <span class="custom-control-indicator"></span>
+      <span class="custom-control-description">Ẩn Menu</span>
+    </label>
+    <button id="themesboxbtn" class="btn btn-success"><i class="fa fa-close mr-2" aria-hidden="true"></i>Đóng lại</button>
   </div>
 </div>
 

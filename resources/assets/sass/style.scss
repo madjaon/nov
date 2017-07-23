@@ -10,9 +10,6 @@ h6 {font-size: .875rem;}
 
 a {
   color: $text-base-color;
-  // -webkit-transition: opacity 0.3s;
-  // -o-transition: opacity 0.3s;
-  // transition: opacity 0.3s;
 }
 a:active,
 a:hover {
@@ -217,7 +214,7 @@ footer {
 
 .table {
   background: #f4f4f4;
-  border: 1px solid #ccc;
+  // border: 1px solid #ccc;
 }
 
 .table td, .table th {
@@ -298,10 +295,10 @@ footer {
     height: 100%;
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…dpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
     background-size: 100%;
-    background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #e9ebee), color-stop(100%, #e9ebee));
-    background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #e9ebee 80%, #e9ebee 100%);
-    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #e9ebee 80%, #e9ebee 100%);
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #e9ebee 80%, #e9ebee 100%);
+    background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, $bg-color), color-stop(100%, $bg-color));
+    background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
+    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
     pointer-events: none;
   }
 }
@@ -383,6 +380,53 @@ footer {
 }
 
 // END pagination
+
+// themes
+
+div#themes {
+  position: fixed;
+  left: 0;
+  top: 30%;
+  z-index: 9;
+  > button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  div#themesbox {
+    display: none;
+    position: absolute;
+    background-color: $bg-box-color;
+    border: 1px solid $bg-color;
+    -moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+    top: -10px;
+    z-index: 99;
+    .custom-control-description {
+      color: $text-base-color;
+    }
+  }
+}
+
+body.themelight {
+  background: $bg-color;
+  color: $text-base-color;
+}
+body.themedark {
+  background: $bg-color2;
+  color: $text-base-color2;
+  a {
+    color: $secondary-color;
+  }
+  footer {
+    background: $bg-color2;
+    border-top: 1px solid $color-muted;
+  }
+}
+body.themegray {
+  background: $bg-color3;
+  color: $text-base-color;
+}
 
 // TOOL TIP
 
