@@ -10,8 +10,8 @@
     'isEpchap' => true
   );
   $themescolor = isset($_COOKIE['themescolor'])?$_COOKIE['themescolor']:null;
-  $themesfontsize = isset($_COOKIE['themesfontsize'])?$_COOKIE['themesfontsize']:null;
-  $themeslineheight = isset($_COOKIE['themeslineheight'])?$_COOKIE['themeslineheight']:null;
+  $themesfontsize = isset($_COOKIE['themesfontsize'])?$_COOKIE['themesfontsize']:'1.250rem';
+  $themeslineheight = isset($_COOKIE['themeslineheight'])?$_COOKIE['themeslineheight']:'2';
   $themesmenu = isset($_COOKIE['themesmenu'])?$_COOKIE['themesmenu']:null;
   if(isset($themesfontsize) || isset($themeslineheight)) {
     $themestext = 'style="font-size: '.$themesfontsize.'; line-height: '.$themeslineheight.';"';
@@ -211,6 +211,8 @@
       <option value="themegray" @if($themescolor == 'themegray') selected="selected" @endif>Nền Xám</option>
     </select>
     <select id="themesfontsize" class="custom-select mb-3">
+      <option value="1.000rem" @if($themesfontsize == '1.000rem') selected="selected" @endif>Cỡ chữ 16</option>
+      <option value="1.125rem" @if($themesfontsize == '1.125rem') selected="selected" @endif>Cỡ chữ 18</option>
       <option value="1.250rem" @if($themesfontsize == '1.250rem') selected="selected" @endif>Cỡ chữ 20</option>
       <option value="1.375rem" @if($themesfontsize == '1.375rem') selected="selected" @endif>Cỡ chữ 22</option>
       <option value="1.500rem" @if($themesfontsize == '1.500rem') selected="selected" @endif>Cỡ chữ 24</option>
