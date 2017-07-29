@@ -17,8 +17,11 @@
 			<div class="box-header">
 				<h3 class="box-title">Crawler</h3>
 			</div>
-			<div class="box-body no-padding">
-				
+			<div class="box-body">
+				<h4>Truyenfull.vn</h4>
+				<a href="/admin/crawler2/truyenfulltacgia">Lấy Danh sách tác giả</a>
+				<br>
+				<a href="/admin/crawler2/truyenfullpost">Lấy Danh sách Truyện đã hoàn thành</a>
 			</div>
 		</div>
 	</div>

@@ -43,7 +43,7 @@ class SiteController extends Controller
             ->select('post_tags.id', 'post_tags.name', 'post_tags.slug', 'post_tags.image')
             ->where('post_tags.status', ACTIVE)
             ->groupBy('post_tag_relations.tag_id')
-            ->orderBy('post_tags.name')
+            ->orderBy('post_tags.id')
             ->get();
         if(!empty($data)) {
             // auto meta for seo

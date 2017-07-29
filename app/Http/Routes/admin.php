@@ -66,6 +66,8 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::post('crawler/steal', 'CrawlerController@steal');
     Route::resource('crawler', 'CrawlerController');
     // crawler 2 for novel
+    Route::get('crawler2/truyenfullpost', 'Crawler2Controller@truyenfullpost');
+    Route::get('crawler2/truyenfulltacgia', 'Crawler2Controller@truyenfulltacgia');
     Route::post('crawler2/steal', 'Crawler2Controller@steal');
     Route::resource('crawler2', 'Crawler2Controller');
 });

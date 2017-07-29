@@ -46,6 +46,7 @@
                     <li><a href="/admin/genthumb">Tạo Thumbnail cho ảnh đại diện avatar (chỉ những ảnh chưa có thumbnail)</a></li>
                     <li><a href="/admin/genwatermark">Gắn Watermark vào ảnh</a></li>
                     <li><a href="/admin/gensitemap">Tạo mới sitemap.xml</a></li>
+                    <li><a href="/admin/crawler2">Crawler</a></li>
                 </ul>
                 <p><span class="label label-warning">Chú ý về chức năng Xóa Cache Website!</span> Hiếm khi sử dụng (ấn nhiều gây ảnh hưởng tới tốc độ load trang). Sử dụng khi có thay đổi về source code hoặc database trên host.</p>
                 <p><span class="label label-warning">Chú ý về chức năng tạo Thumbnail!</span> Có thể mất thời gian để tạo Thumbnail.</p>

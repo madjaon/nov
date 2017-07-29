@@ -272,4 +272,137 @@ class Crawler2Controller extends Controller
         return;
     }
 
+    public function truyenfulltacgia()
+    {
+        $cats = ['http://truyenfull.vn/danh-sach/truyen-hot/'];
+        $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/trang-[page_number]/';
+        // $category_page_link = '';
+        $category_page_start = 2;
+        $category_page_end = 445;
+        //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
+        if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
+            for($i = $category_page_start; $i <= $category_page_end; $i++) {
+                $cats[] = str_replace('[page_number]', $i, $category_page_link);
+            }
+        }
+        if(count($cats) > 0) {
+            foreach($cats as $key => $value) {
+                $htmlString = CommonMethod::get_remote_data($value);
+                // get all link cat
+                $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+                // foreach($html->find('h3.truyen-title a') as $element) {
+                //     $links[$key][] = trim($element->href);
+                // }
+                // foreach($html->find('h3.truyen-title a') as $element) {
+                //     $titles[$key][] = trim($element->plaintext);
+                // }
+                foreach($html->find('span.author') as $element) {
+                    $authors[$key][] = trim($element->plaintext);
+                }
+                if(count($authors[$key]) > 0) {
+                    foreach($authors[$key] as $vauthor) {
+                        if(strpos($vauthor, ',') === false) {
+                            self::insertTag($vauthor);
+                        } else {
+                            $vauthors = explode(',', $vauthor);
+                            foreach($vauthors as $v) {
+                                self::insertTag($v);
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
+    }
+
+    private function insertTag($value) {
+        $value = trim($value);
+        $slug = CommonMethod::convert_string_vi_to_en($value);
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $checkSlug = PostTag::where('slug', $slug)->first();
+        if(count($checkSlug) == 0) {
+            //insert tag
+            PostTag::create([
+                'name' => $value,
+                'slug' => $slug
+            ]);
+        }
+        return $value;
+    }
+
+    public function truyenfullpost()
+    {
+        $cats = ['http://truyenfull.vn/danh-sach/truyen-hot/hoan/'];
+        // $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/hoan/trang-[page_number]/';
+        $category_page_link = '';
+        $category_page_start = 2;
+        $category_page_end = 291;
+        //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
+        if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
+            for($i = $category_page_start; $i <= $category_page_end; $i++) {
+                $cats[] = str_replace('[page_number]', $i, $category_page_link);
+            }
+        }
+        if(count($cats) > 0) {
+            foreach($cats as $key => $value) {
+                $htmlString = CommonMethod::get_remote_data($value);
+                // get all link cat
+                $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+                foreach($html->find('h3.truyen-title a') as $element) {
+                    $links[$key][] = trim($element->href);
+                }
+                foreach($html->find('h3.truyen-title a') as $element) {
+                    $titles[$key][] = trim($element->plaintext);
+                }
+                foreach($html->find('span.author') as $element) {
+                    $authors[$key][] = trim($element->plaintext);
+                }
+                if(count($authors[$key]) > 0) {
+                    foreach($authors[$key] as $vauthor) {
+                        if(strpos($vauthor, ',') === false) {
+                            $aut = PostTag::where('name', $vauthor)->first();
+                            if(isset($aut)) {
+                                self::insertPost([$aut->id], $links[$key], $titles[$key]);
+                            }
+                        } else {
+                            $vauthors = explode(',', $vauthor);
+                            $auts = [];
+                            foreach($vauthors as $v) {
+                                $aut = PostTag::where('name', $v)->first();
+                                if(isset($aut)) {
+                                    $auts[] = $aut->id;
+                                }
+                            }
+                            if(!empty($auts)) {
+                                self::insertPost($auts, $links[$key], $titles[$key]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
+    }
+
+    private function insertPost($authorIds, $links, $titles) {
+        $author = trim($author);
+        $slug = CommonMethod::convert_string_vi_to_en($author);
+        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $checkSlug = Post::where('slug', $slug)->first();
+        if(count($checkSlug) == 0) {
+            //insert tag
+            $data = Post::create([
+                'name' => $value,
+                'slug' => $slug
+            ]);
+            if($data) {
+                // insert game type relation
+                $data->posttags()->attach([$request->type_main_id]);
+            }
+        }
+        return $value;
+    }
+
 }
