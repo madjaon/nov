@@ -218,6 +218,8 @@
       <option value="1.500rem" @if($themesfontsize == '1.500rem') selected="selected" @endif>Cỡ chữ 24</option>
       <option value="1.625rem" @if($themesfontsize == '1.625rem') selected="selected" @endif>Cỡ chữ 26</option>
       <option value="1.750rem" @if($themesfontsize == '1.750rem') selected="selected" @endif>Cỡ chữ 28</option>
+      <option value="1.875rem" @if($themesfontsize == '1.875rem') selected="selected" @endif>Cỡ chữ 30</option>
+      <option value="2.000rem" @if($themesfontsize == '2.000rem') selected="selected" @endif>Cỡ chữ 32</option>
     </select>
     <select id="themeslineheight" class="custom-select mb-3">
       <option value="2" @if($themeslineheight == '2') selected="selected" @endif>Cách dòng 2</option>
