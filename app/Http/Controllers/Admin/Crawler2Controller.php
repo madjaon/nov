@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\PostEp;
 use App\Models\PostType;
 use App\Models\PostTag;
 use App\Models\Crawler;
@@ -323,7 +324,7 @@ class Crawler2Controller extends Controller
         $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
         $checkSlug = PostTag::where('slug', $slug)->first();
         if(count($checkSlug) == 0) {
-            //insert tag
+            //insert 
             PostTag::create([
                 'name' => $value,
                 'slug' => $slug
@@ -359,24 +360,29 @@ class Crawler2Controller extends Controller
                 foreach($html->find('span.author') as $element) {
                     $authors[$key][] = trim($element->plaintext);
                 }
+                foreach($html->find('.text-info a') as $element) {
+                    $lastEpLinks[$key][] = trim($element->href);
+                }
                 if(count($authors[$key]) > 0) {
-                    foreach($authors[$key] as $vauthor) {
+                    foreach($authors[$key] as $k => $vauthor) {
                         if(strpos($vauthor, ',') === false) {
+                            $vauthor = trim($vauthor);
                             $aut = PostTag::where('name', $vauthor)->first();
                             if(isset($aut)) {
-                                self::insertPost([$aut->id], $links[$key], $titles[$key]);
+                                self::insertPost([$aut->id], $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
                             }
                         } else {
                             $vauthors = explode(',', $vauthor);
                             $auts = [];
                             foreach($vauthors as $v) {
+                                $v = trim($v);
                                 $aut = PostTag::where('name', $v)->first();
                                 if(isset($aut)) {
                                     $auts[] = $aut->id;
                                 }
                             }
                             if(!empty($auts)) {
-                                self::insertPost($auts, $links[$key], $titles[$key]);
+                                self::insertPost($auts, $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
                             }
                         }
                     }
@@ -386,23 +392,156 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
     }
 
-    private function insertPost($authorIds, $links, $titles) {
-        $author = trim($author);
-        $slug = CommonMethod::convert_string_vi_to_en($author);
+    private function insertPost($authorIds, $link, $title, $lastEpLink) {
+        $title = trim($title);
+        $link = trim($link);
+        $slug = CommonMethod::convert_string_vi_to_en($title);
         $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
         $checkSlug = Post::where('slug', $slug)->first();
         if(count($checkSlug) == 0) {
-            //insert tag
+            // get content
+            $htmlString = CommonMethod::get_remote_data($link);
+            // get all link cat
+            $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+            foreach($html->find('div.desc-text') as $element) {
+                $desc = trim($element->innertext);
+            }
+            //loai bo het duong dan trong noi dung
+            if(!empty($desc)){
+                $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+            }
+            foreach($html->find('.source') as $element) {
+                $source = trim($element->plaintext);
+            }
+            foreach($html->find('div.info div a[itemprop=genre]') as $element) {
+                $genres[] = trim($element->plaintext);
+            }
+            if(!empty($genres)) {
+                $genre = PostType::where('name', $genres[0])->first();
+                if(isset($genre)) {
+                    $type_main_id = $genre->id;
+                }
+            }
+            //insert 
             $data = Post::create([
-                'name' => $value,
-                'slug' => $slug
+                'name' => $title,
+                'slug' => $slug,
+                'kind' => SLUG_POST_KIND_FULL,
+                'type_main_id' => isset($type_main_id)?$type_main_id:0,
+                'url' => isset($lastEpLink)?$lastEpLink:'',
+                'description' => isset($desc)?$desc:'',
+                'source' => isset($source)?$source:'',
+                'source_url' => $link,
+                'start_date' => date('Y-m-d H:i:s'),
             ]);
             if($data) {
-                // insert game type relation
-                $data->posttags()->attach([$request->type_main_id]);
+                // insert  type relation
+                $data->posttags()->attach($authorIds);
+                // types:
+                if(!empty($genres)) {
+                    $typeIds = [];
+                    foreach($genres as $gen) {
+                        $genredata = PostType::where('name', $gen)->first();
+                        if(isset($genredata)) {
+                            $typeIds[] = $genredata->id;
+                        }
+                    }
+                    if(!empty($typeIds)) {
+                        $data->posttypes()->attach($typeIds);
+                    }
+                }
             }
         }
-        return $value;
+        return 1;
+    }
+
+    public function truyenfullpostep()
+    {
+        $urls = Post::select('id', 'url', 'source_url')->where('id', 24)->take(1)->get();
+        if(count($urls) > 0) {
+            foreach($urls as $key => $value) {
+                $htmlString = CommonMethod::get_remote_data($value->source_url);
+                // get all link cat
+                $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+                foreach($html->find('.pagination') as $k => $element) {
+                    $countNodes = count($element->nodes);
+                    $nodesKeyLast = $countNodes - 1;
+                    if(strpos($element->nodes[$nodesKeyLast]->plaintext, 'Cuối') !== false) {
+                        $hrefs[$key] = $element->nodes[$nodesKeyLast]->nodes[0]->attr['href'];
+                    } else {
+                        $nodesKey = $countNodes - 2;
+                        $hrefs[$key] = $element->nodes[$nodesKey]->nodes[0]->attr['href'];
+                    }
+                }
+                if(isset($hrefs[$key])) {
+                    $lastPageArray = explode('/', $hrefs[$key]);
+                    $lastPage = explode('-', $lastPageArray[4]);
+                    $totalPage = $lastPage[1];
+                } else {
+                    $totalPage = 1;
+                }
+                // page = 1
+                foreach($html->find('ul.list-chapter li a') as $element) {
+                    $chapTitles[$key][] = trim($element->plaintext);
+                    $chapUrls[$key][] = trim($element->href);
+                }
+                // page >= 2
+                for($i = 2; $i <= $totalPage; $i++) {
+                    $pageLink = $value->source_url . 'trang-' . $i;
+                    $htmlString1 = CommonMethod::get_remote_data($pageLink);
+                    // get all link cat
+                    $html1 = HtmlDomParser::str_get_html($htmlString1); // Create DOM from URL or file
+                    foreach($html1->find('ul.list-chapter li a') as $element) {
+                        $chapTitles[$key][] = trim($element->plaintext);
+                        $chapUrls[$key][] = trim($element->href);
+                    }
+                }
+                if(!empty($chapTitles[$key]) && !empty($chapUrls[$key])) {
+                    foreach($chapUrls[$key] as $k => $v) {
+                        // get volume epchap
+                        $epchapArray = explode('/', $v);
+                        if(strpos($epchapArray[4], 'quyen') !== false) {
+                            $epPartArray = explode('-', $epchapArray[4]);
+                            $volume = $epPartArray[1];
+                            $epchap = $epPartArray[3];
+                        } else {
+                            $epPartArray = explode('-', $epchapArray[4]);
+                            $volume = 0;
+                            $epchap = $epPartArray[1];
+                        }
+                        // slug
+                        $slug = $epchapArray[4];
+                        // name
+                        $name = $chapTitles[$key][$k];
+                        // position
+                        $position = $k + 1;
+                        // data chapter
+                        $htmlString2 = CommonMethod::get_remote_data($v);
+                        // get all link cat
+                        $html2 = HtmlDomParser::str_get_html($htmlString2); // Create DOM from URL or file
+                        foreach($html2->find('.chapter-c') as $element) {
+                            // bo quang cao o giua
+                            foreach($element->find('.ads-holder') as $e) {
+                                $e->outertext='';
+                            }
+                            $desc[$key] = trim($element->innertext);
+                        }
+                        // insert
+                        PostEp::create([
+                            'name' => $name,
+                            'slug' => $slug,
+                            'post_id' => $value->id,
+                            'volume' => $volume,
+                            'epchap' => $epchap,
+                            'description' => isset($desc[$key])?$desc[$key]:'',
+                            'position' => $position,
+                            'start_date' => date('Y-m-d H:i:s'),
+                        ]);
+                    }
+                }
+            }
+        }
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
     }
 
 }

@@ -38,7 +38,7 @@ class CommonProvider
         }
         $tPattern = explode(',', $topPattern);
         $data = DB::table('posts')
-                ->select('id', 'name', 'slug', 'name2', 'image', 'kind', 'epchap', 'view')
+                ->select('id', 'name', 'slug', 'name2', 'image', 'kind', 'view')
                 ->where('status', ACTIVE)
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
                 ->whereIn('id', $tPattern)

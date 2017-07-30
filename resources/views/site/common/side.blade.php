@@ -10,10 +10,11 @@
       <?php 
         $url = url($value->slug);
         $image = ($value->image)?CommonMethod::getThumbnail($value->image, 2):'/img/noimage80x80.jpg';
-        if($value->epchap == '') {
-          $ep = CommonOption::getKindPost($value->kind);
+        $kind = CommonOption::getKindPost($value->kind);
+        if($value->kind == SLUG_POST_KIND_UPDATING) {
+          $badge = 'primary';
         } else {
-          $ep = 'Chương ' . $value->epchap;
+          $badge = 'success';
         }
       ?>
       <li class="media mt-4">
@@ -22,7 +23,7 @@
         </a>
         <div class="media-body">
           <h3 class="mt-0 mb-1 side-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h3>
-          <span class="badge badge-primary">{!! $ep !!}</span>
+          <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
         </div>
       </li>
       @endforeach

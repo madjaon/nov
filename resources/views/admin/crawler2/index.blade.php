@@ -22,6 +22,8 @@
 				<a href="/admin/crawler2/truyenfulltacgia">Lấy Danh sách tác giả</a>
 				<br>
 				<a href="/admin/crawler2/truyenfullpost">Lấy Danh sách Truyện đã hoàn thành</a>
+				<br>
+				<a href="/admin/crawler2/truyenfullpostep">Lấy Danh sách Chapter Truyện đã hoàn thành</a>
 			</div>
 		</div>
 	</div>
