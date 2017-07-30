@@ -328,11 +328,12 @@ class SiteController extends Controller
             // auto meta post for seo
             $postName = ucwords(mb_strtolower($post->name));
             $post->h1 = $postName;
+            $postNameNoLatin = CommonMethod::convert_string_vi_to_en($postName);
             if(empty($post->meta_title)) {
                 $post->meta_title = 'Đọc truyện '.$postName;
             }
             if(empty($post->meta_keyword)) {
-                $post->meta_keyword = 'Đọc truyện '.$postName.', doc truyen '.$post->name2;
+                $post->meta_keyword = 'Đọc truyện '.$postName.', doc truyen '.$postNameNoLatin;
             }
             if(empty($post->meta_description)) {
                 $post->meta_description = CommonMethod::limit_text(strip_tags($post->description), 200);
@@ -403,6 +404,11 @@ class SiteController extends Controller
             $post->listPageEps = $listPageEps;
             $post->prevPageEps = ($currentPageEps > 1)?($currentPageEps - 1):null;
             $post->nextPageEps = ($currentPageEps < $totalPageEps)?($currentPageEps + 1):null;
+
+            // meta book
+            $post->book_release_date = $post->updated_at;
+            $post->book_author = $tags;
+            $post->book_tag = [$post->name, $postNameNoLatin];
 
             // return view
             return view('site.post.book', ['post' => $post]);
@@ -788,7 +794,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        $id = ($request->id)?$request->id:1;
+        $id = ($request->id)?$request->id:0;
 
         // query
         // post
@@ -825,6 +831,30 @@ class SiteController extends Controller
             return view('site.post.booklist', ['post' => $post]);
         }
         return '<p>Đang cập nhật</p>';
+    }
+
+    public function rating(Request $request)
+    {
+        trimRequest($request);
+
+        $rating = ($request->rating)?$request->rating:1;
+        $id = ($request->id)?$request->id:0;
+        
+        $res = [];
+
+        // post
+        $post = DB::table('posts')
+            ->where('id', $id)
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->first();
+        if(isset($post)) {
+            $ratingValue = ($post->rating_value + $rating) / 2;
+            $ratingCount = $post->rating_count + 1;
+            DB::table('posts')->where('id', $id)->update(['rating_value' => $ratingValue, 'rating_count' => $ratingCount]);
+            $res = ['ratingValue' => $ratingValue, 'ratingCount' => $ratingCount];
+        }
+        return response()->json($res);
     }
     
 }

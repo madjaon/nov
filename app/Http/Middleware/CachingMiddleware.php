@@ -78,7 +78,7 @@ class CachingMiddleware
         if(app()->environment('local')) return false;
         $cacheRoute = collect();
         // allow controller & deny actions (in routes)
-        $cacheRoute->put('App\Http\Controllers\Site\SiteController', collect(['errorreporting','contact']));
+        $cacheRoute->put('App\Http\Controllers\Site\SiteController', collect(['errorreporting','rating','contact']));
 
         list($controller, $action) = explode('@', $this->request->route()->getActionName());
 

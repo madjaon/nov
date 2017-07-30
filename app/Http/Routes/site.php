@@ -5,6 +5,7 @@
 
 Route::post('bookpaging', 'SiteController@bookpaging');
 Route::post('errorreporting', 'SiteController@errorreporting');
+Route::post('rating', 'SiteController@rating');
 Route::post('contact', 'SiteController@contact');
 Route::get('sitemap.xml', 'SiteController@sitemap');
 Route::get('livesearch', 'SiteController@livesearch');

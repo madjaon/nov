@@ -6,9 +6,15 @@
     'meta_keyword' => $post->meta_keyword,
     'meta_description' => $post->meta_description,
     'meta_image' => $post->meta_image,
-    'isPost' => true
+    'book_release_date' => $post->book_release_date,
+    'book_author' => $post->book_author,
+    'book_tag' => $post->book_tag,
+    'isPost' => true,
+    'isBook' => true
   );
   $image = ($post->image)?CommonMethod::getThumbnail($post->image, 3):'/img/noimage320x420.jpg';
+  $ratingCookieName = 'rating' . $post->id;
+  $ratingCookie = isset($_COOKIE[$ratingCookieName])?$_COOKIE[$ratingCookieName]:null;
 ?>
 @extends('site.layouts.master', $extendData)
 
@@ -25,19 +31,19 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<div class="row book mb-4">
+<div class="row book mb-3" itemscope itemtype="http://schema.org/Book">
   <div class="col-sm-4">
 
-    <img src="{!! url($image) !!}" class="img-thumbnail img-fluid rounded mb-4 w-100" alt="{!! $post->name !!}">
+    <img src="{!! url($image) !!}" class="img-thumbnail img-fluid rounded mb-3 w-100" alt="{!! $post->name !!}" itemprop="image">
 
-    <div class="social mb-4">
+    <div class="social mb-3">
       <div class="fb-like" data-share="true" data-show-faces="false" data-layout="button_count"></div>
     </div>
     
   </div>
   <div class="col-sm">
 
-    <h1 class="mb-2">{!! $h1 !!}</h1>
+    <h1 class="mb-2" itemprop="name">{!! $h1 !!}</h1>
 
     @if(!empty($post->name2))
       <div class="mb-2 text-muted">{!! $post->name2 !!}</div>
@@ -71,7 +77,7 @@
 
     <div class="book-info mb-3">Quốc Gia: 
       @if(!empty($post->nation))
-        <a href="{!! CommonUrl::getUrlPostNation($post->nation) !!}" title="Đọc truyện {!! $post->nationName !!}">{!! $post->nationName !!}</a>
+        <a href="{!! CommonUrl::getUrlPostNation($post->nation) !!}" title="{!! $post->nationName !!}">{!! $post->nationName !!}</a>
       @else 
         Không rõ
       @endif
@@ -80,7 +86,7 @@
     <div class="book-info mb-3">Tác Giả: 
       @if(!empty($post->tags))
         @foreach($post->tags as $key => $value)
-          <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostTag($value->slug) !!}" title="Đọc truyện của {!! $value->name !!}">{!! $value->name !!}</a>
+          <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostTag($value->slug) !!}" title="{!! $value->name !!}" itemprop="author">{!! $value->name !!}</a>
         @endforeach
       @else
         Không rõ
@@ -89,7 +95,7 @@
 
     <div class="book-info mb-3">Thể Loại: 
       @foreach($post->types as $key => $value)
-        <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostType($value->slug) !!}" title="Đọc truyện thể loại {!! $value->name !!}">{!! $value->name !!}</a>
+        <?php echo ($key > 0)?' - ':''; ?><a href="{!! CommonUrl::getUrlPostType($value->slug) !!}" title="{!! $value->name !!}" itemprop="genre">{!! $value->name !!}</a>
       @endforeach
     </div>
 
@@ -125,7 +131,90 @@
       </div>
     </div>
     @endif
+  </div>
 
+  <div class="col-12">
+    <div class="text-center d-flex justify-content-center align-items-center">
+      <div class="d-flex justify-content-center align-items-center mr-3 mb-0" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+        <em><span id="ratingValue" itemprop="ratingValue">{!! $post->rating_value !!}</span> điểm / <span id="ratingCount" itemprop="ratingCount">{!! $post->rating_count !!}</span> lượt đánh giá</em>
+        <meta itemprop="bestRating" content="10">
+        <meta itemprop="worstRating" content="1">
+      </div>
+      <form name="ratingfrm">
+        <fieldset class="starability-growRotate">
+          <input type="radio" id="growing-rate1" name="rating" value="1" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate1" title="Quá tệ hại">1 star</label>
+          <input type="radio" id="growing-rate2" name="rating" value="2" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate2" title="Tốn thời gian">2 stars</label>
+          <input type="radio" id="growing-rate3" name="rating" value="3" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate3" title="Không thể hiểu">3 stars</label>
+          <input type="radio" id="growing-rate4" name="rating" value="4" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate4" title="Thiếu gia vị">4 stars</label>
+          <input type="radio" id="growing-rate5" name="rating" value="5" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate5" title="Cũng tàm tạm">5 stars</label>
+          <input type="radio" id="growing-rate6" name="rating" value="6" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate6" title="Cũng được">6 stars</label>
+          <input type="radio" id="growing-rate7" name="rating" value="7" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate7" title="Khá hay">7 stars</label>
+          <input type="radio" id="growing-rate8" name="rating" value="8" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate8" title="Cực hay">8 stars</label>
+          <input type="radio" id="growing-rate9" name="rating" value="9" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate9" title="Siêu phẩm">9 stars</label>
+          <input type="radio" id="growing-rate10" name="rating" value="10" @if(isset($ratingCookie)) disabled @endif>
+          <label for="growing-rate10" title="Kiệt tác">10 stars</label>
+        </fieldset>
+        @push('starability')
+          <link rel="stylesheet" href="{!! asset('css/starability.css') !!}">
+        @endpush
+      </form>
+      @if(!isset($ratingCookie))
+      <script>
+        $(function () {
+          $("input[name=rating]").change(function(event) {
+            $.ajax(
+            {
+              type: 'post',
+              url: '{!! url("rating") !!}',
+              data: {
+                'id': {!! $post->id !!},
+                'rating': document.ratingfrm.rating.value
+              },
+              beforeSend: function() {
+                radDisable();
+              },
+              success: function(data)
+              {
+                radDisable();
+                if(data) {
+                  document.getElementById('ratingValue').innerHTML = data.ratingValue;
+                  document.getElementById('ratingCount').innerHTML = data.ratingCount;
+                }
+                setCookie('rating{!! $post->id !!}', 1, 3650);
+                return false;
+              },
+              error: function(xhr)
+              {
+                radDisable();
+                return false;
+              }
+            });
+          });
+        })
+        function radDisable() {
+          var radios = document.ratingfrm.rating;
+          for (var i=0, iLen=radios.length; i<iLen; i++) {
+            radios[i].disabled = true;
+          } 
+        }
+        function setCookie(cname,cvalue,exdays) {
+          var d = new Date();
+          d.setTime(d.getTime() + (exdays*24*60*60*1000));
+          var expires = "expires=" + d.toGMTString();
+          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
+      </script>
+      @endif
+    </div>
   </div>
 </div>
 
