@@ -78,7 +78,7 @@
 								<label>Số chap hiện tại <span style="color: red;">(*)</span></label>
 								<div class="row">
 									<div class="col-sm-12">
-										<input name="epchap" type="text" value="{{ old('epchap') }}" class="form-control onlyNumber">
+										<input name="epchap" type="text" value="{{ old('epchap') }}" class="form-control">
 									</div>
 								</div>
 							</div>

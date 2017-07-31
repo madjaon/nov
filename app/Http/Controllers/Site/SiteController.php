@@ -852,8 +852,13 @@ class SiteController extends Controller
 
         $rating = ($request->rating)?$request->rating:1;
         $id = ($request->id)?$request->id:0;
-        
+
         $res = [];
+        
+        $ratingCookieName = 'rating' . $id;
+        if(isset($_COOKIE[$ratingCookieName])) {
+            return response()->json($res);
+        }
 
         // post
         $post = DB::table('posts')

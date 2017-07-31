@@ -111,7 +111,7 @@ class Crawler2Controller extends Controller
         }
         if(!empty($request->id)) {
             $data = Crawler::find($request->id);
-            if($data) {
+            if(isset($data)) {
                 $data->update([
                     'count_get' => $data->count_get+1,
                     'time_get' => date('Y-m-d H:i:s'),
@@ -262,7 +262,11 @@ class Crawler2Controller extends Controller
                         'source' => $request->source,
                         'source_url' => $link,
                     ]);
-                    if($data) {
+                    if(isset($data)) {
+                        // start_date update
+                        $start_date = strtotime($data->start_date) + $data->id;
+                        $start_date = date('Y-m-d H:i:s', $start_date);
+                        $data->update(['start_date' => $start_date]);
                         // insert game type relation
                         $data->posttypes()->attach([$request->type_main_id]);
                     }
@@ -336,10 +340,10 @@ class Crawler2Controller extends Controller
     public function truyenfullpost()
     {
         $cats = ['http://truyenfull.vn/danh-sach/truyen-hot/hoan/'];
-        // $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/hoan/trang-[page_number]/';
-        $category_page_link = '';
+        $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/hoan/trang-[page_number]/';
+        // $category_page_link = '';
         $category_page_start = 2;
-        $category_page_end = 291;
+        $category_page_end = 2;
         //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
         if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
             for($i = $category_page_start; $i <= $category_page_end; $i++) {
@@ -369,7 +373,7 @@ class Crawler2Controller extends Controller
                             $vauthor = trim($vauthor);
                             $aut = PostTag::where('name', $vauthor)->first();
                             if(isset($aut)) {
-                                self::insertPost([$aut->id], $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
+                                self::insertPost($k, [$aut->id], $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
                             }
                         } else {
                             $vauthors = explode(',', $vauthor);
@@ -382,7 +386,7 @@ class Crawler2Controller extends Controller
                                 }
                             }
                             if(!empty($auts)) {
-                                self::insertPost($auts, $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
+                                self::insertPost($k, $auts, $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
                             }
                         }
                     }
@@ -392,7 +396,7 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
     }
 
-    private function insertPost($authorIds, $link, $title, $lastEpLink) {
+    private function insertPost($key, $authorIds, $link, $title, $lastEpLink) {
         $title = trim($title);
         $link = trim($link);
         $slug = CommonMethod::convert_string_vi_to_en($title);
@@ -434,7 +438,11 @@ class Crawler2Controller extends Controller
                 'source_url' => $link,
                 'start_date' => date('Y-m-d H:i:s'),
             ]);
-            if($data) {
+            if(isset($data)) {
+                // start_date update
+                $start_date = strtotime($data->start_date) + $key;
+                $start_date = date('Y-m-d H:i:s', $start_date);
+                $data->update(['start_date' => $start_date]);
                 // insert  type relation
                 $data->posttags()->attach($authorIds);
                 // types:
@@ -457,7 +465,7 @@ class Crawler2Controller extends Controller
 
     public function truyenfullpostep()
     {
-        $urls = Post::select('id', 'url', 'source_url')->where('id', 24)->take(1)->get();
+        $urls = Post::select('id', 'url', 'source_url')->get();
         if(count($urls) > 0) {
             foreach($urls as $key => $value) {
                 $htmlString = CommonMethod::get_remote_data($value->source_url);
@@ -503,11 +511,14 @@ class Crawler2Controller extends Controller
                         if(strpos($epchapArray[4], 'quyen') !== false) {
                             $epPartArray = explode('-', $epchapArray[4]);
                             $volume = $epPartArray[1];
-                            $epchap = $epPartArray[3];
+                            if(count($epPartArray) > 4) {
+                                $epchap = $epPartArray[3] . '-' . $epPartArray[4];
+                            } else {
+                                $epchap = $epPartArray[3];
+                            }
                         } else {
-                            $epPartArray = explode('-', $epchapArray[4]);
                             $volume = 0;
-                            $epchap = $epPartArray[1];
+                            $epchap = str_replace('chuong-', '', $epchapArray[4]);
                         }
                         // slug
                         $slug = $epchapArray[4];
@@ -527,7 +538,7 @@ class Crawler2Controller extends Controller
                             $desc[$key] = trim($element->innertext);
                         }
                         // insert
-                        PostEp::create([
+                        $data = PostEp::create([
                             'name' => $name,
                             'slug' => $slug,
                             'post_id' => $value->id,
@@ -537,6 +548,12 @@ class Crawler2Controller extends Controller
                             'position' => $position,
                             'start_date' => date('Y-m-d H:i:s'),
                         ]);
+                        if(isset($data)) {
+                            // start_date update
+                            $start_date = strtotime($data->start_date) + $k;
+                            $start_date = date('Y-m-d H:i:s', $start_date);
+                            $data->update(['start_date' => $start_date]);
+                        }
                     }
                 }
             }
