@@ -12,7 +12,7 @@
       }
     ?>
     <div class="col-6 col-sm-3">
-      <figure class="figure">
+      <figure class="figure text-center">
         <a href="{!! $url !!}" class="showTip L{!! $value->id !!}">
           <img src="{!! url($image) !!}" class="figure-img img-fluid rounded" alt="{!! $value->name !!}">
         </a>
