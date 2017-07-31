@@ -23,7 +23,9 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
+<div class="box-style mb-3">
+  <h1 class="d-inline-flex py-2">{!! $h1 !!}</h1>
+</div>
 
 @include('site.post.grid', array('data' => $data))
 

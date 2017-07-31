@@ -23,13 +23,15 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
+<div class="box-style mb-3">
+  <h1 class="d-inline-flex py-2">{!! $h1 !!}</h1>
+</div>
 
 <p class="mb-3">Tìm nhanh tên tác giả, bạn ấn CTRL + F để sử dụng ô tìm kiếm.</p>
 
 <div class="row">
   <div class="col">
-    <table class="table table-hover table-sm table-bordered">
+    <table class="table table-bordered table-striped table-sm">
       <thead>
         <tr><th class="align-middle px-3">Tên tác giả</th><th width="100" class="align-middle text-center">&nbsp;</th></tr>
       </thead>

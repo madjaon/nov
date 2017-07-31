@@ -23,7 +23,9 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
+<div class="box-style mb-3">
+  <h1 class="d-inline-flex py-2">{!! $h1 !!}</h1>
+</div>
 
 @if($type->patterns)<div class="description mb-3">{!! $type->patterns !!}</div>@endif
 @if($type->summary)<div class="description mb-3">{!! $type->summary !!}</div>@endif

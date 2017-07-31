@@ -23,18 +23,35 @@ class SiteController extends Controller
     public function index()
     {
         // query
-        $query = $this->getEpchapLatest();
+        $query = $this->getLatest();
+
         // epchap moi nhat
-        $data = $query->take(PAGINATE_LIST)->get();
+        $data = $query->take(PAGINATE_LATEST)->get();
+
+        // latest chap
+        $dataEp = [];
+        if(count($data) > 0) {
+            foreach($data as $key => $value) {
+                $dataEp[] = $this->getEpchapListByPostId($value->id, 'desc')->first();
+            }
+        }
 
         // epchap moi nhat tiep theo
-        $data2 = $query->offset(PAGINATE_LIST)->take(PAGINATE_TABLE)->get();
+        $data2 = $query->offset(PAGINATE_LATEST)->take(PAGINATE_LATEST)->get();
+
+        // latest chap
+        $dataEp2 = [];
+        if(count($data2) > 0) {
+            foreach($data2 as $key => $value) {
+                $dataEp2[] = $this->getEpchapListByPostId($value->id, 'desc')->first();
+            }
+        }
 
         //seo meta
         $seo = DB::table('configs')->where('status', ACTIVE)->first();
         
         // return view
-        return view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo]);
+        return view('site.index', ['data' => $data, 'dataEp' => $dataEp, 'dataEp2' => $dataEp2, 'data2' => $data2, 'seo' => $seo]);
     }
     public function author(Request $request)
     {
@@ -418,7 +435,7 @@ class SiteController extends Controller
             $post->nextPageEps = ($currentPageEps < $totalPageEps)?($currentPageEps + 1):null;
 
             // meta book
-            $post->book_release_date = $post->updated_at;
+            $post->book_release_date = $post->created_at;
             $post->book_author = $tags;
             $post->book_tag = [$post->name, $postNameNoLatin];
 
@@ -683,24 +700,21 @@ class SiteController extends Controller
             ->get();
         return $data;
     }
-    // list post_eps moi nhat
-    private function getEpchapLatest()
+    // list moi nhat
+    private function getLatest()
     {
-        $data = DB::table('post_eps')
-            ->join('posts', 'post_eps.post_id', '=', 'posts.id')
-            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view', 'post_eps.id AS ep_id', 'post_eps.name AS ep_name', 'post_eps.slug AS ep_slug', 'post_eps.volume AS ep_volume', 'post_eps.epchap AS ep_epchap', 'post_eps.start_date AS ep_start_date')
-            ->where('post_eps.status', ACTIVE)
-            ->where('post_eps.start_date', '<=', date('Y-m-d H:i:s'))
+        $data = DB::table('posts')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
-            ->orderBy('post_eps.start_date', 'desc');
+            ->orderBy('posts.start_date', 'desc');
         return $data;
     }
     // $id: $post_id
     private function getEpchapListByPostId($id, $orderSort = 'desc')
     {
         $data = DB::table('post_eps')
-                ->select('id', 'name', 'slug', 'volume', 'epchap')
+                ->select('id', 'name', 'slug', 'volume', 'epchap', 'start_date')
                 ->where('post_id', $id)
                 ->where('status', ACTIVE)
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))

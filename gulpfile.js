@@ -20,7 +20,7 @@ elixir(function(mix) {
 
     mix.scripts([
         // '../../../node_modules/jquery/dist/jquery.js',
-        'dw_tooltip_c.js',
+        // 'dw_tooltip_c.js',
 		'script.js'
     ], 'public/js/app.js');
 

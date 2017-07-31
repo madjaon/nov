@@ -553,6 +553,8 @@ class Crawler2Controller extends Controller
                             $start_date = strtotime($data->start_date) + $k;
                             $start_date = date('Y-m-d H:i:s', $start_date);
                             $data->update(['start_date' => $start_date]);
+                            // post start date update
+                            Post::find($data->post_id)->update(['start_date' => date('Y-m-d H:i:s')]);
                         }
                     }
                 }

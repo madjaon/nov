@@ -45,10 +45,10 @@
   </div>
   <div class="col-sm">
 
-    <h1 class="mb-2" itemprop="name">{!! $h1 !!}</h1>
+    <h1 class="mb-3" itemprop="name">{!! $h1 !!}</h1>
 
     @if(!empty($post->name2))
-      <div class="mb-2 text-muted">{!! $post->name2 !!}</div>
+      <div class="mb-3 text-muted">{!! $post->name2 !!}</div>
     @endif
 
     <?php 
@@ -58,7 +58,7 @@
         $badge = 'success';
       }
     ?>
-    <div class="book-kind mb-3"><span class="badge badge-{!! $badge !!} p-2">
+    <div class="book-info mb-3"><span class="badge badge-{!! $badge !!}">
         {!! $post->kindName !!}
     </span></div>
    

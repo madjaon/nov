@@ -137,7 +137,8 @@ class PostController extends Controller
                 'source' => $request->source,
                 'source_url' => $request->source_url,
                 'position' => 1,
-                'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                // 'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                'start_date' => date('Y-m-d H:i:s'),
                 'view' => 0,
                 'status' => $request->status,
                 'lang' => $request->lang,
@@ -227,7 +228,7 @@ class PostController extends Controller
                 'meta_image' => CommonMethod::removeDomainUrl($request->meta_image),
                 'source' => $request->source,
                 'source_url' => $request->source_url,
-                'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                // 'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
                 'status' => $request->status,
                 'lang' => $request->lang,
             ]);

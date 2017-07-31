@@ -23,7 +23,9 @@
 ?>
 @include('site.common.breadcrumb', $breadcrumb)
 
-<h1 class="d-inline-flex mb-3 pb-2">{!! $h1 !!}</h1>
+<div class="box-style mb-3">
+  <h1 class="d-inline-flex py-2">{!! $h1 !!}</h1>
+</div>
 
 <p class="mb-3">Danh sách kết quả tìm kiếm theo tên truyện hoặc tên tác giả viết truyện.</p>
 

@@ -580,7 +580,7 @@ class CommonMethod
 	    }
 
 	    if (!$full) $string = array_slice($string, 0, 1);
-	    return $string ? implode(', ', $string) . ' trước' : 'just now';
+	    return $string ? implode(', ', $string) . ' trước' : 'ngay bây giờ';
 	}
 
 	// CACHE FORGET

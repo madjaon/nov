@@ -28,14 +28,12 @@
 
 @include('site.common.ad', ['posPc' => 7, 'posMobile' => 8])
 
-<div class="box-style mb-4">
-  <div class="d-inline-flex title">Mới Cập Nhật</div>
+<div class="box-style mb-3">
+  <div class="d-inline-flex py-2 title">Mới Cập Nhật</div>
 </div>
 
-@include('site.post.list', array('data' => $data))
+@include('site.post.table', array('data' => $data, 'dataEp' => $dataEp))
 
 @include('site.common.ad', ['posPc' => 9, 'posMobile' => 10])
-
-@include('site.post.table', array('data' => $data2))
 
 @endsection

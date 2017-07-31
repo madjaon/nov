@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Helpers\CommonMethod;
 use App\Models\PostEp;
+use App\Models\Post;
 use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
@@ -79,11 +80,15 @@ class PostEpController extends Controller
                 'meta_keyword' => $request->meta_keyword,
                 'meta_description' => $request->meta_description,
                 'meta_image' => CommonMethod::removeDomainUrl($request->meta_image),
-                'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                // 'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                'start_date' => date('Y-m-d H:i:s'),
                 'view' => 0,
                 'status' => $request->status,
                 'lang' => $request->lang,
             ]);
+        if(isset($data)) {
+            Post::find($data->post_id)->update(['start_date' => date('Y-m-d H:i:s')]);
+        }
         Cache::flush();
         return redirect()->route('admin.postep.index', ['post_id' => $request->post_id, 'post_name' => $request->post_name, 'post_slug' => $request->post_slug])->with('success', 'Thêm thành công');
     }
@@ -150,7 +155,7 @@ class PostEpController extends Controller
                 'meta_keyword' => $request->meta_keyword,
                 'meta_description' => $request->meta_description,
                 'meta_image' => CommonMethod::removeDomainUrl($request->meta_image),
-                'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
+                // 'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
                 'status' => $request->status,
                 'lang' => $request->lang,
             ]);
