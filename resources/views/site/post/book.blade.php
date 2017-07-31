@@ -15,6 +15,8 @@
   $image = ($post->image)?CommonMethod::getThumbnail($post->image, 3):'/img/noimage320x420.jpg';
   $ratingCookieName = 'rating' . $post->id;
   $ratingCookie = isset($_COOKIE[$ratingCookieName])?$_COOKIE[$ratingCookieName]:null;
+  $ratingValue = round($post->rating_value, 1, PHP_ROUND_HALF_UP);
+  $ratingValueChecked = round($ratingValue, 0, PHP_ROUND_HALF_DOWN);
 ?>
 @extends('site.layouts.master', $extendData)
 
@@ -136,31 +138,31 @@
   <div class="col-12">
     <div class="text-center d-flex justify-content-center align-items-center">
       <div class="d-flex justify-content-center align-items-center mr-3 mb-0" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-        <em><span id="ratingValue" itemprop="ratingValue">{!! $post->rating_value !!}</span> điểm / <span id="ratingCount" itemprop="ratingCount">{!! $post->rating_count !!}</span> lượt đánh giá</em>
+        <em><span id="ratingValue" itemprop="ratingValue">{!! $ratingValue !!}</span> điểm / <span id="ratingCount" itemprop="ratingCount">{!! $post->rating_count !!}</span> lượt đánh giá</em>
         <meta itemprop="bestRating" content="10">
         <meta itemprop="worstRating" content="1">
       </div>
       <form name="ratingfrm">
         <fieldset class="starability-growRotate">
-          <input type="radio" id="growing-rate1" name="rating" value="1" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate1" name="rating" value="1" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 1) checked @endif>
           <label for="growing-rate1" title="Quá tệ hại">1 star</label>
-          <input type="radio" id="growing-rate2" name="rating" value="2" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate2" name="rating" value="2" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 2) checked @endif>
           <label for="growing-rate2" title="Tốn thời gian">2 stars</label>
-          <input type="radio" id="growing-rate3" name="rating" value="3" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate3" name="rating" value="3" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 3) checked @endif>
           <label for="growing-rate3" title="Không thể hiểu">3 stars</label>
-          <input type="radio" id="growing-rate4" name="rating" value="4" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate4" name="rating" value="4" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 4) checked @endif>
           <label for="growing-rate4" title="Thiếu gia vị">4 stars</label>
-          <input type="radio" id="growing-rate5" name="rating" value="5" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate5" name="rating" value="5" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 5) checked @endif>
           <label for="growing-rate5" title="Cũng tàm tạm">5 stars</label>
-          <input type="radio" id="growing-rate6" name="rating" value="6" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate6" name="rating" value="6" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 6) checked @endif>
           <label for="growing-rate6" title="Cũng được">6 stars</label>
-          <input type="radio" id="growing-rate7" name="rating" value="7" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate7" name="rating" value="7" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 7) checked @endif>
           <label for="growing-rate7" title="Khá hay">7 stars</label>
-          <input type="radio" id="growing-rate8" name="rating" value="8" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate8" name="rating" value="8" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 8) checked @endif>
           <label for="growing-rate8" title="Cực hay">8 stars</label>
-          <input type="radio" id="growing-rate9" name="rating" value="9" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate9" name="rating" value="9" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 9) checked @endif>
           <label for="growing-rate9" title="Siêu phẩm">9 stars</label>
-          <input type="radio" id="growing-rate10" name="rating" value="10" @if(isset($ratingCookie)) disabled @endif>
+          <input type="radio" id="growing-rate10" name="rating" value="10" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 10) checked @endif>
           <label for="growing-rate10" title="Kiệt tác">10 stars</label>
         </fieldset>
         @push('starability')

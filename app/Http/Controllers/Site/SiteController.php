@@ -849,7 +849,12 @@ class SiteController extends Controller
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
             ->first();
         if(isset($post)) {
-            $ratingValue = ($post->rating_value + $rating) / 2;
+            if($post->rating_value == 0) {
+                $ratingValue = $rating;
+            } else {
+                $ratingValue = ($post->rating_value + $rating) / 2;
+            }
+            $ratingValue = round($ratingValue, 1, PHP_ROUND_HALF_UP);
             $ratingCount = $post->rating_count + 1;
             DB::table('posts')->where('id', $id)->update(['rating_value' => $ratingValue, 'rating_count' => $ratingCount]);
             $res = ['ratingValue' => $ratingValue, 'ratingCount' => $ratingCount];
