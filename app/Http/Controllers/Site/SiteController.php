@@ -36,20 +36,27 @@ class SiteController extends Controller
         // return view
         return view('site.index', ['data' => $data, 'data2' => $data2, 'seo' => $seo]);
     }
-    public function author()
+    public function author(Request $request)
     {
+        trimRequest($request);
+        // check page
+        $page = ($request->page)?$request->page:1;
+
         $data = DB::table('post_tags')
             ->join('post_tag_relations', 'post_tags.id', '=', 'post_tag_relations.tag_id')
             ->select('post_tags.id', 'post_tags.name', 'post_tags.slug', 'post_tags.image')
             ->where('post_tags.status', ACTIVE)
             ->groupBy('post_tag_relations.tag_id')
-            ->orderBy('post_tags.id')
-            ->get();
-        if(!empty($data)) {
+            ->paginate(PAGINATE);
+        if($data->total() > 0) {
             // auto meta for seo
             $seo = new \stdClass();
             $seo->h1 = 'Danh sách tác giả';
-            $seo->meta_title = 'Danh sách tác giả';
+            if($page > 1) {
+                $seo->meta_title = 'Danh sách tác giả'.' trang '.$page;
+            } else {
+                $seo->meta_title = 'Danh sách tác giả';
+            }
             $seo->meta_keyword = 'tác giả truyện, tac gia truyen';
             $seo->meta_description = 'Danh sách các tác giả truyện, tiểu thuyết';
             $seo->meta_image = '/img/noimage600x315.jpg';
@@ -79,7 +86,8 @@ class SiteController extends Controller
             $data = $this->getPostByRelationsQuery('tag', $tag->id)->paginate(PAGINATE);
             if($data->total() > 0) {
                 // auto meta tag for seo
-                $tagName = ucwords(mb_strtolower($tag->name));
+                // $tagName = ucwords(mb_strtolower($tag->name));
+                $tagName = mb_convert_case($tag->name, MB_CASE_TITLE, "UTF-8");
                 $tag->h1 = 'Tác giả ' . $tagName;
                 if(empty($tag->meta_title)) {
                     if($page > 1) {
@@ -126,7 +134,8 @@ class SiteController extends Controller
             $data = $this->getPostByRelationsQuery('type', $type->id)->paginate(PAGINATE);
             if($data->total() > 0) {
                 // auto meta type for seo
-                $typeName = ucwords(mb_strtolower($type->name));
+                // $typeName = ucwords(mb_strtolower($type->name));
+                $typeName = mb_convert_case($type->name, MB_CASE_TITLE, "UTF-8");
                 $type->h1 = 'Thể loại ' . $typeName;
                 if(empty($type->meta_title)) {
                     if($page > 1) {
@@ -173,7 +182,8 @@ class SiteController extends Controller
             $data = $this->getPostBySeriQuery($seri->id)->paginate(PAGINATE);
             if($data->total() > 0) {
                 // auto meta seri for seo
-                $seriName = ucwords(mb_strtolower($seri->name));
+                // $seriName = ucwords(mb_strtolower($seri->name));
+                $seriName = mb_convert_case($seri->name, MB_CASE_TITLE, "UTF-8");
                 $seri->h1 = 'Seri truyện ' . $seriName;
                 if(empty($seri->meta_title)) {
                     if($page > 1) {
@@ -292,7 +302,8 @@ class SiteController extends Controller
             $singlePage->description = CommonMethod::replaceText($singlePage->description);
 
             // auto meta singlePage for seo
-            $singlePageName = ucwords(mb_strtolower($singlePage->name));
+            // $singlePageName = ucwords(mb_strtolower($singlePage->name));
+            $singlePageName = mb_convert_case($singlePage->name, MB_CASE_TITLE, "UTF-8");
             $singlePage->h1 = $singlePageName;
             if(empty($singlePage->meta_title)) {
                 $singlePage->meta_title = $singlePageName;
@@ -326,7 +337,8 @@ class SiteController extends Controller
             $post->description = CommonMethod::replaceText($post->description);
 
             // auto meta post for seo
-            $postName = ucwords(mb_strtolower($post->name));
+            // $postName = ucwords(mb_strtolower($post->name));
+            $postName = mb_convert_case($post->name, MB_CASE_TITLE, "UTF-8");
             $post->h1 = $postName;
             $postNameNoLatin = CommonMethod::convert_string_vi_to_en($postName);
             if(empty($post->meta_title)) {
@@ -435,7 +447,8 @@ class SiteController extends Controller
                 ->first();
             if(isset($data)) {
                 // auto meta post for seo
-                $postName = ucwords(mb_strtolower($post->name));
+                // $postName = ucwords(mb_strtolower($post->name));
+                $postName = mb_convert_case($post->name, MB_CASE_TITLE, "UTF-8");
                 $data->h1 = $postName . ' - ' . $data->name;
                 if(empty($data->meta_title)) {
                     $data->meta_title = $postName.' - '.$data->name;

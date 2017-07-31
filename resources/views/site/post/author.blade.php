@@ -6,6 +6,8 @@
     'meta_keyword' => $seo->meta_keyword,
     'meta_description' => $seo->meta_description,
     'meta_image' => $seo->meta_image,
+    'pagePrev' => ($data->lastPage() > 1)?$data->previousPageUrl():null,
+    'pageNext' => ($data->lastPage() > 1)?$data->nextPageUrl():null
   );
 ?>
 @extends('site.layouts.master', $extendData)
@@ -42,5 +44,9 @@
     </table>
   </div>
 </div>
+
+@if($data->lastPage() > 1)
+  @include('site.common.paginate', ['paginator' => $data])
+@endif
 
 @endsection
