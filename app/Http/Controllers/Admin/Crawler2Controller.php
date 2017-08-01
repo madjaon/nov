@@ -277,11 +277,55 @@ class Crawler2Controller extends Controller
         return;
     }
 
+    private function catsList()
+    {
+        $array = array(
+            1 => "http://truyenfull.vn/the-loai/tien-hiep/",
+            2 => "http://truyenfull.vn/the-loai/kiem-hiep/",
+            3 => "http://truyenfull.vn/the-loai/ngon-tinh/",
+            4 => "http://truyenfull.vn/the-loai/do-thi/",
+            5 => "http://truyenfull.vn/the-loai/huyen-huyen/",
+            6 => "http://truyenfull.vn/the-loai/khoa-huyen/",
+            7 => "http://truyenfull.vn/the-loai/quan-truong/",
+            8 => "http://truyenfull.vn/the-loai/vong-du/",
+            9 => "http://truyenfull.vn/the-loai/di-gioi/",
+            10 => "http://truyenfull.vn/the-loai/di-nang/",
+            11 => "http://truyenfull.vn/the-loai/quan-su/",
+            12 => "http://truyenfull.vn/the-loai/lich-su/",
+            13 => "http://truyenfull.vn/the-loai/xuyen-khong/",
+            14 => "http://truyenfull.vn/the-loai/trong-sinh/",
+            15 => "http://truyenfull.vn/the-loai/trinh-tham/",
+            16 => "http://truyenfull.vn/the-loai/tham-hiem/",
+            17 => "http://truyenfull.vn/the-loai/linh-di/",
+            18 => "http://truyenfull.vn/the-loai/sac/",
+            19 => "http://truyenfull.vn/the-loai/nguoc/",
+            20 => "http://truyenfull.vn/the-loai/sung/",
+            21 => "http://truyenfull.vn/the-loai/cung-dau/",
+            22 => "http://truyenfull.vn/the-loai/gia-dau/",
+            23 => "http://truyenfull.vn/the-loai/nu-cuong/",
+            24 => "http://truyenfull.vn/the-loai/nu-phu/",
+            25 => "http://truyenfull.vn/the-loai/dam-my/",
+            26 => "http://truyenfull.vn/the-loai/bach-hop/",
+            27 => "http://truyenfull.vn/the-loai/co-dai/",
+            28 => "http://truyenfull.vn/the-loai/mat-the/",
+            29 => "http://truyenfull.vn/the-loai/dien-van/",
+            30 => "http://truyenfull.vn/the-loai/doan-van/",
+            31 => "http://truyenfull.vn/the-loai/hai-huoc/",
+            32 => "http://truyenfull.vn/the-loai/truyen-teen/",
+            33 => "http://truyenfull.vn/the-loai/dong-phuong/",
+            34 => "http://truyenfull.vn/the-loai/tieu-thuyet-phuong-tay/",
+            35 => "http://truyenfull.vn/the-loai/van-hoc-viet-nam/",
+            36 => "http://truyenfull.vn/the-loai/light-novel/"
+        );
+        return $array[1];
+    }
+
     public function truyenfullpost()
     {
         $typeMainId = 1;
-        $cats = ['http://truyenfull.vn/the-loai/tien-hiep/'];
-        $category_page_link = 'http://truyenfull.vn/the-loai/tien-hiep/trang-[page_number]/';
+        $catsList = self::catsList();
+        $cats = [$catsList];
+        $category_page_link = $catsList . 'trang-[page_number]/';
         // $category_page_link = '';
         $category_page_start = 2;
         $category_page_end = 13;
@@ -320,8 +364,8 @@ class Crawler2Controller extends Controller
         $link = trim($link);
         $slug = CommonMethod::convert_string_vi_to_en($title);
         $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
-        $checkSlug = Post::where('slug', $slug)->first();
-        if(count($checkSlug) == 0) {
+        $post = Post::where('slug', $slug)->first();
+        if(!isset($post)) {
             // get content
             $htmlString = CommonMethod::get_remote_data($link);
             // get all link cat
@@ -329,11 +373,11 @@ class Crawler2Controller extends Controller
             foreach($html->find('div.desc-text') as $element) {
                 $desc = trim($element->innertext);
             }
-            //loai bo het duong dan trong noi dung + bo hinh anh
+            //loai bo tag trong noi dung
             if(!empty($desc)) {
-                // $desc = strip_tags($desc, '<p><br><i><b><strong>');
-                $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
-                $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+                $desc = strip_tags($desc, '<p><br><b><strong><em><i>');
+                // $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
+                // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
             }
             foreach($html->find('.source') as $element) {
                 $source = trim($element->plaintext);
@@ -488,7 +532,7 @@ class Crawler2Controller extends Controller
                             foreach($element->find('img') as $e) {
                                 if($e && !empty($e->src)) {
                                     // origin image upload
-                                    $e_src = CommonMethod::createThumb($e->src, $source, $image_dir, null, null, null, 1);
+                                    $e_src = CommonMethod::createThumb($e->src, $source, $image_dir);
                                     // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
                                     if(!empty($e_src)) {
                                         $e->src = $e_src;
@@ -499,10 +543,10 @@ class Crawler2Controller extends Controller
                             }
                             $desc[$key] = trim($element->innertext);
                         }
-                        //loai bo het duong dan trong noi dung
+                        //loai bo tag trong noi dung
                         if(!empty($desc[$key])) {
-                            // $desc[$key] = strip_tags($desc[$key], '<p><br><i><b><strong><img>');
-                            $desc[$key] = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc[$key]);
+                            $desc[$key] = strip_tags($desc[$key], '<p><br><b><strong><em><i><img>');
+                            // $desc[$key] = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc[$key]);
                         }
                         // insert
                         $data = PostEp::create([

@@ -217,6 +217,11 @@ footer {
 
 // CONTENT
 
+.mb-3 img {
+  max-width: 100%;
+  height: auto;
+}
+
 .book {
   &-info {
     font-size: .875rem;
