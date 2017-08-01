@@ -172,7 +172,7 @@ class Crawler2Controller extends Controller
                         $arr = explode(',', $request->description_pattern_delete);
                         for($i=0;$i<count($arr);$i++) {
                             foreach($element->find($arr[$i]) as $e) {
-                                $e->outertext='';
+                                $e->outertext = '';
                             }
                         }
                     }
@@ -277,73 +277,14 @@ class Crawler2Controller extends Controller
         return;
     }
 
-    public function truyenfulltacgia()
-    {
-        $cats = ['http://truyenfull.vn/danh-sach/truyen-hot/'];
-        $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/trang-[page_number]/';
-        // $category_page_link = '';
-        $category_page_start = 2;
-        $category_page_end = 445;
-        //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
-        if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
-            for($i = $category_page_start; $i <= $category_page_end; $i++) {
-                $cats[] = str_replace('[page_number]', $i, $category_page_link);
-            }
-        }
-        if(count($cats) > 0) {
-            foreach($cats as $key => $value) {
-                $htmlString = CommonMethod::get_remote_data($value);
-                // get all link cat
-                $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
-                // foreach($html->find('h3.truyen-title a') as $element) {
-                //     $links[$key][] = trim($element->href);
-                // }
-                // foreach($html->find('h3.truyen-title a') as $element) {
-                //     $titles[$key][] = trim($element->plaintext);
-                // }
-                foreach($html->find('span.author') as $element) {
-                    $authors[$key][] = trim($element->plaintext);
-                }
-                if(count($authors[$key]) > 0) {
-                    foreach($authors[$key] as $vauthor) {
-                        if(strpos($vauthor, ',') === false) {
-                            self::insertTag($vauthor);
-                        } else {
-                            $vauthors = explode(',', $vauthor);
-                            foreach($vauthors as $v) {
-                                self::insertTag($v);
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
-    }
-
-    private function insertTag($value) {
-        $value = trim($value);
-        $slug = CommonMethod::convert_string_vi_to_en($value);
-        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
-        $checkSlug = PostTag::where('slug', $slug)->first();
-        if(count($checkSlug) == 0) {
-            //insert 
-            PostTag::create([
-                'name' => $value,
-                'slug' => $slug
-            ]);
-        }
-        return $value;
-    }
-
     public function truyenfullpost()
     {
-        $cats = ['http://truyenfull.vn/danh-sach/truyen-hot/hoan/'];
-        $category_page_link = 'http://truyenfull.vn/danh-sach/truyen-hot/hoan/trang-[page_number]/';
+        $typeMainId = 1;
+        $cats = ['http://truyenfull.vn/the-loai/tien-hiep/'];
+        $category_page_link = 'http://truyenfull.vn/the-loai/tien-hiep/trang-[page_number]/';
         // $category_page_link = '';
         $category_page_start = 2;
-        $category_page_end = 2;
+        $category_page_end = 13;
         //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
         if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
             for($i = $category_page_start; $i <= $category_page_end; $i++) {
@@ -361,34 +302,12 @@ class Crawler2Controller extends Controller
                 foreach($html->find('h3.truyen-title a') as $element) {
                     $titles[$key][] = trim($element->plaintext);
                 }
-                foreach($html->find('span.author') as $element) {
-                    $authors[$key][] = trim($element->plaintext);
-                }
                 foreach($html->find('.text-info a') as $element) {
                     $lastEpLinks[$key][] = trim($element->href);
                 }
-                if(count($authors[$key]) > 0) {
-                    foreach($authors[$key] as $k => $vauthor) {
-                        if(strpos($vauthor, ',') === false) {
-                            $vauthor = trim($vauthor);
-                            $aut = PostTag::where('name', $vauthor)->first();
-                            if(isset($aut)) {
-                                self::insertPost($k, [$aut->id], $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
-                            }
-                        } else {
-                            $vauthors = explode(',', $vauthor);
-                            $auts = [];
-                            foreach($vauthors as $v) {
-                                $v = trim($v);
-                                $aut = PostTag::where('name', $v)->first();
-                                if(isset($aut)) {
-                                    $auts[] = $aut->id;
-                                }
-                            }
-                            if(!empty($auts)) {
-                                self::insertPost($k, $auts, $links[$key][$k], $titles[$key][$k], $lastEpLinks[$key][$k]);
-                            }
-                        }
+                if(count($links[$key]) > 0) {
+                    foreach($links[$key] as $k => $v) {
+                        self::insertPost($k, $v, $titles[$key][$k], $lastEpLinks[$key][$k], $typeMainId);
                     }
                 }
             }
@@ -396,7 +315,7 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
     }
 
-    private function insertPost($key, $authorIds, $link, $title, $lastEpLink) {
+    private function insertPost($key, $link, $title, $lastEpLink, $typeMainId) {
         $title = trim($title);
         $link = trim($link);
         $slug = CommonMethod::convert_string_vi_to_en($title);
@@ -410,8 +329,10 @@ class Crawler2Controller extends Controller
             foreach($html->find('div.desc-text') as $element) {
                 $desc = trim($element->innertext);
             }
-            //loai bo het duong dan trong noi dung
-            if(!empty($desc)){
+            //loai bo het duong dan trong noi dung + bo hinh anh
+            if(!empty($desc)) {
+                // $desc = strip_tags($desc, '<p><br><i><b><strong>');
+                $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
                 $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
             }
             foreach($html->find('.source') as $element) {
@@ -420,18 +341,15 @@ class Crawler2Controller extends Controller
             foreach($html->find('div.info div a[itemprop=genre]') as $element) {
                 $genres[] = trim($element->plaintext);
             }
-            if(!empty($genres)) {
-                $genre = PostType::where('name', $genres[0])->first();
-                if(isset($genre)) {
-                    $type_main_id = $genre->id;
-                }
+            foreach($html->find('div.info div a[itemprop=author]') as $element) {
+                $authors[] = trim($element->plaintext);
             }
             //insert 
             $data = Post::create([
                 'name' => $title,
                 'slug' => $slug,
                 'kind' => SLUG_POST_KIND_FULL,
-                'type_main_id' => isset($type_main_id)?$type_main_id:0,
+                'type_main_id' => isset($typeMainId)?$typeMainId:0,
                 'url' => isset($lastEpLink)?$lastEpLink:'',
                 'description' => isset($desc)?$desc:'',
                 'source' => isset($source)?$source:'',
@@ -443,12 +361,42 @@ class Crawler2Controller extends Controller
                 $start_date = strtotime($data->start_date) + $key;
                 $start_date = date('Y-m-d H:i:s', $start_date);
                 $data->update(['start_date' => $start_date]);
-                // insert  type relation
-                $data->posttags()->attach($authorIds);
+                // tags
+                if(!empty($authors)) {
+                    $authorIds = [];
+                    foreach($authors as $author) {
+                        $author = trim($author);
+                        $aut = PostTag::where('name', $author)->first();
+                        if(isset($aut)) {
+                            $authorIds[] = $aut->id;
+                        } else {
+                            $authorSlug = CommonMethod::convert_string_vi_to_en($author);
+                            $authorSlug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $authorSlug));
+                            //insert 
+                            $tag = PostTag::create([
+                                'name' => $author,
+                                'slug' => $authorSlug
+                            ]);
+                            if(isset($tag)) {
+                                $authorIds[] = $tag->id;
+                            }
+                        }
+                    }
+                    if(!empty($authorIds)) {
+                        $data->posttags()->attach($authorIds);
+                    }
+                }
                 // types:
                 if(!empty($genres)) {
                     $typeIds = [];
                     foreach($genres as $gen) {
+                        if($gen == 'Tiểu Thuyết Phương Tây') {
+                            $gen = 'Tây Phương';
+                        }
+                        if($gen == 'Văn học Việt Nam') {
+                            $gen = 'Việt Nam';
+                        }
+
                         $genredata = PostType::where('name', $gen)->first();
                         if(isset($genredata)) {
                             $typeIds[] = $genredata->id;
@@ -465,9 +413,11 @@ class Crawler2Controller extends Controller
 
     public function truyenfullpostep()
     {
+        $source = 'truyenfull.vn';
         $urls = Post::select('id', 'url', 'source_url')->get();
         if(count($urls) > 0) {
             foreach($urls as $key => $value) {
+                $image_dir = 'truyen/' . $value->id;
                 $htmlString = CommonMethod::get_remote_data($value->source_url);
                 // get all link cat
                 $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
@@ -533,9 +483,26 @@ class Crawler2Controller extends Controller
                         foreach($html2->find('.chapter-c') as $element) {
                             // bo quang cao o giua
                             foreach($element->find('.ads-holder') as $e) {
-                                $e->outertext='';
+                                $e->outertext = '';
+                            }
+                            foreach($element->find('img') as $e) {
+                                if($e && !empty($e->src)) {
+                                    // origin image upload
+                                    $e_src = CommonMethod::createThumb($e->src, $source, $image_dir, null, null, null, 1);
+                                    // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
+                                    if(!empty($e_src)) {
+                                        $e->src = $e_src;
+                                    } else {
+                                        $e->outertext = '';
+                                    }
+                                }
                             }
                             $desc[$key] = trim($element->innertext);
+                        }
+                        //loai bo het duong dan trong noi dung
+                        if(!empty($desc[$key])) {
+                            // $desc[$key] = strip_tags($desc[$key], '<p><br><i><b><strong><img>');
+                            $desc[$key] = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc[$key]);
                         }
                         // insert
                         $data = PostEp::create([

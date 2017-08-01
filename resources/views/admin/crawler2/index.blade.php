@@ -19,11 +19,9 @@
 			</div>
 			<div class="box-body">
 				<h4>Truyenfull.vn</h4>
-				<a href="/admin/crawler2/truyenfulltacgia">Lấy Danh sách tác giả</a>
+				<a href="/admin/crawler2/truyenfullpost">Lấy Danh sách Truyện</a>
 				<br>
-				<a href="/admin/crawler2/truyenfullpost">Lấy Danh sách Truyện đã hoàn thành</a>
-				<br>
-				<a href="/admin/crawler2/truyenfullpostep">Lấy Danh sách Chapter Truyện đã hoàn thành</a>
+				<a href="/admin/crawler2/truyenfullpostep">Lấy Danh sách Chapter</a>
 			</div>
 		</div>
 	</div>
