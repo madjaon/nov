@@ -23,6 +23,7 @@
           @endif
           <div class="d-flex align-items-center">
             <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
+            <small class="ml-2 text-muted">{!! CommonMethod::numberFormatDot($value->view) !!} lượt đọc</small>
           </div>
         </div>
       </div>
