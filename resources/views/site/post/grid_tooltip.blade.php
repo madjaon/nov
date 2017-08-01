@@ -5,16 +5,24 @@
     <?php 
       $url = url($value->slug);
       $image = ($value->image)?CommonMethod::getThumbnail($value->image, 1):'/img/noimage185x240.jpg';
+      $kind = CommonOption::getKindPost($value->kind);
+      if($value->kind == SLUG_POST_KIND_UPDATING) {
+        $badge = 'primary';
+      } else {
+        $badge = 'success';
+      }
       if($key == count($data) - 1) {
         $objL .= 'L' . $value->id . ':"' . $value->summary . '"';
       } else {
         $objL .= 'L' . $value->id . ':"' . $value->summary . '",';
       }
     ?>
-    <div class="col-6 col-sm-3">
-      <figure class="figure text-center">
+    <div class="col-6 col-sm-2">
+      <figure class="figure text-center grid-item">
         <a href="{!! $url !!}" class="showTip L{!! $value->id !!}">
-          <img src="{!! url($image) !!}" class="figure-img img-fluid rounded" alt="{!! $value->name !!}">
+          <img src="{!! url($image) !!}" class="figure-img img-thumbnail img-fluid rounded" alt="{!! $value->name !!}">
+          <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
+          <span class="badge badge-warning">{!! $value->view !!} lượt đọc</span>
         </a>
         <figcaption class="figure-caption">
           <a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a>

@@ -22,13 +22,9 @@ class SiteController extends Controller
 
     public function index()
     {
-        // query
-        $query = $this->getLatest();
+        // moi nhat
+        $data = $this->getPosts()->take(PAGINATE_LATEST)->get();
 
-        // epchap moi nhat
-        $data = $query->take(PAGINATE_LATEST)->get();
-
-        // latest chap
         $dataEp = [];
         if(count($data) > 0) {
             foreach($data as $key => $value) {
@@ -36,22 +32,14 @@ class SiteController extends Controller
             }
         }
 
-        // epchap moi nhat tiep theo
-        $data2 = $query->offset(PAGINATE_LATEST)->take(PAGINATE_LATEST)->get();
-
-        // latest chap
-        $dataEp2 = [];
-        if(count($data2) > 0) {
-            foreach($data2 as $key => $value) {
-                $dataEp2[] = $this->getEpchapListByPostId($value->id, 'desc')->first();
-            }
-        }
+        // view
+        $data2 = $this->getPosts('view')->take(PAGINATE_HOT)->get();
 
         //seo meta
         $seo = DB::table('configs')->where('status', ACTIVE)->first();
         
         // return view
-        return view('site.index', ['data' => $data, 'dataEp' => $dataEp, 'dataEp2' => $dataEp2, 'data2' => $data2, 'seo' => $seo]);
+        return view('site.index', ['data' => $data, 'dataEp' => $dataEp, 'data2' => $data2, 'seo' => $seo]);
     }
     public function author(Request $request)
     {
@@ -245,7 +233,7 @@ class SiteController extends Controller
         
         // query
         $data = DB::table('posts')
-            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'view')
+            ->select('id', 'name', 'slug', 'name2', 'image', 'type', 'kind', 'view')
             ->where('nation', $slug)
             ->where('status', ACTIVE)
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
@@ -284,7 +272,7 @@ class SiteController extends Controller
         
         // query
         $data = DB::table('posts')
-            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'view')
+            ->select('id', 'name', 'slug', 'name2', 'image', 'type', 'kind', 'view')
             ->where('kind', $slug)
             ->where('status', ACTIVE)
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
@@ -315,9 +303,6 @@ class SiteController extends Controller
     {
         CommonMethod::forgetCache('/lien-he');
         CommonMethod::forgetCache('/contact');
-        
-        //update count view post
-        // DB::table('posts')->where('slug', $slug)->increment('view');
 
         // IF SLUG IS PAGE
         // query
@@ -359,6 +344,13 @@ class SiteController extends Controller
             ->where('start_date', '<=', date('Y-m-d H:i:s'))
             ->first();
         if(isset($post)) {
+
+            //update count view post
+            if(!request()->session()->has('posts-'.$post->id)) {
+                DB::table('posts')->whereId($post->id)->increment('view');
+                request()->session()->put('posts-'.$post->id, 1);
+            }
+
             $post->patterns = CommonMethod::replaceText($post->patterns);
             $post->summary = CommonMethod::replaceText($post->summary);
             $post->description = CommonMethod::replaceText($post->description);
@@ -473,6 +465,13 @@ class SiteController extends Controller
                 ->where('start_date', '<=', date('Y-m-d H:i:s'))
                 ->first();
             if(isset($data)) {
+
+                //update count view post
+                if(!request()->session()->has('posts-'.$post->id.'-'.$data->id)) {
+                    DB::table('posts')->whereId($post->id)->increment('view');
+                    request()->session()->put('posts-'.$post->id.'-'.$data->id, 1);
+                }
+
                 // auto meta post for seo
                 // $postName = ucwords(mb_strtolower($post->name));
                 $postName = mb_convert_case($post->name, MB_CASE_TITLE, "UTF-8");
@@ -599,7 +598,7 @@ class SiteController extends Controller
                 ];
             }
         }
-        
+
         $res = ['results' => $array];
         
         return response()->json($res);
@@ -647,7 +646,7 @@ class SiteController extends Controller
     {
         $data = DB::table('posts')
             ->join('post_type_relations', 'posts.id', '=', 'post_type_relations.post_id')
-            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.view')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'));
         if($time == null) {
@@ -665,7 +664,7 @@ class SiteController extends Controller
     private function getPostBySeriQuery($id, $currentPostId = null)
     {
         $data = DB::table('posts')
-            ->select('id', 'name', 'slug', 'name2', 'patterns', 'image', 'summary', 'type', 'kind', 'view')
+            ->select('id', 'name', 'slug', 'name2', 'image', 'type', 'kind', 'view')
             ->where('seri', $id)
             ->where('status', ACTIVE)
             ->where('start_date', '<=', date('Y-m-d H:i:s'));
@@ -679,7 +678,7 @@ class SiteController extends Controller
     {
         $data = DB::table('posts')
             ->join('post_'.$element.'_relations', 'posts.id', '=', 'post_'.$element.'_relations.post_id')
-            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.patterns', 'posts.image', 'posts.summary', 'posts.type', 'posts.kind', 'posts.view')
+            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
             ->where('post_'.$element.'_relations.'.$element.'_id', $id)
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'));
@@ -696,14 +695,14 @@ class SiteController extends Controller
             ->get();
         return $data;
     }
-    // list moi nhat
-    private function getLatest()
+    // list posts
+    private function getPosts($orderBy = 'start_date', $orderSort = 'desc')
     {
         $data = DB::table('posts')
-            ->select('posts.id', 'posts.name', 'posts.slug',  'posts.name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
-            ->where('posts.status', ACTIVE)
-            ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
-            ->orderBy('posts.start_date', 'desc');
+            ->select('id', 'name', 'slug',  'name2', 'image', 'type', 'kind', 'view')
+            ->where('status', ACTIVE)
+            ->where('start_date', '<=', date('Y-m-d H:i:s'))
+            ->orderBy($orderBy, $orderSort);
         return $data;
     }
     // $id: $post_id
@@ -744,7 +743,7 @@ class SiteController extends Controller
         $data = DB::table('posts')
             ->leftJoin('post_tag_relations', 'posts.id', '=', 'post_tag_relations.post_id')
             ->leftJoin('post_tags', 'post_tag_relations.tag_id', '=', 'post_tags.id')
-            ->select('posts.id', 'posts.name AS name', 'posts.slug AS slug',  'posts.name2 AS name2', 'posts.patterns', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
+            ->select('posts.id', 'posts.name AS name', 'posts.slug AS slug',  'posts.name2 AS name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
             ->whereRaw('MATCH('.env('DB_PREFIX').'posts.slug,'.env('DB_PREFIX').'posts.name,'.env('DB_PREFIX').'posts.name2) AGAINST ("'.$s.'")')

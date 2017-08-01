@@ -13,7 +13,7 @@
 <body>
 @endif
 
-@if(isset($isPost) && $isPost == true && isset($configfbappid) && $configfbappid != '')
+@if(isset($isPost) && !empty($configfbappid))
 <script>
   window.fbAsyncInit = function() {
     FB.init({

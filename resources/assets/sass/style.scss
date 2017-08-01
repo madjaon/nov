@@ -319,6 +319,20 @@ footer {
   }
 }
 
+.grid-item {
+  a {
+    position: relative;
+    span {
+      position: absolute;
+      left: .313rem;
+      bottom: 2.5rem;
+      &:last-child {
+        bottom: 1rem;
+      }
+    }
+  }
+}
+
 // pagination
 
 .page-item:first-child .page-link {

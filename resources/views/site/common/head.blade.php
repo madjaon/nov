@@ -38,7 +38,7 @@
     <meta property="og:image" content="{!! url($meta_image) !!}" />
   @endif
 
-  @if(isset($configfbappid) && $configfbappid != '')
+  @if(!empty($configfbappid))
     <meta property="fb:app_id" content="{!! $configfbappid !!}" />
   @endif
 
@@ -74,8 +74,6 @@
   <meta name="application-name" content="Truyen On">
   <meta name="msapplication-config" content="{!! url('img/browserconfig.xml') !!}">
   <meta name="theme-color" content="#ffffff">
-  <!-- <meta name="format-detection" content="telephone=no"> -->
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">

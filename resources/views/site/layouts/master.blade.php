@@ -1,7 +1,7 @@
 @include('site.common.head')
 <body>
 
-@if(isset($isPost) && $isPost == true && isset($configfbappid) && $configfbappid != '')
+@if(isset($isPost) && !empty($configfbappid))
 <script>
   window.fbAsyncInit = function() {
     FB.init({
@@ -37,6 +37,16 @@
       @include('site.common.side')
     </div>
   </div>
+
+  @if(isset($isHome))
+  <div class="box-style mb-3">
+    <div class="d-inline-flex py-2 title">Đọc Nhiều</div>
+  </div>
+
+  @include('site.post.grid', array('data' => $data2))
+
+  @endif
+  
 </div>
 
 @include('site.common.ad', ['posPc' => 3, 'posMobile' => 4])
