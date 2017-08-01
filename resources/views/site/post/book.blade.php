@@ -170,51 +170,9 @@
         @endpush
       </form>
       @if(!isset($ratingCookie))
-      <script>
-        $(function () {
-          $("input[name=rating]").change(function(event) {
-            $.ajax(
-            {
-              type: 'post',
-              url: '{!! url("rating") !!}',
-              data: {
-                'id': {!! $post->id !!},
-                'rating': document.ratingfrm.rating.value
-              },
-              beforeSend: function() {
-                radDisable();
-              },
-              success: function(data)
-              {
-                radDisable();
-                if(data) {
-                  document.getElementById('ratingValue').innerHTML = data.ratingValue;
-                  document.getElementById('ratingCount').innerHTML = data.ratingCount;
-                }
-                setCookie('rating{!! $post->id !!}', 1, 3650);
-                return false;
-              },
-              error: function(xhr)
-              {
-                radDisable();
-                return false;
-              }
-            });
-          });
-        })
-        function radDisable() {
-          var radios = document.ratingfrm.rating;
-          for (var i=0, iLen=radios.length; i<iLen; i++) {
-            radios[i].disabled = true;
-          } 
-        }
-        function setCookie(cname,cvalue,exdays) {
-          var d = new Date();
-          d.setTime(d.getTime() + (exdays*24*60*60*1000));
-          var expires = "expires=" + d.toGMTString();
-          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        }
-      </script>
+        @push('book')
+          <script src="{!! asset('js/book.js') !!}"></script>
+        @endpush
       @endif
     </div>
   </div>
@@ -248,38 +206,9 @@
         </div>
       </div>
       @if($post->totalPageEps > 1)
-      <script>
-        function bookpaging(page) {
-          $.ajax(
-          {
-            type: 'post',
-            url: '{!! url("bookpaging") !!}',
-            data: {
-              'id': {!! $post->id !!},
-              'page': page
-            },
-            beforeSend: function() {
-              scrollTo();
-              $('.spinner').attr('style', 'display:inline-block');
-            },
-            success: function(data)
-            {
-              $('.spinner').attr('style', 'display:none');
-              $('#booklist').html(data);
-              return false;
-            },
-            error: function(xhr)
-            {
-              $('.spinner').attr('style', 'display:none');
-              return false;
-            }
-          });
-        }
-        function scrollTo() {
-          $('html, body').animate({ scrollTop: $('#booklistbox').offset().top }, 'fast');
-          return false;
-        }
-      </script>
+        @push('bookpaging')
+          <script src="{!! asset('js/bookpaging.js') !!}"></script>
+        @endpush
       @endif
     @endif
 
@@ -319,5 +248,7 @@
 
   </div>
 </div>
+
+<input type="hidden" id="postId" value="{!! $post->id !!}">
 
 @endsection

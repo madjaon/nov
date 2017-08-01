@@ -24,4 +24,20 @@ elixir(function(mix) {
 		'script.js'
     ], 'public/js/app.js');
 
+    mix.scripts([
+		'scroll.js'
+    ], 'public/js/scroll.js');
+
+    mix.scripts([
+		'book.js'
+    ], 'public/js/book.js');
+    
+    mix.scripts([
+		'bookpaging.js'
+    ], 'public/js/bookpaging.js');
+
+    mix.scripts([
+		'epchap.js'
+    ], 'public/js/epchap.js');
+
 });
