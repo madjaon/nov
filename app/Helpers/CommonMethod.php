@@ -467,6 +467,15 @@ class CommonMethod
 	    }
 	    return $str;
 	}
+	static function numberFormatDot($number)
+	{
+	    if ($number > 0)
+	        $text = number_format($number, 0, ",", ".");
+	    else
+	        $text = 0;
+
+	    return $text;
+	}
 	static function replaceText($string='')
 	{
 		if($string == '') {
