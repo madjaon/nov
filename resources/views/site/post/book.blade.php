@@ -136,13 +136,13 @@
   </div>
 
   <div class="col-12">
-    <div class="text-center d-flex justify-content-center align-items-center">
+    <div class="d-block d-sm-flex justify-content-center align-items-center text-center">
       <div class="d-flex justify-content-center align-items-center mr-3 mb-0" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
         <em><span id="ratingValue" itemprop="ratingValue">{!! $ratingValue !!}</span> điểm / <span id="ratingCount" itemprop="ratingCount">{!! $post->rating_count !!}</span> lượt đánh giá</em>
         <meta itemprop="bestRating" content="10">
         <meta itemprop="worstRating" content="1">
       </div>
-      <form name="ratingfrm">
+      <form class="d-flex justify-content-center align-items-center" name="ratingfrm">
         <fieldset class="starability-growRotate">
           <input type="radio" id="growing-rate1" name="rating" value="1" @if(isset($ratingCookie)) disabled @endif @if($ratingValueChecked == 1) checked @endif>
           <label for="growing-rate1" title="Quá tệ hại">1 star</label>
