@@ -735,8 +735,8 @@ class SiteController extends Controller
     // https://stackoverflow.com/questions/25338456/laravel-union-paginate-at-the-same-time
     private function searchQueryPostTag($s)
     {
-        $slug = CommonMethod::convert_string_vi_to_en($s);
-        $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
+        $s = CommonMethod::convert_string_vi_to_en($s);
+        // $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
         // addslashes: xu ly chuoi gay loi cau lenh sql. 
         // co the k dung, thay $s -> $slug (nhung k biet co search chinh xac hay khong)
         $s = addslashes($s);
@@ -747,9 +747,9 @@ class SiteController extends Controller
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
             ->whereRaw('MATCH('.env('DB_PREFIX').'posts.slug,'.env('DB_PREFIX').'posts.name,'.env('DB_PREFIX').'posts.name2) AGAINST ("'.$s.'")')
-            // ->orWhereRaw('MATCH('.env('DB_PREFIX').'post_tags.slug,'.env('DB_PREFIX').'post_tags.name) AGAINST ("'.$s.'")')
-            ->orWhere('post_tags.slug', 'like', '%'.$slug.'%')
-            ->orWhere('post_tags.name', 'like', '%'.$s.'%')
+            ->orWhereRaw('MATCH('.env('DB_PREFIX').'post_tags.slug,'.env('DB_PREFIX').'post_tags.name) AGAINST ("'.$s.'")')
+            // ->orWhere('post_tags.slug', 'like', '%'.$slug.'%')
+            // ->orWhere('post_tags.name', 'like', '%'.$s.'%')
             ->groupBy('posts.id');
         return $data;
     }
