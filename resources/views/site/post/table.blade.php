@@ -6,6 +6,9 @@
         @foreach($data as $key => $value)
         <?php 
           $url = url($value->slug);
+          if($value->kind == SLUG_POST_KIND_FULL) {
+            $kind = CommonOption::getKindPost($value->kind);
+          }
           if(isset($dataEp[$key])) {
             $url2 = CommonUrl::getUrl2($value->slug, $dataEp[$key]->slug);
             if($dataEp[$key]->volume > 0) {
@@ -17,7 +20,12 @@
         ?>
         <tr>
           <td class="align-middle">
-            <h3 class="my-0"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h3>
+            <h3 class="my-0">
+              <a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a>
+              @if(isset($kind))
+              <span class="badge badge-success badge-pill ml-2">{!! $kind !!}</span>
+              @endif
+            </h3>
           </td>
           <td class="align-middle text-center">
             @if(isset($dataEp[$key]))

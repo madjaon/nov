@@ -31,7 +31,7 @@
 @if($seri->summary)<div class="description mb-3">{!! $seri->summary !!}</div>@endif
 @if($seri->description)<div class="description mb-3">{!! $seri->description !!}</div>@endif
 
-@include('site.post.grid', array('data' => $data))
+@include('site.post.list', array('data' => $data))
 
 @if($data->lastPage() > 1)
   @include('site.common.paginate', ['paginator' => $data])

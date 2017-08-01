@@ -3,7 +3,7 @@
 @include('site.common.ad', ['posPc' => 11, 'posMobile' => 12])
 <div class="side mb-5">
   <h2 class="mb-3">Xu Hướng <small class="text-muted">Top Trending</small></h2>
-  <div class="trending">
+  <div class="trending mt-4">
     @if($configtoptrending)
     <ul class="list-unstyled">
       @foreach($configtoptrending as $value)
@@ -17,13 +17,15 @@
           $badge = 'success';
         }
       ?>
-      <li class="media mt-4">
+      <li class="media mb-3 pb-3 side-item">
         <a href="{!! $url !!}" title="{!! $value->name !!}">
-          <img class="d-flex mr-3" src="{!! url($image) !!}" alt="{!! $value->name !!}">
+          <img class="d-flex mr-3 img-fluid" src="{!! url($image) !!}" alt="{!! $value->name !!}">
         </a>
         <div class="media-body">
-          <h3 class="mt-0 mb-1 side-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h3>
-          <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
+          <h3 class="mt-0 mb-2 side-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h3>
+          <div class="d-flex align-items-center">
+            <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
+          </div>
         </div>
       </li>
       @endforeach

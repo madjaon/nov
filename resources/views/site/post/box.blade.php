@@ -27,7 +27,7 @@
   <h1 class="d-inline-flex py-2">{!! $h1 !!}</h1>
 </div>
 
-@include('site.post.grid', array('data' => $data))
+@include('site.post.list', array('data' => $data))
 
 @if($data->lastPage() > 1)
   @include('site.common.paginate', ['paginator' => $data])

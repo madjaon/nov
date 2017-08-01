@@ -32,7 +32,7 @@
 @if($tag->summary)<div class="description mb-3">{!! $tag->summary !!}</div>@endif
 @if($tag->description)<div class="description mb-3">{!! $tag->description !!}</div>@endif
 
-@include('site.post.grid', array('data' => $data))
+@include('site.post.list', array('data' => $data))
 
 @if($data->lastPage() > 1)
   @include('site.common.paginate', ['paginator' => $data])

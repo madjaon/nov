@@ -125,8 +125,10 @@ class SiteController extends Controller
                     $tag->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                $authors = $this->getTagsByPosts($data);
+
                 // return view
-                return view('site.post.tag', ['data' => $data, 'tag' => $tag]);
+                return view('site.post.tag', ['data' => $data, 'tag' => $tag, 'authors' => $authors]);
             }
         }
         return response()->view('errors.404', [], 404);
@@ -173,8 +175,10 @@ class SiteController extends Controller
                     $type->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                $authors = $this->getTagsByPosts($data);
+
                 // return view
-                return view('site.post.type', ['data' => $data, 'type' => $type]);
+                return view('site.post.type', ['data' => $data, 'type' => $type, 'authors' => $authors]);
             }
         }
         return response()->view('errors.404', [], 404);
@@ -221,8 +225,10 @@ class SiteController extends Controller
                     $seri->meta_image = '/img/noimage600x315.jpg';
                 }
 
+                $authors = $this->getTagsByPosts($data);
+
                 // return view
-                return view('site.post.seri', ['data' => $data, 'seri' => $seri]);
+                return view('site.post.seri', ['data' => $data, 'seri' => $seri, 'authors' => $authors]);
             }
         }
         return response()->view('errors.404', [], 404);
@@ -259,8 +265,10 @@ class SiteController extends Controller
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getNation($slug) . ' hay nhất';
             $seo->meta_image = '/img/noimage600x315.jpg';
 
+            $authors = $this->getTagsByPosts($data);
+
             // return view
-            return view('site.post.box', ['data' => $data, 'seo' => $seo]);
+            return view('site.post.box', ['data' => $data, 'seo' => $seo, 'authors' => $authors]);
         }
         return response()->view('errors.404', [], 404);
     }
@@ -296,8 +304,10 @@ class SiteController extends Controller
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
             $seo->meta_image = '/img/noimage600x315.jpg';
 
+            $authors = $this->getTagsByPosts($data);
+
             // return view
-            return view('site.post.box', ['data' => $data, 'seo' => $seo]);
+            return view('site.post.box', ['data' => $data, 'seo' => $seo, 'authors' => $authors]);
         }
         return response()->view('errors.404', [], 404);
     }
@@ -549,23 +559,8 @@ class SiteController extends Controller
         // query
         // post
         $data = $this->searchQueryPostTag($request->s)->paginate(PAGINATE);
-        $authors = array();
-        if(!empty($data)) {
-            foreach($data as $value) {
-                $author = '';
-                // list tags
-                $tags = $this->getRelationsByPostQuery('tag', $value->id);
-                if(!empty($tags)) {
-                    foreach($tags as $k => $v) {
-                        if($k > 0) {
-                            $author .= ' - ';
-                        }
-                        $author .= '<a href="'.url('tac-gia/'.$v->slug).'" title="'.$v->name.'">'.$v->name.'</a>';
-                    }
-                }
-                $authors[] = $author;
-            }
-        }
+
+        $authors = $this->getTagsByPosts($data);
 
         // return view
         return view('site.post.search', ['data' => $data->appends($request->except('page')), 'seo' => $seo, 'authors' => $authors, 'request' => $request]);
@@ -604,6 +599,7 @@ class SiteController extends Controller
                 ];
             }
         }
+        
         $res = ['results' => $array];
         
         return response()->json($res);
@@ -757,6 +753,28 @@ class SiteController extends Controller
             ->orWhere('post_tags.name', 'like', '%'.$s.'%')
             ->groupBy('posts.id');
         return $data;
+    }
+    // $data post
+    private function getTagsByPosts($data)
+    {
+        $authors = array();
+        if(!empty($data)) {
+            foreach($data as $value) {
+                $author = '';
+                // list tags
+                $tags = $this->getRelationsByPostQuery('tag', $value->id);
+                if(!empty($tags)) {
+                    foreach($tags as $k => $v) {
+                        if($k > 0) {
+                            $author .= ' - ';
+                        }
+                        $author .= '<a href="'.url('tac-gia/'.$v->slug).'" title="'.$v->name.'">'.$v->name.'</a>';
+                    }
+                }
+                $authors[] = $author;
+            }
+        }
+        return $authors;
     }
     /* 
     * contact

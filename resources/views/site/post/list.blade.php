@@ -1,30 +1,34 @@
 @if(!empty($data))
-<ul class="list-group">
+<div class="row mt-4">
   @foreach($data as $key => $value)
-  <?php 
-    $url = url($value->slug);
-    if(isset($dataEp[$key])) {
-      $url2 = CommonUrl::getUrl2($value->slug, $dataEp[$key]->slug) ;
-      if($dataEp[$key]->volume > 0) {
-        $epchap = 'Quyển ' . $dataEp[$key]->volume . ' chương ' . $dataEp[$key]->epchap;
+    <?php 
+      $url = url($value->slug);
+      $image = ($value->image)?CommonMethod::getThumbnail($value->image, 2):'/img/noimage80x80.jpg';
+      $kind = CommonOption::getKindPost($value->kind);
+      if($value->kind == SLUG_POST_KIND_UPDATING) {
+        $badge = 'primary';
       } else {
-        $epchap = 'Chương ' . $dataEp[$key]->epchap;
+        $badge = 'success';
       }
-    }
-  ?>
-  <li class="list-group-item d-block list-item">
-    <h3 class="d-block list-item-title">
-      <a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a>
-    </h3>
-    @if(isset($dataEp[$key]))
-      <div class="d-block">
-        <a href="{!! $url2 !!}" title="{!! $dataEp[$key]->name !!}" class="d-inline-block"><span class="badge badge-primary badge-pill">{!! $epchap !!}</span></a>
-        <small class="ml-2 d-inline-block">{!! CommonMethod::time_elapsed_string($dataEp[$key]->start_date) !!}</small>
+    ?>
+    <div class="col-12 col-sm-6">
+      <div class="media mb-3 pb-3 list-item">
+        <a href="{!! $url !!}" title="{!! $value->name !!}">
+          <img class="d-flex mr-3 img-thumbnail img-fluid" src="{!! url($image) !!}" alt="{!! $value->name !!}">
+        </a>
+        <div class="media-body">
+          <h2 class="mt-0 mb-2 list-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h2>
+          @if(!empty($authors[$key]))
+          <div class="mb-2 authors">Tác giả: {!! $authors[$key] !!}</div>
+          @endif
+          <div class="d-flex align-items-center">
+            <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
+          </div>
+        </div>
       </div>
-    @endif
-  </li>
+    </div>
   @endforeach
-</ul>
+</div>
 @else
 <div class="alert alert-warning" role="alert">
   <strong>Chú ý!</strong> Đang cập nhật dữ liệu. Mời bạn quay lại sau!

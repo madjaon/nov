@@ -55,7 +55,7 @@ class CommonOption
     //kind
     static function kindPostArray()
     {
-        return array(SLUG_POST_KIND_UPDATING=>'Còn tiếp tục', SLUG_POST_KIND_FULL=>'Đã hoàn thành');
+        return array(SLUG_POST_KIND_UPDATING=>'Còn tiếp', SLUG_POST_KIND_FULL=>'Hoàn thành');
     }
     static function getKindPost($key=SLUG_POST_KIND_UPDATING)
     {
