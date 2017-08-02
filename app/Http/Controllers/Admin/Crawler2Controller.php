@@ -37,6 +37,7 @@ class Crawler2Controller extends Controller
                 'webtruyen' => 'webtruyen.com',
                 'thichdoctruyen' => 'thichdoctruyen.com',
                 'santruyen' => 'santruyen.com',
+                'truyenfull' => 'truyenfull.vn',
             );
         // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');

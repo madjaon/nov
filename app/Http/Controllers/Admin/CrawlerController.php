@@ -352,6 +352,12 @@ class CrawlerController extends Controller
                     } else {
                         $image = '';
                     }
+                    if(!empty($request->source)) {
+                        $sourceArray = explode('.', $request->source);
+                        $source = !empty($sourceArray)?$sourceArray[0]:'';
+                    } else {
+                        $source = '';
+                    }
                     //insert post
                     $data = Post::create([
                         'name' => $postName,
@@ -362,7 +368,7 @@ class CrawlerController extends Controller
                         'position' => 1,
                         'start_date' => CommonMethod::datetimeConvert($request->start_date, $request->start_time),
                         'status' => $request->status,
-                        'source' => $request->source,
+                        'source' => $source,
                         'source_url' => $link,
                     ]);
                     if($data) {

@@ -251,7 +251,7 @@
 												</div>
 											</div>
 											<div class="form-group">
-												<label>Nguồn</label>
+												<label>Domain Nguồn</label>
 												<p>ex: vnexpress.net</p>
 												<div class="row">
 													<div class="col-sm-12">
