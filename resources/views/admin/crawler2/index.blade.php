@@ -26,7 +26,6 @@
 							<div class="col-sm-6">
 								<form action="{{ url('admin/crawler2/truyenfullpost') }}" method="POST">
 									{!! csrf_field() !!}
-									<input type="hidden" name="source" value="truyenfull.vn">
 									<div class="box-header">
 										<h3 class="box-title">Truyenfull.vn</h3>
 									</div>
@@ -44,10 +43,10 @@
 										<div class="row">
 											<div class="col-sm-6">
 												<div class="form-group">
-													<label>ID thể loại chính</label>
+													<label>Chuyên mục/thể loại chính</label>
 													<div class="row">
 														<div class="col-sm-12">
-															<input name="type_main_id" type="text" value="{{ old('type_main_id') }}" class="form-control onlyNumber">
+														{!! Form::select('type_main_id', $postTypeArray, old('type_main_id'), array('class' => 'form-control')) !!}
 														</div>
 													</div>
 												</div>
@@ -73,7 +72,6 @@
 							<div class="col-sm-6">
 								<form action="{{ url('admin/crawler2/truyenfullpostep') }}" method="POST">
 									{!! csrf_field() !!}
-									<input type="hidden" name="source" value="truyenfull.vn">
 									<div class="box-header">
 										<h3 class="box-title">Truyenfull.vn</h3>
 									</div>
@@ -105,6 +103,45 @@
 													<div class="row">
 														<div class="col-sm-12">
 															<input name="post_id_end" type="text" value="{{ old('post_id_end') }}" class="form-control onlyNumber">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="box-footer">
+										<input type="submit" class="btn btn-primary" value="Lưu lại" />
+										<input type="reset" class="btn btn-default" value="Nhập lại" />
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<form action="{{ url('admin/crawler2/truyenfullpostchapep') }}" method="POST">
+									{!! csrf_field() !!}
+									<div class="box-header">
+										<h3 class="box-title">Truyenfull.vn</h3>
+									</div>
+									<div class="box-body">
+										<h4>Lấy Truyện + Chap</h4>
+										<div class="row">
+											<div class="col-sm-6">
+												<div class="form-group">
+													<label>Link truyện</label>
+													<div class="row">
+														<div class="col-sm-12">
+															<input name="url" type="text" value="{{ old('url') }}" class="form-control">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-6">
+												<div class="form-group">
+													<label>Chuyên mục/thể loại chính</label>
+													<div class="row">
+														<div class="col-sm-12">
+														{!! Form::select('type_main_id', $postTypeArray, old('type_main_id'), array('class' => 'form-control')) !!}
 														</div>
 													</div>
 												</div>
