@@ -34,8 +34,8 @@ class Crawler2Controller extends Controller
         // source pattern
         $sourceArray = array(
                 '' => '-- chọn',
-                'webtruyen.com' => 'webtruyen.com',
-                'thichdoctruyen.com' => 'thichdoctruyen.com',
+                'webtruyen' => 'webtruyen.com',
+                'thichdoctruyen' => 'thichdoctruyen.com',
             );
         // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');
@@ -258,6 +258,10 @@ class Crawler2Controller extends Controller
 
     private function insertChap($value)
     {
+        // if source_url no truyenfull.vn then return
+        if(strpos($value->source_url, 'truyenfull.vn') === false) {
+            return 1;
+        }
         $image_dir = 'truyen/' . $value->id;
         $htmlString = CommonMethod::get_remote_data($value->source_url);
         // get all link cat
@@ -485,7 +489,15 @@ class Crawler2Controller extends Controller
         if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->title_pattern) || empty($request->description_pattern) || empty($request->post_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
         }
-
+        $arrayLinks = explode(',', $request->chap_links);
+        $arraySlugs = explode(',', $request->chap_slugs);
+        if(count($arrayLinks) == count($arraySlugs)) {
+            foreach($arrayLinks as $key => $value) {
+                self::insertChapter($request, $key, $value, $arraySlugs[$key]);
+            }
+        } else {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
+        }
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
@@ -496,9 +508,122 @@ class Crawler2Controller extends Controller
         if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->post_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
         }
-
+        // check source
+        switch ($request->source) {
+            case 'webtruyen':
+                $request->title_pattern = 'div.chapter-header ul.w3-ul li h3';
+                $request->description_pattern = '#content';
+                $request->description_pattern_delete = 'div';
+                break;
+            case 'thichdoctruyen':
+                $request->title_pattern = 'h1';
+                $request->description_pattern = 'div.boxview';
+                $request->description_pattern_delete = '';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        if(empty($request->title_pattern) || empty($request->description_pattern)) {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
+        }
+        $arrayLinks = explode(',', $request->chap_links);
+        $arraySlugs = explode(',', $request->chap_slugs);
+        if(count($arrayLinks) == count($arraySlugs)) {
+            foreach($arrayLinks as $key => $value) {
+                self::insertChapter($request, $key, $value, $arraySlugs[$key]);
+            }
+        } else {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
+        }
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
+    private function insertChapter($request, $key, $link, $slug)
+    {
+        $post_id = $request->post_id;
+        // check post_eps
+        $postEp = PostEp::where('slug', $slug)->where('post_id', $post_id)->first();
+        if(isset($postEp)) {
+            return 1;
+        }
+        $title_pattern = $request->title_pattern;
+        $description_pattern = $request->description_pattern;
+        $description_pattern_delete = $request->description_pattern_delete;
+        $source = $request->source;
+        $image_dir = 'truyen/' . $post_id;
+        // get volume epchap
+        if(strpos($slug, 'quyen') !== false) {
+            $epPartArray = explode('-', $slug);
+            $volume = $epPartArray[1];
+            if(count($epPartArray) > 4) {
+                $epchap = $epPartArray[3] . '-' . $epPartArray[4];
+            } else {
+                $epchap = $epPartArray[3];
+            }
+        } else {
+            $volume = 0;
+            $epchap = str_replace('chuong-', '', $slug);
+        }
+        // position
+        $position = $key + 1;
+        // data chapter
+        $htmlString = CommonMethod::get_remote_data($link);
+        // get all link cat
+        $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+        foreach($html->find($title_pattern) as $element) {
+            $title = trim($element->plaintext);
+        }
+        foreach($html->find($description_pattern) as $element) {
+            // Xóa các mẫu trong miêu tả
+            if(!empty($description_pattern_delete)) {
+                $arr = explode(',', $description_pattern_delete);
+                for($i = 0; $i < count($arr); $i++) {
+                    foreach($element->find($arr[$i]) as $e) {
+                        $e->outertext = '';
+                    }
+                }
+            }
+            foreach($element->find('img') as $e) {
+                if($e && !empty($e->src)) {
+                    // origin image upload
+                    $e_src = CommonMethod::createThumb($e->src, $source, $image_dir);
+                    // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
+                    if(!empty($e_src)) {
+                        $e->src = $e_src;
+                    } else {
+                        $e->outertext = '';
+                    }
+                }
+            }
+            $desc = trim($element->innertext);
+        }
+        //loai bo tag trong noi dung
+        if(!empty($desc)) {
+            $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+            // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+        }
+        // insert
+        $data = PostEp::create([
+            'name' => $title,
+            'slug' => $slug,
+            'post_id' => $post_id,
+            'volume' => $volume,
+            'epchap' => $epchap,
+            'description' => isset($desc)?$desc:'',
+            'position' => $position,
+            'start_date' => date('Y-m-d H:i:s'),
+        ]);
+        if(isset($data)) {
+            // start_date update
+            $start_date = strtotime($data->start_date) + $key;
+            $start_date = date('Y-m-d H:i:s', $start_date);
+            $data->update(['start_date' => $start_date]);
+            // post start date update
+            Post::find($post_id)->update(['start_date' => date('Y-m-d H:i:s')]);
+        }
+        return 1;
+    }
 
 }

@@ -186,8 +186,8 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label>Domain nguồn</label>
-											<p>ex: vnexpress.net</p>
+											<label>Nguồn</label>
+											<p>ex: vnexpress</p>
 											<div class="row">
 												<div class="col-sm-12">
 													<input name="source" type="text" value="{{ old('source') }}" class="form-control">
@@ -259,7 +259,7 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label>Domain nguồn</label>
+											<label>Nguồn</label>
 											<div class="row">
 												<div class="col-sm-12">
 													{!! Form::select('source', $sourceArray, old('source'), array('class' => 'form-control')) !!}
