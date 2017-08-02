@@ -44,11 +44,11 @@ class NovCron extends Command
   private function getPostContinue()
   {
     $data = DB::table('posts')
-              ->select('id', 'source', 'source_url')
+              ->where('source', 'truyenfull')
               ->where('kind', SLUG_POST_KIND_UPDATING)
               ->where('status', ACTIVE)
               ->where('start_date', '<=', date('Y-m-d H:i:s'))
-              ->get();
+              ->lists('id');
     return $data;
   }
 }

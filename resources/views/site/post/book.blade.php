@@ -101,13 +101,13 @@
       @endforeach
     </div>
 
-    <div class="book-info mb-3">Nguồn: 
+    {{--<div class="book-info mb-3">Nguồn: 
       @if(!empty($post->source))
         {!! $post->source !!}
       @else 
         Không rõ
       @endif
-    </div>
+    </div>--}}
 
     @if(isset($post->epFirst) || isset($post->epLast))
       @if(($post->epFirst->id == $post->epLast->id) || $post->type == POST_SHORT)
