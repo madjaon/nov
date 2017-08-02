@@ -277,7 +277,7 @@ class Crawler2Controller extends Controller
         return;
     }
 
-    private function catsList()
+    private function catsList($key)
     {
         $array = array(
             1 => "http://truyenfull.vn/the-loai/tien-hiep/",
@@ -317,18 +317,27 @@ class Crawler2Controller extends Controller
             35 => "http://truyenfull.vn/the-loai/van-hoc-viet-nam/",
             36 => "http://truyenfull.vn/the-loai/light-novel/"
         );
-        return $array[1];
+        return $array[$key];
     }
 
-    public function truyenfullpost()
+    public function truyenfullpost(Request $request)
     {
-        $typeMainId = 1;
-        $catsList = self::catsList();
-        $cats = [$catsList];
-        $category_page_link = $catsList . 'trang-[page_number]/';
+        Cache::flush();
+        trimRequest($request);
+        if(empty($request->type_main_id) && empty($request->url)) {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
+        }
+        $typeMainId = !empty($request->type_main_id)?$request->type_main_id:1;
+        if(!empty($request->url)) {
+            $catLink = $request->url;
+        } else {
+            $catLink = self::catsList($typeMainId);
+        }
+        $cats = [$catLink];
+        $category_page_link = $catLink . 'trang-[page_number]/';
         // $category_page_link = '';
         $category_page_start = 2;
-        $category_page_end = 13;
+        $category_page_end = !empty($request->category_page_end)?$request->category_page_end:1;
         //check paging. neu trang ket thuc > 1 va co link mau trang thi moi lay ds link trang
         if(!empty($category_page_link) && !empty($category_page_end) && $category_page_end > 1) {
             for($i = $category_page_start; $i <= $category_page_end; $i++) {
@@ -351,7 +360,7 @@ class Crawler2Controller extends Controller
                 }
                 if(count($links[$key]) > 0) {
                     foreach($links[$key] as $k => $v) {
-                        self::insertPost($k, $v, $titles[$key][$k], $lastEpLinks[$key][$k], $typeMainId);
+                        self::insertPost($request, $k, $v, $titles[$key][$k], $lastEpLinks[$key][$k], $typeMainId);
                     }
                 }
             }
@@ -359,7 +368,7 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công');
     }
 
-    private function insertPost($key, $link, $title, $lastEpLink, $typeMainId) {
+    private function insertPost($request, $key, $link, $title, $lastEpLink, $typeMainId) {
         $title = trim($title);
         $link = trim($link);
         $slug = CommonMethod::convert_string_vi_to_en($title);
@@ -455,10 +464,31 @@ class Crawler2Controller extends Controller
         return 1;
     }
 
-    public function truyenfullpostep()
+    public function truyenfullpostep(Request $request)
     {
-        $source = 'truyenfull.vn';
-        $urls = Post::select('id', 'url', 'source_url')->get();
+        Cache::flush();
+        trimRequest($request);
+        $source = $request->source;
+        if(!empty($request->post_ids)) {
+            $post_ids = $request->post_ids;
+        } else {
+            if(!empty($request->post_id_start) && !empty($request->post_id_end)) {
+                if($request->post_id_start >= $request->post_id_end) {
+                    return redirect()->route('admin.crawler2.index')->with('warning', 'ID post bắt đầu phải nhỏ hơn ID post kết thúc');
+                }
+                $post_ids = '';
+                for($i = $request->post_id_start; $i <= $request->post_id_end; $i++) {
+                    if($i == $request->post_id_end) {
+                        $post_ids .= $i;
+                    } else {
+                        $post_ids .= $i . ',';
+                    }
+                }
+            } else {
+                return redirect()->route('admin.crawler2.index')->with('warning', 'Mời nhập Id');
+            }
+        }
+        $urls = Post::select('id', 'url', 'source_url')->whereIn('id', explode(',', $post_ids))->get();
         if(count($urls) > 0) {
             foreach($urls as $key => $value) {
                 $image_dir = 'truyen/' . $value->id;
