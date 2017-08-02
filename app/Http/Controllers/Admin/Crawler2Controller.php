@@ -529,16 +529,25 @@ class Crawler2Controller extends Controller
                 $request->title_pattern = 'div.chapter-header ul.w3-ul li h3';
                 $request->description_pattern = '#content';
                 $request->description_pattern_delete = 'div';
+                $request->source = 'webtruyen.com';
                 break;
             case 'thichdoctruyen':
                 $request->title_pattern = 'h1';
                 $request->description_pattern = 'div.boxview';
                 $request->description_pattern_delete = '';
+                $request->source = 'thichdoctruyen.com';
                 break;
             case 'santruyen':
                 $request->title_pattern = 'h1';
                 $request->description_pattern = 'div.chapterContent';
                 $request->description_pattern_delete = '';
+                $request->source = 'santruyen.com';
+                break;
+            case 'truyenfull':
+                $request->title_pattern = 'h2';
+                $request->description_pattern = '.chapter-c';
+                $request->description_pattern_delete = '.ads-holder';
+                $request->source = 'truyenfull.vn';
                 break;
             
             default:

@@ -117,7 +117,7 @@
 							<div class="row">
 								<div class="col-sm-4">
 									<div class="form-group">
-										<label>Nguồn (domain:ex:google.com)</label>
+										<label>Nguồn (ex: vnexpress)</label>
 										<div class="row">
 											<div class="col-sm-12">
 												<input name="source" type="text" value="{{ old('source') }}" class="form-control">
