@@ -34,10 +34,10 @@ class Crawler2Controller extends Controller
         // source pattern
         $sourceArray = array(
                 '' => '-- chọn',
-                'webtruyen' => 'webtruyen.com',
-                'thichdoctruyen' => 'thichdoctruyen.com',
-                'santruyen' => 'santruyen.com',
-                'truyenfull' => 'truyenfull.vn',
+                'webtruyen' => 'webtruyen',
+                'thichdoctruyen' => 'thichdoctruyen',
+                'santruyen' => 'santruyen',
+                'truyenfull' => 'truyenfull',
             );
         // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');
