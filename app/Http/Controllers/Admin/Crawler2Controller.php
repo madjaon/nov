@@ -36,6 +36,7 @@ class Crawler2Controller extends Controller
                 '' => '-- chọn',
                 'webtruyen' => 'webtruyen.com',
                 'thichdoctruyen' => 'thichdoctruyen.com',
+                'santruyen' => 'santruyen.com',
             );
         // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');
@@ -262,6 +263,13 @@ class Crawler2Controller extends Controller
         if(strpos($value->source_url, 'truyenfull.vn') === false) {
             return 1;
         }
+        // post ep latest de lay position
+        $postEpLatest = self::getLatestEp($value->id);
+        if(isset($postEpLatest)) {
+            $pos = $postEpLatest->position + 1;
+        } else {
+            $pos = 1;
+        }
         $image_dir = 'truyen/' . $value->id;
         $htmlString = CommonMethod::get_remote_data($value->source_url);
         // get all link cat
@@ -325,7 +333,7 @@ class Crawler2Controller extends Controller
                 // name
                 $name = $chapTitles[$k];
                 // position
-                $position = $k + 1;
+                $position = $k + $pos;
                 // data chapter
                 $htmlString2 = CommonMethod::get_remote_data($v);
                 // get all link cat
@@ -492,8 +500,15 @@ class Crawler2Controller extends Controller
         $arrayLinks = explode(',', $request->chap_links);
         $arraySlugs = explode(',', $request->chap_slugs);
         if(count($arrayLinks) == count($arraySlugs)) {
+            // post ep latest de lay position
+            $postEpLatest = self::getLatestEp($request->post_id);
+            if(isset($postEpLatest)) {
+                $pos = $postEpLatest->position + 1;
+            } else {
+                $pos = 1;
+            }
             foreach($arrayLinks as $key => $value) {
-                self::insertChapter($request, $key, $value, $arraySlugs[$key]);
+                self::insertChapter($request, $key, $pos, $value, $arraySlugs[$key]);
             }
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
@@ -520,6 +535,11 @@ class Crawler2Controller extends Controller
                 $request->description_pattern = 'div.boxview';
                 $request->description_pattern_delete = '';
                 break;
+            case 'santruyen':
+                $request->title_pattern = 'h1';
+                $request->description_pattern = 'div.chapterContent';
+                $request->description_pattern_delete = '';
+                break;
             
             default:
                 # code...
@@ -531,8 +551,15 @@ class Crawler2Controller extends Controller
         $arrayLinks = explode(',', $request->chap_links);
         $arraySlugs = explode(',', $request->chap_slugs);
         if(count($arrayLinks) == count($arraySlugs)) {
+            // post ep latest de lay position
+            $postEpLatest = self::getLatestEp($request->post_id);
+            if(isset($postEpLatest)) {
+                $pos = $postEpLatest->position + 1;
+            } else {
+                $pos = 1;
+            }
             foreach($arrayLinks as $key => $value) {
-                self::insertChapter($request, $key, $value, $arraySlugs[$key]);
+                self::insertChapter($request, $key, $pos, $value, $arraySlugs[$key]);
             }
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
@@ -540,7 +567,7 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
-    private function insertChapter($request, $key, $link, $slug)
+    private function insertChapter($request, $key, $pos, $link, $slug)
     {
         $post_id = $request->post_id;
         // check post_eps
@@ -567,7 +594,7 @@ class Crawler2Controller extends Controller
             $epchap = str_replace('chuong-', '', $slug);
         }
         // position
-        $position = $key + 1;
+        $position = $key + $pos;
         // data chapter
         $htmlString = CommonMethod::get_remote_data($link);
         // get all link cat
@@ -624,6 +651,18 @@ class Crawler2Controller extends Controller
             Post::find($post_id)->update(['start_date' => date('Y-m-d H:i:s')]);
         }
         return 1;
+    }
+
+    private function getLatestEp($id)
+    {
+        $data = DB::table('post_eps')
+                    ->select('id', 'name', 'slug', 'volume', 'epchap', 'start_date', 'position')
+                    ->where('post_id', $id)
+                    ->where('status', ACTIVE)
+                    ->where('start_date', '<=', date('Y-m-d H:i:s'))
+                    ->orderByRaw(DB::raw("position = '0', position desc"))
+                    ->first();
+        return $data;
     }
 
 }
