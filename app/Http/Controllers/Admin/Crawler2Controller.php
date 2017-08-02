@@ -31,9 +31,16 @@ class Crawler2Controller extends Controller
     
     public function index()
     {
+        // source pattern
+        $sourceArray = array(
+                '' => '-- chọn',
+                'webtruyen.com' => 'webtruyen.com',
+                'thichdoctruyen.com' => 'thichdoctruyen.com',
+            );
+        // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');
         $postTypeArray = array_add($postTypeArray, '', '-- chọn');
-        return view('admin.crawler2.index', ['postTypeArray' => $postTypeArray]);
+        return view('admin.crawler2.index', ['postTypeArray' => $postTypeArray, 'sourceArray' => $sourceArray]);
     }
 
     private function catlinksList($key)
@@ -470,5 +477,28 @@ class Crawler2Controller extends Controller
         }
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
+
+    public function stealchapters(Request $request)
+    {
+        Cache::flush();
+        trimRequest($request);
+        if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->title_pattern) || empty($request->description_pattern) || empty($request->post_id)) {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
+        }
+
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
+    }
+
+    public function stealchapterspattern(Request $request)
+    {
+        Cache::flush();
+        trimRequest($request);
+        if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->post_id)) {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
+        }
+
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
+    }
+
 
 }

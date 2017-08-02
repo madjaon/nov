@@ -62,10 +62,12 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     // clear all cache & views
     Route::get('clearallstorage', 'UtilityController@clearallstorage');
     // crawler
-    Route::post('crawler/save', 'CrawlerController@save');
-    Route::post('crawler/steal', 'CrawlerController@steal');
-    Route::resource('crawler', 'CrawlerController');
+    // Route::post('crawler/save', 'CrawlerController@save');
+    // Route::post('crawler/steal', 'CrawlerController@steal');
+    // Route::resource('crawler', 'CrawlerController');
     // crawler 2 for novel
+    Route::post('crawler2/stealchapterspattern', 'Crawler2Controller@stealchapterspattern');
+    Route::post('crawler2/stealchapters', 'Crawler2Controller@stealchapters');
     Route::post('crawler2/truyenfullpostchapep', 'Crawler2Controller@truyenfullpostchapep');
     Route::post('crawler2/truyenfullpostep', 'Crawler2Controller@truyenfullpostep');
     Route::post('crawler2/truyenfullpost', 'Crawler2Controller@truyenfullpost');
