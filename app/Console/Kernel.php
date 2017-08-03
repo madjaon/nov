@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('nov:cron')
-                 ->everyMinute();
+                 ->hourly();
     }
 
     // https://laravel.com/docs/5.2/scheduling
