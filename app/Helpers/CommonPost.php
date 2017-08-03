@@ -88,7 +88,6 @@ class CommonPost
 	// posts = array ('id' => 'source_url')
 	static function insertChapsByPosts($posts)
 	{
-		Cache::flush();
 	    if(!empty($posts)) {
 			foreach($posts as $key => $value) {
 				// post ep latest de lay position
@@ -116,7 +115,7 @@ class CommonPost
 					$kind = SLUG_POST_KIND_UPDATING;
 				}
 				// Pagination
-				foreach($html->find('.pagination') as $k => $element) {
+				foreach($html->find('.pagination') as $element) {
 					$countNodes = count($element->nodes);
 					$nodesKeyLast = $countNodes - 1;
 					if(strpos($element->nodes[$nodesKeyLast]->plaintext, 'Cuối') !== false) {
@@ -133,6 +132,8 @@ class CommonPost
 				} else {
 					$totalPage = 1;
 				}
+				$chapTitles = [];
+				$chapUrls = [];
 				// page = 1
 				foreach($html->find('ul.list-chapter li a') as $element) {
 					$chapTitles[] = trim($element->plaintext);
@@ -155,82 +156,82 @@ class CommonPost
 					if($epContinue > 0) {
 						$posi = 0;
 						foreach($chapUrls as $k => $v) {
-						// chi lay chap tu vi tri bang so luong chap da co
-						if($k < $countEp) {
-							continue;
-						}
-						// get volume epchap
-						$epchapArray = explode('/', $v);
-						if(strpos($epchapArray[4], 'quyen') !== false) {
-							$epPartArray = explode('-', $epchapArray[4]);
-							$volume = $epPartArray[1];
-							if(count($epPartArray) > 4) {
-								$epchap = $epPartArray[3] . '-' . $epPartArray[4];
+							// chi lay chap tu vi tri bang so luong chap da co
+							if($k < $countEp) {
+								continue;
+							}
+							// get volume epchap
+							$epchapArray = explode('/', $v);
+							if(strpos($epchapArray[4], 'quyen') !== false) {
+								$epPartArray = explode('-', $epchapArray[4]);
+								$volume = $epPartArray[1];
+								if(count($epPartArray) > 4) {
+									$epchap = $epPartArray[3] . '-' . $epPartArray[4];
+								} else {
+									$epchap = $epPartArray[3];
+								}
 							} else {
-								$epchap = $epPartArray[3];
+								$volume = 0;
+								$epchap = str_replace('chuong-', '', $epchapArray[4]);
 							}
-						} else {
-							$volume = 0;
-							$epchap = str_replace('chuong-', '', $epchapArray[4]);
-						}
-						// slug
-						$slug = $epchapArray[4];
-						// check post_eps
-						$postEp = PostEp::where('slug', $slug)->where('post_id', $key)->first();
-						if(isset($postEp)) {
-							continue;
-						}
-						// name
-						$name = $chapTitles[$k];
-						// position
-						$position = $posi + $pos;
-						$posi += 1;
-						// data chapter
-						$htmlString2 = CommonMethod::get_remote_data($v);
-						// get all link cat
-						$html2 = HtmlDomParser::str_get_html($htmlString2); // Create DOM from URL or file
-						foreach($html2->find('.chapter-c') as $element) {
-							// bo quang cao o giua
-							foreach($element->find('.ads-holder') as $e) {
-								$e->outertext = '';
+							// slug
+							$slug = $epchapArray[4];
+							// check post_eps
+							$postEp = PostEp::where('slug', $slug)->where('post_id', $key)->first();
+							if(isset($postEp)) {
+								continue;
 							}
-							foreach($element->find('img') as $e) {
-								if($e && !empty($e->src)) {
-									// origin image upload
-									$e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
-									// neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
-									if(!empty($e_src)) {
-										$e->src = $e_src;
-									} else {
-										$e->outertext = '';
+							// name
+							$name = $chapTitles[$k];
+							// position
+							$position = $posi + $pos;
+							$posi += 1;
+							// data chapter
+							$htmlString2 = CommonMethod::get_remote_data($v);
+							// get all link cat
+							$html2 = HtmlDomParser::str_get_html($htmlString2); // Create DOM from URL or file
+							foreach($html2->find('.chapter-c') as $element) {
+								// bo quang cao o giua
+								foreach($element->find('.ads-holder') as $e) {
+									$e->outertext = '';
+								}
+								foreach($element->find('img') as $e) {
+									if($e && !empty($e->src)) {
+										// origin image upload
+										$e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
+										// neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
+										if(!empty($e_src)) {
+											$e->src = $e_src;
+										} else {
+											$e->outertext = '';
+										}
 									}
 								}
+								$desc = trim($element->innertext);
 							}
-							$desc = trim($element->innertext);
-						}
-						//loai bo tag trong noi dung
-						if(!empty($desc)) {
-							$desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
-							// $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
-						}
-						// insert
-						$data = PostEp::create([
-							'name' => $name,
-							'slug' => $slug,
-							'post_id' => $key,
-							'volume' => $volume,
-							'epchap' => $epchap,
-							'description' => isset($desc)?$desc:'',
-							'position' => $position,
-							'start_date' => date('Y-m-d H:i:s'),
-						]);
-						if(isset($data)) {
-							// start_date update
-							$start_date = strtotime($data->start_date) + $k;
-							$start_date = date('Y-m-d H:i:s', $start_date);
-							$data->update(['start_date' => $start_date]);
-							// post start date update
-							Post::find($data->post_id)->update(['start_date' => date('Y-m-d H:i:s'), 'kind' => $kind]);
+							//loai bo tag trong noi dung
+							if(!empty($desc)) {
+								$desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+								// $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+							}
+							// insert
+							$data = PostEp::create([
+								'name' => $name,
+								'slug' => $slug,
+								'post_id' => $key,
+								'volume' => $volume,
+								'epchap' => $epchap,
+								'description' => isset($desc)?$desc:'',
+								'position' => $position,
+								'start_date' => date('Y-m-d H:i:s'),
+							]);
+							if(isset($data)) {
+								// start_date update
+								$start_date = strtotime($data->start_date) + $k;
+								$start_date = date('Y-m-d H:i:s', $start_date);
+								$data->update(['start_date' => $start_date]);
+								// post start date update
+								Post::find($key)->update(['start_date' => date('Y-m-d H:i:s'), 'kind' => $kind]);
 							}
 						}
 					}

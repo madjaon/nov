@@ -43,7 +43,7 @@ class CommonMethod
 	}
 	static function UR_exists($url)
 	{
-	   $headers=get_headers($url);
+	   $headers = @get_headers($url);
 	   return stripos($headers[0],"200 OK")?true:false;
 	}
 	static function remote_file_exists($url)

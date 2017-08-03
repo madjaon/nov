@@ -41,6 +41,7 @@ class Crawler2Controller extends Controller
             );
         // post types
         $postTypeArray = CommonQuery::getArrayWithStatus('post_types');
+        $postTypeArray = array_except($postTypeArray, [37, 38, 39, 40]);
         $postTypeArray = array_add($postTypeArray, '', '-- chọn');
         return view('admin.crawler2.index', ['postTypeArray' => $postTypeArray, 'sourceArray' => $sourceArray]);
     }
@@ -125,7 +126,7 @@ class Crawler2Controller extends Controller
                 }
                 if(count($links[$key]) > 0) {
                     foreach($links[$key] as $k => $v) {
-                        self::insertPost($request, $k, $v, $titles[$key][$k], $typeMainId);
+                        self::insertPost($k, $v, $titles[$key][$k], $typeMainId);
                     }
                 }
             }
@@ -133,7 +134,7 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
-    private function insertPost($request, $key, $link, $title, $typeMainId) {
+    private function insertPost($key, $link, $title, $typeMainId) {
         $slug = CommonMethod::convert_string_vi_to_en($title);
         $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
         $post = Post::where('slug', $slug)->first();
@@ -167,12 +168,6 @@ class Crawler2Controller extends Controller
             foreach($html->find('.source') as $element) {
                 $source = trim($element->plaintext);
             }
-            foreach($html->find('div.info div a[itemprop=genre]') as $element) {
-                $genres[] = trim($element->plaintext);
-            }
-            foreach($html->find('div.info div a[itemprop=author]') as $element) {
-                $authors[] = trim($element->plaintext);
-            }
             //insert 
             $data = Post::create([
                 'name' => $title,
@@ -190,6 +185,9 @@ class Crawler2Controller extends Controller
                 $start_date = date('Y-m-d H:i:s', $start_date);
                 $data->update(['start_date' => $start_date]);
                 // tags
+                foreach($html->find('div.info div a[itemprop=author]') as $element) {
+                    $authors[] = trim($element->plaintext);
+                }
                 if(!empty($authors)) {
                     $authorIds = [];
                     foreach($authors as $author) {
@@ -215,6 +213,9 @@ class Crawler2Controller extends Controller
                     }
                 }
                 // types:
+                foreach($html->find('div.info div a[itemprop=genre]') as $element) {
+                    $genres[] = trim($element->plaintext);
+                }
                 if(!empty($genres)) {
                     $typeIds = [];
                     foreach($genres as $gen) {
@@ -264,7 +265,7 @@ class Crawler2Controller extends Controller
         }
         $data = DB::table('posts')
                     ->whereIn('id', explode(',', $post_ids))
-                    ->where('source', 'truyenfull')
+                    ->where('source_url', 'like', '%truyenfull%')
                     ->lists('source_url', 'id');
         if(!empty($data)) {
             CommonPost::insertChapsByPosts($data);
@@ -322,12 +323,6 @@ class Crawler2Controller extends Controller
         foreach($html->find('.source') as $element) {
             $source = trim($element->plaintext);
         }
-        foreach($html->find('div.info div a[itemprop=genre]') as $element) {
-            $genres[] = trim($element->plaintext);
-        }
-        foreach($html->find('div.info div a[itemprop=author]') as $element) {
-            $authors[] = trim($element->plaintext);
-        }
         //insert 
         $data = Post::create([
             'name' => $title,
@@ -341,6 +336,9 @@ class Crawler2Controller extends Controller
         ]);
         if(isset($data)) {
             // tags
+            foreach($html->find('div.info div a[itemprop=author]') as $element) {
+                $authors[] = trim($element->plaintext);
+            }
             if(!empty($authors)) {
                 $authorIds = [];
                 foreach($authors as $author) {
@@ -366,6 +364,9 @@ class Crawler2Controller extends Controller
                 }
             }
             // types:
+            foreach($html->find('div.info div a[itemprop=genre]') as $element) {
+                $genres[] = trim($element->plaintext);
+            }
             if(!empty($genres)) {
                 $typeIds = [];
                 foreach($genres as $gen) {
@@ -388,7 +389,7 @@ class Crawler2Controller extends Controller
             // get chapters
             $data2 = DB::table('posts')
                         ->whereId($data->id)
-                        ->where('source', 'truyenfull')
+                        ->where('source_url', 'like', '%truyenfull%')
                         ->lists('source_url', 'id');
             if(!empty($data2)) {
                 CommonPost::insertChapsByPosts($data2);

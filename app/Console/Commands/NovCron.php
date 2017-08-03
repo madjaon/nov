@@ -51,7 +51,7 @@ class NovCron extends Command
 	private function getPostContinue()
 	{
 		$data = DB::table('posts')
-				->where('source', 'truyenfull')
+				->where('source_url', 'like', '%truyenfull%')
 				->where('kind', SLUG_POST_KIND_UPDATING)
 				->where('status', ACTIVE)
 				->where('start_date', '<=', date('Y-m-d H:i:s'))
