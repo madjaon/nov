@@ -71,7 +71,7 @@
 								</form>
 							</div>
 							<div class="col-sm-6">
-								<form action="{{ url('admin/crawler2/truyenfullpostep') }}" method="POST">
+								<form action="{{ url('admin/crawler2/truyenfullchap') }}" method="POST">
 									{!! csrf_field() !!}
 									<div class="box-header">
 										<h3 class="box-title">Truyenfull.vn</h3>
@@ -119,7 +119,7 @@
 						</div>
 						<div class="row">
 							<div class="col-sm-12">
-								<form action="{{ url('admin/crawler2/truyenfullpostchapep') }}" method="POST">
+								<form action="{{ url('admin/crawler2/truyenfullpostchap') }}" method="POST">
 									{!! csrf_field() !!}
 									<div class="box-header">
 										<h3 class="box-title">Truyenfull.vn</h3>

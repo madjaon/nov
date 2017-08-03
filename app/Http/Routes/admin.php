@@ -68,8 +68,8 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     // crawler 2 for novel
     Route::post('crawler2/stealchapterspattern', 'Crawler2Controller@stealchapterspattern');
     Route::post('crawler2/stealchapters', 'Crawler2Controller@stealchapters');
-    Route::post('crawler2/truyenfullpostchapep', 'Crawler2Controller@truyenfullpostchapep');
-    Route::post('crawler2/truyenfullpostep', 'Crawler2Controller@truyenfullpostep');
+    Route::post('crawler2/truyenfullpostchap', 'Crawler2Controller@truyenfullpostchap');
+    Route::post('crawler2/truyenfullchap', 'Crawler2Controller@truyenfullchap');
     Route::post('crawler2/truyenfullpost', 'Crawler2Controller@truyenfullpost');
     Route::resource('crawler2', 'Crawler2Controller');
 });
