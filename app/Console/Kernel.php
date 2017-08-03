@@ -30,4 +30,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('nov:cron')
                  ->everyMinute();
     }
+
+    // https://laravel.com/docs/5.2/scheduling
+    // * * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1
 }
