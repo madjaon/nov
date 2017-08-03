@@ -735,19 +735,19 @@ class SiteController extends Controller
     // https://stackoverflow.com/questions/25338456/laravel-union-paginate-at-the-same-time
     private function searchQueryPostTag($s)
     {
-        $s = CommonMethod::convert_string_vi_to_en($s);
+        // $s = CommonMethod::convert_string_vi_to_en($s);
         // $slug = strtolower(preg_replace('/[^a-zA-Z0-9]+/i', '-', $slug));
         // addslashes: xu ly chuoi gay loi cau lenh sql. 
         // co the k dung, thay $s -> $slug (nhung k biet co search chinh xac hay khong)
-        $s = addslashes($s);
+        $s = '+'. str_replace(' ', ' +', addslashes(trim($s)));
         $data = DB::table('posts')
             ->leftJoin('post_tag_relations', 'posts.id', '=', 'post_tag_relations.post_id')
             ->leftJoin('post_tags', 'post_tag_relations.tag_id', '=', 'post_tags.id')
             ->select('posts.id', 'posts.name AS name', 'posts.slug AS slug',  'posts.name2 AS name2', 'posts.image', 'posts.type', 'posts.kind', 'posts.view')
             ->where('posts.status', ACTIVE)
             ->where('posts.start_date', '<=', date('Y-m-d H:i:s'))
-            ->whereRaw('MATCH('.env('DB_PREFIX').'posts.slug,'.env('DB_PREFIX').'posts.name,'.env('DB_PREFIX').'posts.name2) AGAINST ("'.$s.'")')
-            ->orWhereRaw('MATCH('.env('DB_PREFIX').'post_tags.slug,'.env('DB_PREFIX').'post_tags.name) AGAINST ("'.$s.'")')
+            ->whereRaw('MATCH('.env('DB_PREFIX').'posts.slug,'.env('DB_PREFIX').'posts.name,'.env('DB_PREFIX').'posts.name2) AGAINST ("'.$s.'" IN BOOLEAN MODE)')
+            ->orWhereRaw('MATCH('.env('DB_PREFIX').'post_tags.slug,'.env('DB_PREFIX').'post_tags.name) AGAINST ("'.$s.'" IN BOOLEAN MODE)')
             // ->orWhere('post_tags.slug', 'like', '%'.$slug.'%')
             // ->orWhere('post_tags.name', 'like', '%'.$s.'%')
             ->groupBy('posts.id');
