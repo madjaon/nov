@@ -357,18 +357,17 @@ class UtilityController extends Controller
         trimRequest($request);
 
         $foldername = '21';
-        $imagename = '/images/20150807-tuong-da-130-3.png';
+        $imagename = '/images/truyen/21/117-1.png';
 
         // check & get full image url
         $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
         if($result == '') {
             return redirect('admin/gdriveimage')->with('warning', 'Post ID: ' . $foldername . ' / File không tồn tại: ' . $imagename);
-        } elseif($result == null) {
-            return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!'); 
-        } else {
-            dd($result);
         }
-        return redirect('admin/gdriveimage')->with('success', 'Thành công');
+        if($result == null) {
+            return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!'); 
+        }
+        return redirect('admin/gdriveimage')->with('success', 'Thành công! ' . $result);
     }
 
 }
