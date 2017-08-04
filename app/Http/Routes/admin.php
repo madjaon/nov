@@ -61,6 +61,9 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::get('genthumb', 'UtilityController@genthumb');
     // clear all cache & views
     Route::get('clearallstorage', 'UtilityController@clearallstorage');
+    // gdrive upload image
+    Route::get('gdriveimage', 'UtilityController@gdriveimage');
+    Route::post('gdriveimageAction', 'UtilityController@gdriveimageAction');
     // crawler
     // Route::post('crawler/save', 'CrawlerController@save');
     // Route::post('crawler/steal', 'CrawlerController@steal');

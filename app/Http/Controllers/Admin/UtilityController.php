@@ -10,6 +10,7 @@ use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\CommonMethod;
+use App\Helpers\CommonDrive;
 
 class UtilityController extends Controller
 {
@@ -341,6 +342,33 @@ class UtilityController extends Controller
             $data = $data->take($take);
         }
         return $data->get();
+    }
+
+    // GOOGLE DRIVE UPLOAD IMAGE & GET LINK
+    public function gdriveimage()
+    {
+        return view('admin.utility.gdrive');
+    }
+
+    // https://gist.github.com/ivanvermeyen/cc7c59c185daad9d4e7cb8c661d7b89b
+    // https://github.com/ivanvermeyen/laravel-google-drive-demo
+    public function gdriveimageAction(Request $request)
+    {
+        trimRequest($request);
+
+        $foldername = '21';
+        $imagename = '/images/20150807-tuong-da-130-3.png';
+
+        // check & get full image url
+        $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
+        if($result == '') {
+            return redirect('admin/gdriveimage')->with('warning', 'Post ID: ' . $foldername . ' / File không tồn tại: ' . $imagename);
+        } elseif($result == null) {
+            return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!'); 
+        } else {
+            dd($result);
+        }
+        return redirect('admin/gdriveimage')->with('success', 'Thành công');
     }
 
 }

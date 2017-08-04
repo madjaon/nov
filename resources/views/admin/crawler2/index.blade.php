@@ -8,6 +8,10 @@
 	<div class="col-xs-12">
 		<a href="{{ route('admin.post.index') }}" class="btn btn-success btn-sm">Danh sách post</a>
 		<a href="{{ route('admin.post.create') }}" class="btn btn-primary btn-sm">Thêm post</a>
+		<a href="/admin/genwatermark" class="btn btn-danger btn-sm">Gen Watermark</a>
+		<a href="/admin/gensitemap" class="btn btn-primary btn-sm">Gen Sitemap</a>
+		<a href="/admin/crawler2" class="btn btn-primary btn-sm">Steal novel</a>
+		<a href="/admin/gdriveimage" class="btn btn-primary btn-sm">Google drive</a>
 	</div>
 </div>
 

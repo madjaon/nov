@@ -158,6 +158,7 @@ return [
         // Barryvdh\Debugbar\ServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+        App\Providers\GoogleDriveServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
 

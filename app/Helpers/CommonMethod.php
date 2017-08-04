@@ -240,6 +240,29 @@ class CommonMethod
 		}
 		return null;
 	}
+	//
+	static function getFullImageLink($imageUrl, $domainSource)
+	{
+		//////////////////////////////////////
+	    // make image url (duong dan anh can down ve de up len host)
+	    //////////////////////////////////////
+		//1 so url khong full (k co http://domain... nen tao duong dan full)
+		$imageUrl = self::getfullurl($imageUrl, $domainSource);
+		//if image at localhost, imageUrl must full path with public_path / if internet no need
+	    if(strpos($imageUrl, 'localhost') !== false) {
+	    	//remove http://localhost.../ if exist
+	    	$imageUrlRe = self::removeDomainUrl($imageUrl);
+	    	$imageUrl = public_path().$imageUrlRe;
+	    	if(!file_exists($imageUrl)) {
+		    	return '';
+		    }
+	    } else {
+	    	if(!self::remoteFileExists($imageUrl)) {
+				return '';
+			}
+	    }
+	    return $imageUrl;
+	}
 	//create thumbnail, upload, resize, watermark
 	static function createThumb($imageUrl, $domainSource, $savePath, $imageWidth = null, $imageHeight = null, $mode = null, $watermark = null, $watermarkcode = null, $watermarkposition = null) {
 		//////////////////////////////////////
@@ -264,23 +287,10 @@ class CommonMethod
 	    if (!file_exists($directory)) {
 	        mkdir($directory, 0755, true);
 	    }
-	    //////////////////////////////////////
-	    // make image url (duong dan anh can down ve de up len host)
-	    //////////////////////////////////////
-		//1 so url khong full (k co http://domain... nen tao duong dan full)
-		$imageUrl = self::getfullurl($imageUrl, $domainSource);
-		//if image at localhost, imageUrl must full path with public_path / if internet no need
-	    if(strpos($imageUrl, 'localhost') !== false) {
-	    	//remove http://localhost.../ if exist
-	    	$imageUrlRe = self::removeDomainUrl($imageUrl);
-	    	$imageUrl = public_path().$imageUrlRe;
-	    	if(!file_exists($imageUrl)) {
-		    	return '';
-		    }
-	    } else {
-	    	if(!self::remoteFileExists($imageUrl)) {
-				return '';
-			}
+	    // check & get full image url
+	    $imageUrl = self::getFullImageLink($imageUrl, $domainSource);
+	    if($imageUrl == '') {
+	    	return '';
 	    }
         // open an image file
         try {
@@ -353,23 +363,10 @@ class CommonMethod
         $imageResult = '/images/'.$savePath.'/'.$name;
         //full save path
 	    $path = public_path().$imageResult;
-	    //////////////////////////////////////
-	    // make image url (duong dan anh can down ve de up len host)
-	    //////////////////////////////////////
-		//1 so url khong full (k co http://domain... nen tao duong dan full)
-		$imageUrl = self::getfullurl($imageUrl, $domainSource);
-		//if image at localhost, imageUrl must full path with public_path / if internet no need
-	    if(strpos($imageUrl, 'localhost') !== false) {
-	    	//remove http://localhost.../ if exist
-	    	$imageUrlRe = self::removeDomainUrl($imageUrl);
-	    	$imageUrl = public_path().$imageUrlRe;
-	    	if(!file_exists($imageUrl)) {
-		    	return '';
-		    }
-	    } else {
-	    	if(!self::remoteFileExists($imageUrl)) {
-				return '';
-			}
+	    // check & get full image url
+	    $imageUrl = self::getFullImageLink($imageUrl, $domainSource);
+	    if($imageUrl == '') {
+	    	return '';
 	    }
         // open an image file
         try {
