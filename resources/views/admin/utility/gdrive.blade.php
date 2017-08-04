@@ -25,7 +25,7 @@
 				<div class="box-body">
 					<div class="form-group">
 						<label>ID posts</label>
-						<p>Nếu nhiều, cách nhau bởi dấu phẩy (2,3,4)</p>
+						<p>Cũng là tên folder ảnh. Nếu nhiều, cách nhau bởi dấu phẩy (2,3,4)</p>
 						<div class="row">
 							<div class="col-sm-8">
 								<input name="post_ids" type="text" value="{{ old('post_ids') }}" class="form-control">
