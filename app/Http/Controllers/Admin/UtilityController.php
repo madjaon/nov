@@ -356,18 +356,62 @@ class UtilityController extends Controller
     {
         trimRequest($request);
 
-        $foldername = '21';
-        $imagename = '/images/truyen/21/117-1.png';
+        if(empty($request->post_ids)) {
+            return redirect('admin/gdriveimage')->with('warning', 'Chưa nhập ID post!'); 
+        }
 
-        // check & get full image url
-        $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
-        if($result == '') {
-            return redirect('admin/gdriveimage')->with('warning', 'Post ID: ' . $foldername . ' / File không tồn tại: ' . $imagename);
+        $post_ids = explode(',', $request->post_ids);
+        
+        $errors = '';
+        $chaps = [];
+        foreach($post_ids as $key => $value) {
+            $foldername = $value;
+            $chaps = DB::table('post_eps')
+                        ->select('id', 'description')
+                        ->where('post_id', $value)
+                        ->get();
+            if(!empty($chaps)) {
+                foreach($chaps as $k => $v) {
+                    $desc = '';
+                    $image_links = array();
+                    $image_links_new = array();
+                    preg_match_all('/src="([^"]*)"/i', $v->description, $image_links);
+                    if(!empty($image_links[1])) {
+                        foreach($image_links[1] as $imagename) {
+                            // check & get full image url
+                            $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
+                            if($result == '' || $result == null) {
+                                $errors .= $imagename . '|';
+                            } else {
+                                $src_new = 'https://drive.google.com/uc?export=view&id=' . $result;
+                                if(CommonMethod::remoteFileExists($src_new)) {
+                                    $image_links_new[] = $src_new;
+                                }
+                            }
+                        }
+                    }
+                    if(!empty($image_links_new)) {
+                        $desc = str_replace($image_links[1], $image_links_new, $v->description);
+                        if(!empty($desc)) {
+                            DB::table('post_eps')->whereId($v->id)->update(['description' => $desc]);
+                        }
+                    }
+                }
+            }
         }
-        if($result == null) {
-            return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!'); 
-        }
-        return redirect('admin/gdriveimage')->with('success', 'Thành công! ' . $result);
+        
+        // $foldername = '21';
+        // $imagename = '/images/truyen/21/117-1.png';
+
+        // // check & get full image url
+        // $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
+        // if($result == '') {
+        //     return redirect('admin/gdriveimage')->with('warning', 'Post ID: ' . $foldername . ' / File không tồn tại: ' . $imagename);
+        // }
+        // if($result == null) {
+        //     return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!');
+        // }
+        return redirect('admin/gdriveimage')->with('success', 'Thành công! ' . $errors);
     }
 
 }
