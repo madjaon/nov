@@ -381,7 +381,7 @@ class UtilityController extends Controller
                             // check & get full image url
                             $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
                             if($result == '' || $result == null) {
-                                $errors .= $imagename . '|';
+                                $errors .= $foldername . '+' . $imagename . '|';
                             } else {
                                 $src_new = 'https://drive.google.com/uc?export=view&id=' . $result;
                                 if(CommonMethod::remoteFileExists($src_new)) {
