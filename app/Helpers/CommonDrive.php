@@ -68,7 +68,7 @@ class CommonDrive
     static function getLinkByDriveId($id)
     {
         if(!empty($id)) {
-            return 'https://drive.google.com/uc?id=' . $result;;
+            return 'https://drive.google.com/uc?id=' . $id;;
         } else {
             return '';
         }
