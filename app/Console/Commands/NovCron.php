@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
-use App\Helpers\CommonPost;
+use App\Helpers\CommonCrawler;
 
 class NovCron extends Command
 {
@@ -41,7 +41,7 @@ class NovCron extends Command
 	{
 		$postContinue = self::getPostContinue();
 		if(!empty($postContinue)) {
-			CommonPost::insertChapsByPosts($postContinue);
+			CommonCrawler::insertChapsByPosts($postContinue);
 		} else {
 			$this->info('Nov:Cron No Data Found!');  
 		}
