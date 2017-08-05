@@ -535,7 +535,8 @@ class Crawler2Controller extends Controller
                 if($e && !empty($e->src)) {
                     // origin image upload
                     // $e_src = CommonMethod::createThumb($e->src, $source, $image_dir);
-                    $e_src = CommonDrive::uploadFileToGDrive($e->src, $post_id, $source);
+                    $result = CommonDrive::uploadFileToGDrive($e->src, $post_id, $source);
+                    $e_src = CommonDrive::getLinkByDriveId($result);
                     // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
                     if(!empty($e_src)) {
                         $e->src = $e_src;
@@ -710,7 +711,8 @@ class Crawler2Controller extends Controller
                                     if($e && !empty($e->src)) {
                                         // origin image upload
                                         // $e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
-                                        $e_src = CommonDrive::uploadFileToGDrive($e->src, $key, 'truyenfull.vn');
+                                        $result = CommonDrive::uploadFileToGDrive($e->src, $key, 'truyenfull.vn');
+                                        $e_src = CommonDrive::getLinkByDriveId($result);
                                         // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
                                         if(!empty($e_src)) {
                                             $e->src = $e_src;

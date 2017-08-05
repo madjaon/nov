@@ -8,7 +8,7 @@ class CommonDrive
         if($source == null) {
             $source = CommonMethod::getDomainSource();
         }
-        
+
         // check & get full image url
         $fileurl = CommonMethod::getFullImageLink($imagename, $source);
         
@@ -63,6 +63,15 @@ class CommonDrive
                     ->where('extension', pathinfo($name, PATHINFO_EXTENSION))
                     ->sortBy('timestamp')
                     ->last();
+    }
+
+    static function getLinkByDriveId($id)
+    {
+        if(!empty($id)) {
+            return 'https://drive.google.com/uc?id=' . $result;;
+        } else {
+            return '';
+        }
     }
 
 }

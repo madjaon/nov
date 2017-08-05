@@ -383,7 +383,7 @@ class UtilityController extends Controller
                             if($result == '' || $result == null) {
                                 $errors .= $foldername . '+' . $imagename . '|';
                             } else {
-                                $src_new = 'https://drive.google.com/uc?export=view&id=' . $result;
+                                $src_new = CommonDrive::getLinkByDriveId($result);
                                 if(CommonMethod::remoteFileExists($src_new)) {
                                     $image_links_new[] = $src_new;
                                 }
