@@ -190,8 +190,8 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label>Nguồn</label>
-											<p>ex: vnexpress</p>
+											<label>Domain Nguồn</label>
+											<p>ex: vnexpress.net</p>
 											<div class="row">
 												<div class="col-sm-12">
 													<input name="source" type="text" value="{{ old('source') }}" class="form-control">

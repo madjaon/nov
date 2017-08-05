@@ -97,7 +97,7 @@ class CommonPost
 				} else {
 					$pos = 1;
 				}
-				$image_dir = 'truyen/' . $key;
+				// $image_dir = 'truyen/' . $key;
 				$htmlString = CommonMethod::get_remote_data($value);
 				// get all link cat
 				$html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
@@ -198,7 +198,8 @@ class CommonPost
 								foreach($element->find('img') as $e) {
 									if($e && !empty($e->src)) {
 										// origin image upload
-										$e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
+										// $e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
+										$e_src = CommonDrive::uploadFileToGDrive($e->src, $key, 'truyenfull.vn');
 										// neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
 										if(!empty($e_src)) {
 											$e->src = $e_src;

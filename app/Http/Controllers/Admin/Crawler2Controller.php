@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\CommonMethod;
 use App\Helpers\CommonQuery;
 use App\Helpers\CommonPost;
+use App\Helpers\CommonDrive;
 use Cache;
 use Sunra\PhpSimple\HtmlDomParser;
 
@@ -498,7 +499,7 @@ class Crawler2Controller extends Controller
         $description_pattern = $request->description_pattern;
         $description_pattern_delete = $request->description_pattern_delete;
         $source = $request->source;
-        $image_dir = 'truyen/' . $post_id;
+        // $image_dir = 'truyen/' . $post_id;
         // get volume epchap
         if(strpos($slug, 'quyen') !== false) {
             $epPartArray = explode('-', $slug);
@@ -534,7 +535,8 @@ class Crawler2Controller extends Controller
             foreach($element->find('img') as $e) {
                 if($e && !empty($e->src)) {
                     // origin image upload
-                    $e_src = CommonMethod::createThumb($e->src, $source, $image_dir);
+                    // $e_src = CommonMethod::createThumb($e->src, $source, $image_dir);
+                    $e_src = CommonDrive::uploadFileToGDrive($e->src, $post_id, $source);
                     // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
                     if(!empty($e_src)) {
                         $e->src = $e_src;

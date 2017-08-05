@@ -3,10 +3,14 @@ namespace App\Helpers;
 
 class CommonDrive
 {
-    static function uploadFileToGDrive($imagename, $foldername)
+    static function uploadFileToGDrive($imagename, $foldername, $source = null)
     {
+        if($source == null) {
+            $source = CommonMethod::getDomainSource();
+        }
+        
         // check & get full image url
-        $fileurl = CommonMethod::getFullImageLink($imagename, CommonMethod::getDomainSource());
+        $fileurl = CommonMethod::getFullImageLink($imagename, $source);
         
         if($fileurl == '') {
             return '';
