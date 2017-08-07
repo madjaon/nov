@@ -92,7 +92,6 @@ class Crawler2Controller extends Controller
 
     public function truyenfullpost(Request $request)
     {
-        Cache::flush();
         trimRequest($request);
         if(empty($request->type_main_id) && empty($request->url)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
@@ -132,6 +131,7 @@ class Crawler2Controller extends Controller
                 }
             }
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
@@ -243,7 +243,6 @@ class Crawler2Controller extends Controller
 
     public function truyenfullchap(Request $request)
     {
-        Cache::flush();
         trimRequest($request);
         if(!empty($request->post_ids)) {
             $post_ids = $request->post_ids;
@@ -273,11 +272,12 @@ class Crawler2Controller extends Controller
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không tìm thấy post. Mời xem lại ID post');
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
-    public function truyenfullpostchap(Request $request) {
-        Cache::flush();
+    public function truyenfullpostchap(Request $request)
+    {    
         trimRequest($request);
         if(empty($request->url) || empty($request->type_main_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
@@ -398,12 +398,12 @@ class Crawler2Controller extends Controller
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Tạo post không thành công! Mời xem lại');
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
     public function stealchapters(Request $request)
     {
-        Cache::flush();
         trimRequest($request);
         if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->title_pattern) || empty($request->description_pattern) || empty($request->post_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
@@ -424,12 +424,12 @@ class Crawler2Controller extends Controller
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
     public function stealchapterspattern(Request $request)
     {
-        Cache::flush();
         trimRequest($request);
         if(empty($request->chap_links) || empty($request->chap_slugs) || empty($request->source) || empty($request->post_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
@@ -484,6 +484,7 @@ class Crawler2Controller extends Controller
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Danh sách links và slugs không tương ứng');
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thêm thành công. Hãy kiểm tra lại dữ liệu');
     }
 
@@ -613,6 +614,7 @@ class Crawler2Controller extends Controller
         } else {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không tìm thấy post ep');
         }
+        Cache::flush();
         return redirect()->route('admin.crawler2.index')->with('success', 'Thành công. Hãy kiểm tra lại dữ liệu');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Auth\AuthController as Controller;
 use App\Models\User;
 use Validator;
+use App\Helpers\CommonMethod;
 
 class AuthController extends Controller
 {
@@ -36,6 +37,11 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+        $recaptcha = CommonMethod::recaptcha();
+        if(!isset($recaptcha)) {
+            redirect()->back()->with('warning', 'Xác nhận không đúng.');
+        }
+
         return User::create([
             'name' => $data['name'],
             'username' => $data['username'],

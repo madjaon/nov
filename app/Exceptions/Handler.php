@@ -49,7 +49,9 @@ class Handler extends ExceptionHandler
     {
         if ($e instanceof TokenMismatchException) {
             Auth::guard('admin')->logout();
-            return redirect('/admin/login')->withErrors('Sorry, your session has expired. Please login again.');
+            Auth::guard('users')->logout();
+            // return redirect('/admin/login')->withErrors('Sorry, your session has expired. Please login again.');
+            return redirect('/');
         }
         return parent::render($request, $e);
     }

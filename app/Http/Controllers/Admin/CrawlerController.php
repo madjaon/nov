@@ -139,7 +139,6 @@ class CrawlerController extends Controller
 
     public function steal(Request $request)
     {
-        Cache::flush();
         trimRequest($request);
         if($request->type == CRAW_POST) {
             if(!empty($request->post_links)) {
@@ -221,6 +220,7 @@ class CrawlerController extends Controller
                 ]);
             }
         }
+        Cache::flush();
         return $result;
     }
 

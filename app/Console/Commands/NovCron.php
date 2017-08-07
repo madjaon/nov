@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use DB;
 use App\Helpers\CommonCrawler;
+use Cache;
 
 class NovCron extends Command
 {
@@ -45,6 +46,7 @@ class NovCron extends Command
 		} else {
 			$this->info('Nov:Cron No Data Found!');  
 		}
+		Cache::flush();
 		$this->info('Nov:Cron Command Run successfully!');
 	}
 

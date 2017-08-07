@@ -90,7 +90,7 @@ class UserController extends Controller
             'role_id' => 'required',
             'note' => 'max:255',
         ];
-        if($request->slug != $data->slug) {
+        if($request->name != $data->name) {
             $rules['name'] = 'bail|required|max:255|min:3|unique:users';
         }
         $validator = Validator::make($request->all(), $rules);

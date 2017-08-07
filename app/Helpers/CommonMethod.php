@@ -651,4 +651,21 @@ class CommonMethod
         return ( $return_full_array ? array('data'=>$data,'info'=>$status) : $data);
     }
 
+    // RECAPTCHA GOOGLE CHECK
+    static function recaptcha()
+    {
+        $secret = RECAPTCHASECRETKEY;
+        if (isset($_POST['g-recaptcha-response'])) {
+            $recaptcha = new \ReCaptcha\ReCaptcha($secret);
+            $resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+            if ($resp->isSuccess()) {
+                // verified!
+                // if Domain Name Validation turned off don't forget to check hostname field
+                // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
+                return 1;
+            }
+        }
+        return null;
+    }
+
 }

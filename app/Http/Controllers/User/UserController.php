@@ -28,22 +28,6 @@ class UserController extends Controller
         $this->post_ids = Auth::guard('users')->user()->post_ids;
     }
 
-    private function recaptcha()
-    {
-        $secret = RECAPTCHASECRETKEY;
-        if (isset($_POST['g-recaptcha-response'])) {
-            $recaptcha = new \ReCaptcha\ReCaptcha($secret);
-            $resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
-            if ($resp->isSuccess()) {
-                // verified!
-                // if Domain Name Validation turned off don't forget to check hostname field
-                // if($resp->getHostName() === $_SERVER['SERVER_NAME']) {  }
-                return 1;
-            }
-        }
-        return null;
-    }
-
     public function index()
     {
         // posts
@@ -64,7 +48,7 @@ class UserController extends Controller
     public function account(Request $request)
     {
         trimRequest($request);
-        $recaptcha = self::recaptcha();
+        $recaptcha = CommonMethod::recaptcha();
         if(!isset($recaptcha)) {
             redirect()->back()->with('warning', 'Xác nhận không đúng.');
         }
@@ -98,7 +82,7 @@ class UserController extends Controller
     public function composed(Request $request)
     {
         trimRequest($request);
-        $recaptcha = self::recaptcha();
+        $recaptcha = CommonMethod::recaptcha();
         if(!isset($recaptcha)) {
             redirect()->back()->with('warning', 'Xác nhận không đúng.');
         }
@@ -168,10 +152,6 @@ class UserController extends Controller
     public function write(Request $request)
     {
         trimRequest($request);
-        $recaptcha = self::recaptcha();
-        if(!isset($recaptcha)) {
-            redirect()->back()->with('warning', 'Xác nhận không đúng.');
-        }
         if(empty($request->x)) {
             return redirect('user/compose')->with('warning', 'Bạn cần thêm truyện trước khi viết.');
         }
@@ -191,7 +171,7 @@ class UserController extends Controller
     public function wrote(Request $request)
     {
         trimRequest($request);
-        $recaptcha = self::recaptcha();
+        $recaptcha = CommonMethod::recaptcha();
         if(!isset($recaptcha)) {
             redirect()->back()->with('warning', 'Xác nhận không đúng.');
         }
@@ -237,7 +217,12 @@ class UserController extends Controller
                 'start_date' => date('Y-m-d H:i:s'),
             ]);
         if(isset($data)) {
-            Post::find($request->x)->update(['start_date' => date('Y-m-d H:i:s')]);
+            if(!empty($request->kind)) {
+                $postUpdate = ['start_date' => date('Y-m-d H:i:s'), 'kind' => SLUG_POST_KIND_FULL];
+            } else {
+                $postUpdate = ['start_date' => date('Y-m-d H:i:s')];
+            }
+            Post::find($request->x)->update($postUpdate);
             return redirect()->route('users.write', ['x' => $request->x])->with('success', 'Đã thêm chương. Bạn có thể thêm chương mới.');
         }
         return redirect('user/compose')->with('warning', 'Quá trình xảy ra lỗi. Xin hãy thử lại.');
