@@ -12,7 +12,7 @@ class User extends AuthUser
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'status',
+        'name', 'username', 'email', 'password', 'role_id', 'status', 'note', 'post_ids',
     ];
 
     /**

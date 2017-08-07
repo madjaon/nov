@@ -98,10 +98,19 @@ return [
 
         'name' => [
             'required' => 'Bắt buộc phải nhập tên',
+            'min' => 'Tên phải chứa ít nhất :min ký tự',
             'max' => 'Tên không được nhập quá :max ký tự',
+            'unique' => 'Tên đã tồn tại',
+        ],
+        'username' => [
+            'required' => 'Bắt buộc phải nhập tên đăng nhập',
+            'min' => 'Tên đăng nhập phải chứa ít nhất :min ký tự',
+            'max' => 'Tên đăng nhập không được nhập quá :max ký tự',
+            'unique' => 'Tên đăng nhập đã tồn tại',
         ],
         'slug' => [
             'required' => 'Bắt buộc phải nhập slug',
+            'min' => 'Slug phải chứa ít nhất :min ký tự',
             'max' => 'Slug không được nhập quá :max ký tự',
             'unique' => 'Slug đã tồn tại',
         ],
@@ -152,9 +161,10 @@ return [
             'unique' => 'Email đã tồn tại',
         ],
         'password' => [
-            'required' => 'Bắt buộc phải nhập password',
-            'min' => 'Password phải chứa ít nhất :min ký tự',
-            'confirmed' => 'Password nhập lại phải chính xác',
+            'required' => 'Bắt buộc phải nhập mật khẩu',
+            'min' => 'Mật khẩu phải chứa ít nhất :min ký tự',
+            'max' => 'Mật khẩu không được nhập quá :max ký tự',
+            'confirmed' => 'Mật khẩu nhập lại phải chính xác',
         ],
         'role_id' => [
             'required' => 'Bắt buộc phải chọn quyền hạn',
@@ -179,6 +189,9 @@ return [
             'required' => 'Bắt buộc phải có số chương',
             'max' => 'Số chương không được nhập quá :max ký tự',
             'numeric' => 'Số chương phải là một số',
+        ],
+        'type_id' => [
+            'required' => 'Bắt buộc phải chọn thể loại',
         ],
     ],
 

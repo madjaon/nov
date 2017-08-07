@@ -10,6 +10,7 @@ class AuthController extends Controller
 {
     protected $guard = 'users';
     protected $redirectTo = 'user';
+    protected $username = 'username';
 
     /**
      * Get a validator for an incoming registration request.
@@ -20,9 +21,10 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'name' => 'bail|required|max:255|min:3|unique:users',
+            'username' => 'bail|required|max:255|min:3|unique:users',
+            'email' => 'bail|required|email|max:255|min:6|unique:users',
+            'password' => 'bail|required|min:6|confirmed',
         ]);
     }
 
@@ -36,6 +38,7 @@ class AuthController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'password' => $data['password'],
         ]);
@@ -43,11 +46,11 @@ class AuthController extends Controller
 
     public function index()
     {
-        return view('site.users.auth.auth');
+        return view('auth.index');
     }
 
     public function getRegister()
     {
-        return view('site.users.auth.register');
+        return view('auth.register');
     }
 }

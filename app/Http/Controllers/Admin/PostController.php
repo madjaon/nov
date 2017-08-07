@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Helpers\CommonMethod;
 use App\Models\Post;
+use App\Models\PostEp;
 use DB;
 use Validator;
 use Illuminate\Support\Facades\Auth;
@@ -143,7 +144,7 @@ class PostController extends Controller
                 'status' => $request->status,
                 'lang' => $request->lang,
             ]);
-        if($data) {
+        if(isset($data)) {
             // insert post type relation
             $data->posttypes()->attach($request->type_id);
             // insert post tag relation
@@ -260,6 +261,8 @@ class PostController extends Controller
         $data->posttypes()->detach();
         $data->posttags()->detach();
         $data->delete();
+        // delete post ep
+        PostEp::where('post_id', $id)->delete();
         Cache::flush();
         return redirect()->route('admin.post.index')->with('success', 'Xóa thành công');
     }

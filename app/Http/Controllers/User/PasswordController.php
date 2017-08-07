@@ -8,4 +8,5 @@ class PasswordController extends Controller
 {
     protected $broker = 'users';
     protected $redirectTo = 'user';
+
 }

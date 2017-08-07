@@ -1,4 +1,4 @@
-<form class="contact-form" method="POST" action="/contact">
+<form class="contact-form mb-3" method="POST" action="/contact">
   <input type="hidden" name="_token" value="%%csrf_token%%">
   <div class="row">
     <div class="col-sm">

@@ -13,10 +13,11 @@ Route::group(['middleware' => ['web']], function () {
 	Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         require app_path('Http/Routes/admin.php');
     });
+    Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
+        require app_path('Http/Routes/user.php');
+    });
 	Route::group(['prefix' => '/', 'namespace' => 'Site'], function () {
         require app_path('Http/Routes/site.php');
     });
-    // Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
-    //     require app_path('Http/Routes/user.php');
-    // });
+    
 });

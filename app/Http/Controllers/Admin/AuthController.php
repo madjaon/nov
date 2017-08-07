@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Auth\AuthController as Controller;
-use App\Models\Admin;
-use Validator;
 
 class AuthController extends Controller
 {

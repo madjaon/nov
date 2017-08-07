@@ -13,10 +13,18 @@ var elixir = require('laravel-elixir');
 
 elixir(function(mix) {
 
+    // CSS
+
     mix.sass([
     	// '../../../node_modules/font-awesome/css/font-awesome.min.css',
         'style.scss'
     ], 'public/css/app.css');
+
+    mix.sass([
+        'user.scss'
+    ], 'public/css/appp.css');
+
+    // Script
 
     mix.scripts([
         // '../../../node_modules/jquery/dist/jquery.js',
@@ -39,5 +47,9 @@ elixir(function(mix) {
     mix.scripts([
 		'epchap.js'
     ], 'public/js/epchap.js');
+
+    mix.scripts([
+        'compose.js'
+    ], 'public/js/compose.js');
 
 });

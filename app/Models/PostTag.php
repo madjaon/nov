@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PostTag extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image', 'status', 'lang',
+        'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image', 'status', 'lang', 'user_id',
     ];
     public function posttagrelations()
     {
