@@ -14,8 +14,8 @@ class CommonDrive
         }
         
         // check & get full image url
-        // $fileurl = CommonMethod::getFullImageLink($imagename, $source);
-        $fileurl = CommonMethod::getfullurl($imagename, $source);
+        $fileurl = CommonMethod::getFullImageLink($imagename, $source);
+        // $fileurl = CommonMethod::getfullurl($imagename, $source);
         
         if($fileurl == '') {
             return '';

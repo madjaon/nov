@@ -72,6 +72,16 @@ class CommonOption
         $array = self::roleArray();
         return $array[$key];
     }
+    //role user
+    static function roleUserArray()
+    {
+        return array(USERNORMAL=>'Author');
+    }
+    static function getRoleUser($key=USERNORMAL)
+    {
+        $array = self::roleUserArray();
+        return $array[$key];
+    }
     //ad position
     static function adPositionArray()
     {

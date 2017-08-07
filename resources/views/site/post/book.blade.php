@@ -12,7 +12,7 @@
     'isPost' => true,
     'isBook' => true
   );
-  $image = ($post->image)?CommonMethod::getThumbnail($post->image, 3):'/img/noimage320x420.jpg';
+  $image = ($post->image)?CommonMethod::getThumbnail($post->image, 3):'/img/img3.jpg';
   $ratingCookieName = 'rating' . $post->id;
   $ratingCookie = isset($_COOKIE[$ratingCookieName])?$_COOKIE[$ratingCookieName]:null;
   $ratingValue = round($post->rating_value, 1, PHP_ROUND_HALF_UP);
@@ -34,7 +34,7 @@
 @include('site.common.breadcrumb', $breadcrumb)
 
 <div class="row book mb-3" itemscope itemtype="http://schema.org/Book">
-  <div class="col-sm-4">
+  <div class="col-sm-5">
 
     <img src="{!! url($image) !!}" class="img-thumbnail img-fluid rounded mb-3 w-100" alt="{!! $post->name !!}" itemprop="image">
 

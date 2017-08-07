@@ -7,6 +7,11 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     Route::get('account/{id}/password', ['uses' => 'AccountController@password', 'as' => 'admin.account.password']);
     Route::post('account/{id}/password', ['uses' => 'AccountController@doPassword', 'as' => 'admin.account.password']);
     Route::resource('account', 'AccountController');
+    // account
+    Route::post('user/updateStatus', 'UserController@updateStatus');
+    Route::get('user/{id}/password', ['uses' => 'UserController@password', 'as' => 'admin.user.password']);
+    Route::post('user/{id}/password', ['uses' => 'UserController@doPassword', 'as' => 'admin.user.password']);
+    Route::resource('user', 'UserController');
     // menu
     Route::post('menu/updateParentIdSelectBox', 'MenuController@updateParentIdSelectBox');
     Route::post('menu/updateStatus', 'MenuController@updateStatus');
@@ -69,6 +74,7 @@ Route::group(['middleware' => ['auth:admin']], function ($router) {
     // Route::post('crawler/steal', 'CrawlerController@steal');
     // Route::resource('crawler', 'CrawlerController');
     // crawler 2 for novel
+    Route::get('crawler2/stealagain', 'Crawler2Controller@stealagain');
     Route::post('crawler2/stealchapterspattern', 'Crawler2Controller@stealchapterspattern');
     Route::post('crawler2/stealchapters', 'Crawler2Controller@stealchapters');
     Route::post('crawler2/truyenfullpostchap', 'Crawler2Controller@truyenfullpostchap');

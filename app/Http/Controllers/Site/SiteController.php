@@ -64,7 +64,7 @@ class SiteController extends Controller
             }
             $seo->meta_keyword = 'tác giả truyện, tac gia truyen';
             $seo->meta_description = 'Danh sách các tác giả truyện, tiểu thuyết';
-            $seo->meta_image = '/img/noimage600x315.jpg';
+            $seo->meta_image = '/img/img600x315.jpg';
             
             // return view
             return view('site.post.author', ['data' => $data, 'seo' => $seo]);
@@ -110,7 +110,7 @@ class SiteController extends Controller
                     $tag->meta_description = $tagName;
                 }
                 if(empty($tag->meta_image)) {
-                    $tag->meta_image = '/img/noimage600x315.jpg';
+                    $tag->meta_image = '/img/img600x315.jpg';
                 }
 
                 $authors = $this->getTagsByPosts($data);
@@ -160,7 +160,7 @@ class SiteController extends Controller
                     $type->meta_description = $typeName;
                 }
                 if(empty($type->meta_image)) {
-                    $type->meta_image = '/img/noimage600x315.jpg';
+                    $type->meta_image = '/img/img600x315.jpg';
                 }
 
                 $authors = $this->getTagsByPosts($data);
@@ -210,7 +210,7 @@ class SiteController extends Controller
                     $seri->meta_description = $seriName;
                 }
                 if(empty($seri->meta_image)) {
-                    $seri->meta_image = '/img/noimage600x315.jpg';
+                    $seri->meta_image = '/img/img600x315.jpg';
                 }
 
                 $authors = $this->getTagsByPosts($data);
@@ -251,7 +251,7 @@ class SiteController extends Controller
             }
             $seo->meta_keyword = 'truyện ' . CommonOption::getNation($slug);
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getNation($slug) . ' hay nhất';
-            $seo->meta_image = '/img/noimage600x315.jpg';
+            $seo->meta_image = '/img/img600x315.jpg';
 
             $authors = $this->getTagsByPosts($data);
 
@@ -290,7 +290,7 @@ class SiteController extends Controller
             }
             $seo->meta_keyword = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
             $seo->meta_description = 'Danh sách truyện ' . CommonOption::getKindPost($slug);
-            $seo->meta_image = '/img/noimage600x315.jpg';
+            $seo->meta_image = '/img/img600x315.jpg';
 
             $authors = $this->getTagsByPosts($data);
 
@@ -329,7 +329,7 @@ class SiteController extends Controller
                 $singlePage->meta_description = $singlePageName;
             }
             if(empty($singlePage->meta_image)) {
-                $singlePage->meta_image = '/img/noimage600x315.jpg';
+                $singlePage->meta_image = '/img/img600x315.jpg';
             }
 
             // return view
@@ -370,7 +370,7 @@ class SiteController extends Controller
                 $post->meta_description = CommonMethod::limit_text(strip_tags($post->description), 200);
             }
             if(empty($post->meta_image)) {
-                $post->meta_image = '/img/noimage600x315.jpg';
+                $post->meta_image = '/img/img600x315.jpg';
             }
 
             // tinh trang kind
@@ -486,7 +486,7 @@ class SiteController extends Controller
                     $data->meta_description = CommonMethod::limit_text(strip_tags($data->description), 200);
                 }
                 if(empty($data->meta_image)) {
-                    $data->meta_image = '/img/noimage600x315.jpg';
+                    $data->meta_image = '/img/img600x315.jpg';
                 }
 
                 // list type
@@ -549,7 +549,7 @@ class SiteController extends Controller
         }
         $seo->meta_keyword = 'tìm truyện ' . $request->s . ', tim truyen ' . $request->s;
         $seo->meta_description = 'Kết quả tìm kiếm từ khóa ' . $request->s . ', tìm truyện ' . $request->s;
-        $seo->meta_image = '/img/noimage600x315.jpg';
+        $seo->meta_image = '/img/img600x315.jpg';
 
         if($request->s == '' || strlen($request->s) < 2 || strlen($request->s) > 255) {
             return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);

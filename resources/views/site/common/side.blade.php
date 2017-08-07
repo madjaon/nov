@@ -9,7 +9,7 @@
       @foreach($configtoptrending as $value)
       <?php 
         $url = url($value->slug);
-        $image = ($value->image)?CommonMethod::getThumbnail($value->image, 2):'/img/noimage80x80.jpg';
+        $image = ($value->image)?CommonMethod::getThumbnail($value->image, 2):'/img/img2.jpg';
         $kind = CommonOption::getKindPost($value->kind);
         if($value->kind == SLUG_POST_KIND_UPDATING) {
           $badge = 'primary';

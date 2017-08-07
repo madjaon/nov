@@ -419,8 +419,8 @@ $config = array(
 	'relative_path_from_current_pos'          => array( 'thumb/', 'thumb2/', 'thumb3/' ), //relative path of the image folder from the current position on upload folder
 	'relative_image_creation_name_to_prepend' => array( '', '', '' ), //name to prepend on filename
 	'relative_image_creation_name_to_append'  => array( '', '', '' ), //name to append on filename
-	'relative_image_creation_width'           => array( 185, 80, 320 ), //width of image (you can leave empty if you set height)
-	'relative_image_creation_height'          => array( 240, 80, 420 ), //height of image (you can leave empty if you set width)
+	'relative_image_creation_width'           => array( 255, 80, 330 ), //width of image (you can leave empty if you set height)
+	'relative_image_creation_height'          => array( 170, 80, 220 ), //height of image (you can leave empty if you set width)
 	/*
 	#             $option:     0 / exact = defined size;
 	#                          1 / portrait = keep aspect set height;

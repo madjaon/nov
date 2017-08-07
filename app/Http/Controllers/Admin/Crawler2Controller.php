@@ -575,5 +575,44 @@ class Crawler2Controller extends Controller
         return 1;
     }
 
-    
+    public function stealagain()
+    {
+        dd('Please fix!');
+        // chap 196 - 259
+        $data = DB::table('post_eps')
+                    ->select('id', 'epchap')
+                    ->where('post_id', 41)
+                    ->whereBetween('id', [1673, 1736])->get();
+        if(!empty($data)) {
+            foreach($data as $value) {
+                $link = 'http://truyenfull.vn/thanh-vuong/chuong-'.$value->epchap.'/';
+                // data chapter
+                $htmlString = CommonMethod::get_remote_data($link);
+                // get all link cat
+                $html = HtmlDomParser::str_get_html($htmlString); // Create DOM from URL or file
+                foreach($html->find('.chapter-c') as $element) {
+                    // bo quang cao o giua
+                    foreach($element->find('.ads-holder') as $e) {
+                        $e->outertext = '';
+                    }
+                    foreach($element->find('img') as $e) {
+                        if($e && !empty($e->src)) {
+                            $e->src = '/images/truyen/41/'.basename($e->src);
+                        }
+                    }
+                    $desc = trim($element->innertext);
+                }
+                //loai bo tag trong noi dung
+                if(!empty($desc)) {
+                    $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+                    // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+                }    
+                // update post eps
+                PostEp::find($value->id)->update(['description' => $desc]);
+            }
+        } else {
+            return redirect()->route('admin.crawler2.index')->with('warning', 'Không tìm thấy post ep');
+        }
+        return redirect()->route('admin.crawler2.index')->with('success', 'Thành công. Hãy kiểm tra lại dữ liệu');
+    }
 }

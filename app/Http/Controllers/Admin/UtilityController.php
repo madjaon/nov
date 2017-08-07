@@ -370,6 +370,7 @@ class UtilityController extends Controller
             $chaps = DB::table('post_eps')
                         ->select('id', 'description')
                         ->where('post_id', $value)
+                        // ->whereBetween('id', [2851, 2935])
                         ->get();
             if(!empty($chaps)) {
                 foreach($chaps as $k => $v) {
@@ -403,18 +404,6 @@ class UtilityController extends Controller
                 }
             }
         }
-        
-        // $foldername = '21';
-        // $imagename = '/images/truyen/21/117-1.png';
-
-        // // check & get full image url
-        // $result = CommonDrive::uploadFileToGDrive($imagename, $foldername);
-        // if($result == '') {
-        //     return redirect('admin/gdriveimage')->with('warning', 'Post ID: ' . $foldername . ' / File không tồn tại: ' . $imagename);
-        // }
-        // if($result == null) {
-        //     return redirect('admin/gdriveimage')->with('warning', 'File upload to Google Drive error!');
-        // }
         return redirect('admin/gdriveimage')->with('success', 'Thành công! ' . $errors);
     }
 

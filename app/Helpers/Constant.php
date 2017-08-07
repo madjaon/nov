@@ -93,13 +93,13 @@ define('TITLETYPE3', 3); // Lấy tiêu đề theo danh sách tiêu đề tươn
 define('WATERMARK_MINWIDTH', 160);
 define('WATERMARK_MINHEIGHT', 150);
 // thumbnail image size
-define('THUMB_DIMENSIONS', '320x420 / 185x240 / 80x80');
-define('IMAGE_WIDTH', 185);
-define('IMAGE_HEIGHT', 240);
+define('THUMB_DIMENSIONS', '330x220 / 255x170 / 80x80');
+define('IMAGE_WIDTH', 255);
+define('IMAGE_HEIGHT', 170);
 define('IMAGE_WIDTH_2', 80);
 define('IMAGE_HEIGHT_2', 80);
-define('IMAGE_WIDTH_3', 320);
-define('IMAGE_HEIGHT_3', 420);
+define('IMAGE_WIDTH_3', 330);
+define('IMAGE_HEIGHT_3', 220);
 define('SLIDE_HEADER_DIMENSIONS', '775x380');
 define('SLIDE_FOOTER_DIMENSIONS', '200x120');
 // SLUG
