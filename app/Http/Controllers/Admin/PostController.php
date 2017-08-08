@@ -310,6 +310,8 @@ class PostController extends Controller
                 $data->posttypes()->detach();
                 $data->posttags()->detach();
                 $data->delete();
+                // delete post ep
+                PostEp::where('post_id', $value)->delete();
             }
             Cache::flush();
             return 1;

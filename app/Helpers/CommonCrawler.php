@@ -143,20 +143,20 @@ class CommonCrawler
                                 foreach($element->find('.ads-holder') as $e) {
                                     $e->outertext = '';
                                 }
-                                foreach($element->find('img') as $e) {
-                                    if($e && !empty($e->src)) {
-                                        // origin image upload
-                                        // $e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
-                                        $result = CommonDrive::uploadFileToGDrive($e->src, $key, 'truyenfull.vn');
-                                        $e_src = CommonDrive::getLinkByDriveId($result);
-                                        // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
-                                        if(!empty($e_src)) {
-                                            $e->src = $e_src;
-                                        } else {
-                                            $e->outertext = '';
-                                        }
-                                    }
-                                }
+                                // foreach($element->find('img') as $e) {
+                                //     if($e && !empty($e->src)) {
+                                //         // origin image upload
+                                //         // $e_src = CommonMethod::createThumb($e->src, 'truyenfull.vn', $image_dir);
+                                //         $result = CommonDrive::uploadFileToGDrive($e->src, $key, 'truyenfull.vn');
+                                //         $e_src = CommonDrive::getLinkByDriveId($result);
+                                //         // neu up duoc hinh thi thay doi duong dan, neu khong xoa the img nay di luon
+                                //         if(!empty($e_src)) {
+                                //             $e->src = $e_src;
+                                //         } else {
+                                //             $e->outertext = '';
+                                //         }
+                                //     }
+                                // }
                                 $desc = trim($element->innertext);
                             }
                             //loai bo tag trong noi dung

@@ -58,24 +58,11 @@
         $badge = 'success';
       }
     ?>
-    <div class="book-info mb-3"><span class="badge badge-{!! $badge !!}">
-        {!! $post->kindName !!}
-    </span></div>
-   
-    <div class="book-info mb-3">Mới nhất: 
-      @if(!empty($post->epLast))
-        <?php 
-          if($post->epLast->volume > 0) {
-            $epchap = 'Quyển ' . $post->epLast->volume . ' chương ' . $post->epLast->epchap;
-          } else {
-            $epchap = 'Chương ' . $post->epLast->epchap;
-          }
-        ?>
-        {!! $epchap !!}
-      @else 
-        Cập nhật
-      @endif
+    <div class="book-info mb-3">
+      <span class="badge badge-{!! $badge !!}">{!! $post->kindName !!}</span>
     </div>
+   
+    <div class="book-info mb-3">Lượt đọc: {!! CommonMethod::numberFormatDot($post->view) !!}</div>
 
     <div class="book-info mb-3">Quốc Gia: 
       @if(!empty($post->nation))

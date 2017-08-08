@@ -13,10 +13,10 @@ return [
     |
     */
 
-    'password' => 'Mật khẩu phải có ít nhất sáu ký tự và khớp với xác nhận.',
-    'reset' => 'Mật khẩu của bạn đã được thiết lập lại!',
-    'sent' => 'Chúng tôi đã gửi e-mail liên kết đặt lại mật khẩu cho bạn! Xin hãy kiểm tra hộp thư đến (hoặc spam).',
-    'token' => 'Mã đặt lại mật khẩu này không hợp lệ.',
-    'user' => "Chúng tôi không thể tìm thấy người dùng có địa chỉ e-mail này.",
+    'password' => 'Mật khẩu phải có ít nhất 6 ký tự và khớp nhau.',
+    'reset' => 'Mật khẩu của bạn đã được đặt lại!',
+    'sent' => 'Chúng tôi đã gửi e-mail chứa liên kết đặt lại mật khẩu cho bạn! Xin hãy kiểm tra hộp thư đến (hoặc spam) và xác nhận.',
+    'token' => 'Mã lấy lại mật khẩu không hợp lệ.',
+    'user' => "Chúng tôi không thể tìm thấy người dùng nào sử dụng địa chỉ e-mail này.",
 
 ];

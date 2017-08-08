@@ -27,7 +27,7 @@
                     <input name="password_confirmation" type="password" class="form-control" placeholder="Nhập Lại Mật Khẩu" maxlength="255" required>
                 </div>
                 <div class="form-group d-flex align-items-center">
-                    <!-- <button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-btn fa-sign-in mr-1"></i>Đăng Ký</button> -->
+                    <!-- <button type="submit" class="btn btn-primary"><i class="fa fa-btn fa-sign-in mr-1"></i>Đăng Ký</button> -->
                     <button class="btn btn-primary g-recaptcha" data-sitekey="{{ RECAPTCHASITEKEY }}" data-callback="onSubmit"><i class="fa fa-btn fa-sign-in mr-1"></i>Đăng Ký</button>
                     <a href="{{ url('user/login') }}" class="ml-3">Sẵn Sàng Đăng Nhập?</a>
                 </div>

@@ -23,26 +23,28 @@ class CommonDrive
 
         $filename = basename(CommonMethod::removeParameters($fileurl));
 
+        $filename = CommonMethod::changeFileNameImage($filename, 1);
+
         $dir = self::checkDirGDrive($foldername, '/', false);
 
-        if (!$dir) {
-            // create dir
-            $makeDir = \Storage::cloud()->makeDirectory($foldername);
-            if($makeDir) {
-                $dir = self::checkDirGDrive($foldername, '/', false);
-            }
-        }
+        // if (!$dir) {
+        //     // create dir
+        //     $makeDir = \Storage::cloud()->makeDirectory($foldername);
+        //     if($makeDir) {
+        //         $dir = self::checkDirGDrive($foldername, '/', false);
+        //     }
+        // }
         
         // check file ton tai hay chua
         $file = self::checkFileGDrive($filename, $dir['path'], true);
 
-        if(!$file) {
-            // put in dir
-            \Storage::cloud()->put($dir['path'].'/'.$filename, file_get_contents($fileurl));
+        // if(!$file) {
+        //     // put in dir
+        //     \Storage::cloud()->put($dir['path'].'/'.$filename, file_get_contents($fileurl));
 
-            // get file upload
-            $file = self::checkFileGDrive($filename, $dir['path'], true);
-        }
+        //     // get file upload
+        //     $file = self::checkFileGDrive($filename, $dir['path'], true);
+        // }
                     
         if($file) {
             return $file['basename'];

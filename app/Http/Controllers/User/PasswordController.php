@@ -8,5 +8,6 @@ class PasswordController extends Controller
 {
     protected $broker = 'users';
     protected $redirectTo = 'user';
+    protected $subject = 'Đặt Lại Mật Khẩu Tài Khoản';
 
 }

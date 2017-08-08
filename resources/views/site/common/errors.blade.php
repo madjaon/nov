@@ -2,7 +2,7 @@
   <div class="alert alert-dismissible alert-danger" role="alert">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     <strong>Có lỗi xảy ra!</strong>
-    <ul>
+    <ul class="mb-0">
       @foreach ($errors->all() as $error)
           <li>{!! $error !!}</li>
       @endforeach

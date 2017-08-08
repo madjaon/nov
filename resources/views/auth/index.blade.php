@@ -26,4 +26,9 @@
         </div>
         <div class="col-sm-6"></div>
     </div>
+    <div class="row">
+        <div class="col text-center">
+            <img src="{{ url('img/shelf.png') }}" alt="gia sach" class="img-fluid shelf">
+        </div>
+    </div>
 @endsection

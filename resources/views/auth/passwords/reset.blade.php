@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="form-group d-flex align-items-center">
-                    <!-- <button type="submit" class="btn btn-primary" id="submit"><i class="fa fa-btn fa-refresh mr-1"></i>Lấy Lại Mật Khẩu</button> -->
+                    <!-- <button type="submit" class="btn btn-primary"><i class="fa fa-btn fa-refresh mr-1"></i>Lấy Lại Mật Khẩu</button> -->
                     <button class="btn btn-primary g-recaptcha" data-sitekey="{{ RECAPTCHASITEKEY }}" data-callback="onSubmit"><i class="fa fa-btn fa-refresh mr-1"></i>Lấy Lại Mật Khẩu</button>
                     @if(!Auth::guard('users')->check())
                     <a href="{{ url('user/login') }}" class="ml-3">Đăng Nhập</a>
