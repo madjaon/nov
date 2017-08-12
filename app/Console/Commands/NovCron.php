@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use DB;
 use App\Helpers\CommonCrawler;
-use App\Helpers\CommonMethod;
-use Cache;
-use Sunra\PhpSimple\HtmlDomParser;
+// use App\Helpers\CommonMethod;
+// use Cache;
+// use Sunra\PhpSimple\HtmlDomParser;
 
 class NovCron extends Command
 {
@@ -42,20 +42,20 @@ class NovCron extends Command
 	*/
 	public function handle()
 	{
-		$rs = self::hasfolderimage();
-		if(isset($rs)) {
-			$this->info('Command Run successfully!');
-		} else {
-			$this->info('Error!');
-		}
-		// $postContinue = self::getPostContinue();
-		// if(!empty($postContinue)) {
-		// 	CommonCrawler::insertChapsByPosts($postContinue);
+		// $rs = self::hasfolderimage();
+		// if(isset($rs)) {
+		// 	$this->info('Command Run successfully!');
 		// } else {
-		// 	$this->info('Nov:Cron No Data Found!');
+		// 	$this->info('Error!');
 		// }
-		// Cache::flush();
-		// $this->info('Nov:Cron Command Run successfully!');
+		$postContinue = self::getPostContinue();
+		if(!empty($postContinue)) {
+			CommonCrawler::insertChapsByPosts($postContinue);
+		} else {
+			$this->info('Nov:Cron No Data Found!');
+		}
+		Cache::flush();
+		$this->info('Nov:Cron Command Run successfully!');
 	}
 
 	private function getPostContinue()
@@ -71,12 +71,12 @@ class NovCron extends Command
 
 	private function hasfolderimage()
     {
-        // dd('Please fix!');
+        dd('Please fix!');
         $countImage = 0;
         // so chap da co
         $countEp = 0;
         $posts = [
-            
+			11997 => "http://truyenfull.vn/chi-em-khac-me/"
         ];
         if(!empty($posts)) {
             foreach($posts as $key => $value) {

@@ -578,14 +578,30 @@ class Crawler2Controller extends Controller
 
     public function stealagain()
     {
+        // delete type 32 truyen teen
+        // $posts = DB::table('posts')
+        //     ->join('post_type_relations', 'posts.id', '=', 'post_type_relations.post_id')
+        //     ->where('post_type_relations.type_id', 32)
+        //     ->lists('posts.id');
+        // foreach($posts as $value) {
+        //     $data = Post::find($value);
+        //     $data->posttypes()->detach();
+        //     $data->posttags()->detach();
+        //     // delete post ep
+        //     PostEp::where('post_id', $value)->delete();
+        //     $data->delete();
+            
+        // }
+        // dd('ok');
+
         dd('Please fix!');
         $countImage = 0;
         // so chap da co
         $countEp = 0;
-        $posts = DB::table('posts')
-                    ->whereIn('id', [])
-                    ->lists('source_url', 'id');
-        dd($posts);
+        // $posts = DB::table('posts')
+        //             ->whereIn('id', [])
+        //             ->lists('source_url', 'id');
+        // dd($posts);
         $posts = [
             
         ];

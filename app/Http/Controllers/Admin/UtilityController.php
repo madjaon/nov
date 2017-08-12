@@ -347,6 +347,27 @@ class UtilityController extends Controller
     // GOOGLE DRIVE UPLOAD IMAGE & GET LINK
     public function gdriveimage()
     {
+        // $d = self::getAllDirs('images/11k');
+        // $r = [];
+        // // $r = '';
+        // foreach($d as $k => $v) {
+        //     if($k > 0) {
+        //         $a = explode('/', $v);
+        //         $r[] = $a[2];
+        //         // $r .= $a[2] . ',';
+        //     }
+        // }
+        // // dd($r);
+        // $f = [
+        //     // all id
+        // ];
+        // $e = '';
+        // foreach($f as $k => $v) {
+        //     if(!in_array($v, $r)) {
+        //         $e .= $v . ',';
+        //     }
+        // }
+        // dd($e);
         return view('admin.utility.gdrive');
     }
 
