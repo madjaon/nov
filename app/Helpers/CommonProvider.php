@@ -12,10 +12,10 @@ class CommonProvider
         view()->share('configcredit', $config->credit);
         view()->share('configcode', $config->code);
         view()->share('configfbappid', $config->facebook_app_id);
-        view()->share('configtopday', self::getPostTop($config->top_day, 'top_day'));
-        view()->share('configtopmonth', self::getPostTop($config->top_month, 'top_month'));
-        view()->share('configtopyear', self::getPostTop($config->top_year, 'top_year'));
-        view()->share('configtoptotal', self::getPostTop($config->top_total, 'top_total'));
+        // view()->share('configtopday', self::getPostTop($config->top_day, 'top_day'));
+        // view()->share('configtopmonth', self::getPostTop($config->top_month, 'top_month'));
+        // view()->share('configtopyear', self::getPostTop($config->top_year, 'top_year'));
+        // view()->share('configtoptotal', self::getPostTop($config->top_total, 'top_total'));
         view()->share('configtoptrending', self::getPostTop($config->top_trending, 'top_trending'));
 
         // getMenuTypes
@@ -25,10 +25,10 @@ class CommonProvider
 
         // all menu 
         // (warning: co the su dung CommonProvider + cache Middleware se khong the danh dau current menu link (active menu). Neu muon su dung active menu link theo trang. neu bi nhu vay ma khong tim duoc cach -> chuyen sang view share = AppServiceProvider).
-        view()->share('topmenu', self::getMenu());
-        view()->share('sidemenu', self::getMenu(MENUTYPE2));
-        view()->share('bottommenu', self::getMenu(MENUTYPE3));
-        view()->share('mobilemenu', self::getMenu(MENUTYPE4));
+        // view()->share('topmenu', self::getMenu());
+        // view()->share('sidemenu', self::getMenu(MENUTYPE2));
+        // view()->share('bottommenu', self::getMenu(MENUTYPE3));
+        // view()->share('mobilemenu', self::getMenu(MENUTYPE4));
 	}
 
 	private static function getPostTop($topPattern, $topName)
