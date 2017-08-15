@@ -48,8 +48,8 @@ elixir(function(mix) {
 		'epchap.js'
     ], 'public/js/epchap.js');
 
-    mix.scripts([
-        'compose.js'
-    ], 'public/js/compose.js');
+    // mix.scripts([
+    //     'compose.js'
+    // ], 'public/js/compose.js');
 
 });

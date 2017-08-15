@@ -186,9 +186,9 @@
     @endif
 
     @if(!empty($post->eps))
-      <div class="card card-outline-info mb-3" id="booklistbox">
+      <div class="card border-info mb-3" id="booklistbox">
         <h3 class="card-header">Danh sách chương<div class="spinner ml-2"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div></h3>
-        <div class="card-block" id="booklist">
+        <div class="card-body" id="booklist">
           @include('site.post.booklist')
         </div>
       </div>

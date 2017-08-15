@@ -1,4 +1,4 @@
-@import 'bootstrap';
+@import 'scss/bootstrap';
 
 // fix font size heading
 h1 {font-size: 1.5rem;}
@@ -9,11 +9,11 @@ h5 {font-size: 1rem;}
 h6 {font-size: .875rem;}
 
 a {
-  color: $text-base-color;
+  color: $color333;
 }
 a:active,
 a:hover {
-  color: $bg-base-color;
+  color: $colorbase;
   text-decoration: none;
 }
 
@@ -23,23 +23,23 @@ input[type="submit"] {
 }
 
 body {
-  background: $bg-color;
-  color: $text-base-color;
+  background: $white;
+  color: $color333;
 }
 
 header {
-  background: $navbar-color;
+  background: $color1a;
   border-bottom: 1px solid #ccc;
   a {
-    color: $color-white;
+    color: $white;
   }
 }
 
 // FOOTER
 
 footer {
-  background: $footer-bg-color;
-  border-top: 1px solid $footer-border-color;
+  background: $coloreee;
+  border-top: 1px solid $colorccc;
   padding: .625rem 0;
   text-align: center;
   p {
@@ -54,11 +54,11 @@ footer {
 // BOX STYLE
 
 .box-style {
-  border-bottom: 3px solid $table-border-color;
+  border-bottom: 3px solid $colorccc;
   .title,
   h1 {
-    border-bottom: 3px solid $bg-base-color;
-    color: $bg-base-color;
+    border-bottom: 3px solid $colorbase;
+    color: $colorbase;
     text-transform: uppercase;
     margin-bottom: -3px;
     font-size: 1.25rem;
@@ -84,7 +84,7 @@ footer {
 
 .table-bordered td, .table-bordered th {
   border: none;
-  border-left: 1px dashed $table-border-color;
+  border-left: 1px dashed $colorccc;
 }
 
 .overflow {

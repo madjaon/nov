@@ -1,4 +1,4 @@
-@import 'bootstrap';
+@import 'scss/bootstrap';
 
 // fix font size heading
 h1 {font-size: 1.5rem;}
@@ -9,11 +9,11 @@ h5 {font-size: 1rem;}
 h6 {font-size: .875rem;}
 
 a {
-  color: $text-base-color;
+  color: $color333;
 }
 a:active,
 a:hover {
-  color: $bg-base-color;
+  color: $colorbase;
   text-decoration: none;
 }
 
@@ -23,8 +23,8 @@ input[type="submit"] {
 }
 
 body {
-  background: $bg-color;
-  color: $text-base-color;
+  background: $white;
+  color: $color333;
 }
 
 .breadcrumb {
@@ -63,7 +63,7 @@ body {
 }
 
 .logo {
-  color: $bg-base-color;
+  color: $colorbase;
   font-size: 1.5rem;
   font-family: 'Coiny', cursive;
 }
@@ -77,15 +77,15 @@ header {
 // NAV BAR
 
 .navbar {
-  background: $navbar-color;
+  background: $color1a;
   .nav-link {
-    color: $color-white;
+    color: $white;
     font-weight: 500;
     font-size: 1rem;
     text-transform: uppercase;
   }
   a.navbar-brand {
-    color: $color-white;
+    color: $white;
     font-size: 1.5rem;
     font-family: 'Coiny', cursive;
     &:hover {
@@ -95,9 +95,13 @@ header {
     }
   }
   .nav-item {
+    margin-left: 1.5rem;
+    &+.nav-item {
+      margin-left: 2rem;
+    }
     .dropdown-menu {
-      background-color: $bg-box-color;
-      border: 1px solid $bg-color;
+      background-color: $white;
+      border: 1px solid $white;
       -moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
       -webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
       box-shadow: 0 6px 12px rgba(0,0,0,0.175);
@@ -139,8 +143,8 @@ header {
 // FOOTER
 
 footer {
-  background: $footer-bg-color;
-  border-top: 1px solid $footer-border-color;
+  background: $coloreee;
+  border-top: 1px solid $colorccc;
   padding: .625rem 0;
   text-align: center;
   p {
@@ -163,14 +167,14 @@ footer {
     }
   }
   .nav-tabs {
-    border-bottom: 2px solid $bg-base-color;
+    border-bottom: 2px solid $colorbase;
     .nav-link {
       font-weight: bold;
       padding: .5rem 1rem;
     }
   }
   .side-item {
-    border-bottom: 1px solid $footer-bg-color;
+    border-bottom: 1px solid $coloreee;
     &-title {
       font-size: 1rem;
       font-weight: normal;
@@ -186,11 +190,11 @@ footer {
 
 .media {
   .authors {
-    color: $color-muted;
+    color: $color888;
     a {
-      color: $color-muted;
+      color: $color888;
       &:hover {
-        color: $bg-base-color;
+        color: $colorbase;
       }
     }
   }
@@ -212,7 +216,7 @@ footer {
 
 .table-bordered td, .table-bordered th {
   border: none;
-  border-left: 1px dashed $table-border-color;
+  border-left: 1px dashed $colorccc;
 }
 
 // CONTENT
@@ -271,10 +275,10 @@ footer {
     height: 100%;
     background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiP…dpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
     background-size: 100%;
-    background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, $bg-color), color-stop(100%, $bg-color));
-    background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
-    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, $bg-color 80%, $bg-color 100%);
+    background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, $white), color-stop(100%, $white));
+    background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $white 80%, $white 100%);
+    background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, $white 80%, $white 100%);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, $white 80%, $white 100%);
     pointer-events: none;
   }
 }
@@ -300,11 +304,11 @@ footer {
 // BOX STYLE
 
 .box-style {
-  border-bottom: 3px solid $table-border-color;
+  border-bottom: 3px solid $colorccc;
   .title,
   h1 {
-    border-bottom: 3px solid $bg-base-color;
-    color: $bg-base-color;
+    border-bottom: 3px solid $colorbase;
+    color: $colorbase;
     text-transform: uppercase;
     margin-bottom: -3px;
     font-size: 1.25rem;
@@ -317,7 +321,7 @@ footer {
 // CARD LIST
 .card-item,
 .list-item {
-  border-bottom: 1px solid $footer-bg-color;
+  border-bottom: 1px solid $coloreee;
   &-title {
     font-weight: bold;
     font-size: 1.125rem;
@@ -349,18 +353,8 @@ footer {
   border-top-right-radius: 100%;
 }
 .page-link {
-  background-color: #95a5a6;
   padding: .813rem 1.125rem;
   font-weight: 500;
-}
-.page-item.disabled .page-link {
-  background-color: #c2c2c2;
-}
-.page-link:focus, .page-link:hover {
-  background-color: #798d8f;
-}
-.page-item.active .page-link {
-  background-color: #798d8f;
 }
 
 // END pagination
@@ -379,8 +373,8 @@ div#themes {
   div#themesbox {
     display: none;
     position: absolute;
-    background-color: $bg-box-color;
-    border: 1px solid $bg-color;
+    background-color: $white;
+    border: 1px solid $white;
     border-top-right-radius: .25rem;
     border-bottom-right-radius: .25rem;
     -moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);
@@ -389,7 +383,7 @@ div#themes {
     top: -10px;
     z-index: 99;
     .custom-control-description {
-      color: $text-base-color;
+      color: $color333;
     }
     select, button {
       width: 160px;
@@ -398,43 +392,43 @@ div#themes {
 }
 
 body.themelight {
-  background: $bg-color;
-  color: $text-base-color;
+  background: $white;
+  color: $color333;
 }
 body.themedark {
-  background: $bg-color2;
-  color: $text-base-color2;
+  background: $color23;
+  color: $white0-6;
   a {
-    color: $secondary-color;
+    color: $gray-600;
   }
   footer {
-    background: $footer-bg-color2;
-    border-top: 1px solid $text-base-color;
+    background: $color333;
+    border-top: 1px solid $color333;
   }
   .col select {
-    background-color: $bg-color2;
-    border-color: $border-color;
+    background-color: $color23;
+    border-color: $color78;
   }
   a.btn.disabled {
-    background-color: $text-base-color2;
-    color: $primary-color;
-    border-color: $border-color;
+    background-color: $white0-6;
+    color: $blue;
+    border-color: $color78;
   }
   a.btn-primary {
-    background-color: $bg-color2;
-    border-color: $border-color;
+    background-color: $color23;
+    border-color: $color78;
   }
 }
 body.themegray {
-  background: $bg-color3;
-  color: $text-base-color;
+  background: $gray-200;
+  color: $color333;
 }
 
 // TOOL TIP
 
 // div#tipDiv {
 //   font-size: .875rem;
-//   background-color: $bg-box-color; 
+//   background-color: $white; 
 //   width: 20rem;
 //   padding: 4px;
 //   line-height: 2;
@@ -483,8 +477,8 @@ body.themegray {
     font-size: 1rem;
   }
   header {
-    border-top: 3px solid $bg-base-color;
-    background: $color-white;
+    border-top: 3px solid $colorbase;
+    background: $white;
   }
   .form-inline .input-group {
     width: 100%;
