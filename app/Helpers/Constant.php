@@ -56,7 +56,7 @@ define('MENUTYPE3', 3);
 define('MENUTYPE4', 4);
 // pagination
 define('PAGINATION', 30);
-define('PAGINATE', 1);
+define('PAGINATE', 36);
 define('PAGINATE_LATEST', 24);
 define('PAGINATE_HOT', 12);
 define('PAGINATE_RELATED', 6);
