@@ -99,23 +99,23 @@
     @if(isset($post->epFirst) || isset($post->epLast))
       @if(($post->epFirst->id == $post->epLast->id) || $post->type == POST_SHORT)
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-md-6">
             <a class="btn btn-danger mb-3 w-100 book-full" href="{!! CommonUrl::getUrl2($post->slug, $post->epFirst->slug) !!}">Đọc Ngay</a>
           </div>
         </div>
       @else
         <div class="row">
-          <div class="col">
+          <div class="col-md-6">
             <a class="btn btn-info mb-3 w-100 book-first" href="{!! CommonUrl::getUrl2($post->slug, $post->epFirst->slug) !!}">Đọc Từ Chương Đầu</a>
           </div>
-          <div class="col">
+          <div class="col-md-6">
             <a class="btn btn-danger mb-3 w-100 book-last" href="{!! CommonUrl::getUrl2($post->slug, $post->epLast->slug) !!}">Đọc Chương Mới Nhất</a>
           </div>
         </div>
       @endif
     @else
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-md-6">
         <a class="btn btn-secondary mb-3 w-100 book-comming">Truyện Sắp Có Nhé</a>
       </div>
     </div>

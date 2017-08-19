@@ -592,7 +592,7 @@ class SiteController extends Controller
                     }
                 }
                 $array[] = [
-                    'suggestion' => $value->name.'<br>'.'<small>Tác giả: '.$authors.'</small>',
+                    'suggestion' => '<span class="poies">'.$value->name.'<br>'.'<small>Tác giả: '.$authors.'</small></span>',
                     'url' => url($value->slug),
                     // "attr" => [["class" => "suggestion"]]
                 ];
