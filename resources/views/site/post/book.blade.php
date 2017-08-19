@@ -155,12 +155,13 @@
         @push('starability')
           <link rel="stylesheet" href="{!! asset('css/starability.css') !!}">
         @endpush
+        @if(!isset($ratingCookie))
+          <input type="hidden" id="postId" value="{!! $post->id !!}">
+          @push('book')
+            <script src="{!! asset('js/book.js') !!}"></script>
+          @endpush
+        @endif
       </form>
-      @if(!isset($ratingCookie))
-        @push('book')
-          <script src="{!! asset('js/book.js') !!}"></script>
-        @endpush
-      @endif
     </div>
   </div>
 </div>
@@ -235,7 +236,5 @@
 
   </div>
 </div>
-
-<input type="hidden" id="postId" value="{!! $post->id !!}">
 
 @endsection
