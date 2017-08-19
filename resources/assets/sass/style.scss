@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&subset=vietnamese');
+@import url('https://fonts.googleapis.com/css?family=Coiny&amp;subset=vietnamese');
+
 @import 'scss/bootstrap';
 
 // fix font size heading
@@ -134,7 +137,7 @@ header {
 // FIGURE
 
 .figure-caption {
-  font-weight: bold;
+  font-weight: 500;
   font-size: 1rem;
 }
 
@@ -169,7 +172,7 @@ footer {
   .nav-tabs {
     border-bottom: 2px solid $colorbase;
     .nav-link {
-      font-weight: bold;
+      font-weight: 500;
       padding: .5rem 1rem;
     }
   }
@@ -177,7 +180,7 @@ footer {
     border-bottom: 1px solid $coloreee;
     &-title {
       font-size: 1rem;
-      font-weight: normal;
+      font-weight: 400;
     }
   }
   .media img {
@@ -233,7 +236,7 @@ footer {
       font-size: .875rem;
     }
     a {
-      font-weight: bold;
+      font-weight: 500;
     }
   }
   &-full,
@@ -241,14 +244,14 @@ footer {
   &-first,
   &-last {
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 500;
   }
 }
 
 .seri {
   font-size: 1.125rem;
   a {
-    font-weight: bold;
+    font-weight: 500;
   }
 }
 
@@ -312,7 +315,7 @@ footer {
     text-transform: uppercase;
     margin-bottom: -3px;
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 500;
   }
 }
 
@@ -323,7 +326,7 @@ footer {
 .list-item {
   border-bottom: 1px solid $coloreee;
   &-title {
-    font-weight: bold;
+    font-weight: 500;
     font-size: 1.125rem;
   }
 }
@@ -536,7 +539,7 @@ body.themegray {
 
 
 // SUGGESTION BOX
-#suggestion-box{color:#000;display:none;font-family:inherit;border:1px solid #ccc;background:#fff;padding:0;margin:0;-moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);-webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);box-shadow: 0 6px 12px rgba(0,0,0,0.175)}#suggestion-box #no-suggestions{padding:10px}#suggestion-box ul,#suggestion-box ul>li{padding:0;margin:0;border-top:1px dashed #eee}#suggestion-box ul{list-style:none;width:100%;clear:both}#suggestion-box ul>li a{display:block;height:100%;color:inherit;text-decoration:none;padding:10px;font-size:.813rem;font-weight:bold}#suggestion-box .selected{background-color:#f4f4f4}#suggestion-box #suggestion-header{margin-right:10px;margin-top:5px;font-weight:700;font-size:.813rem;color:#999;float:right}
+#suggestion-box{color:#000;display:none;font-family:inherit;border:1px solid #ccc;background:#fff;padding:0;margin:0;-moz-box-shadow: 0 6px 12px rgba(0,0,0,0.175);-webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);box-shadow: 0 6px 12px rgba(0,0,0,0.175)}#suggestion-box #no-suggestions{padding:10px}#suggestion-box ul,#suggestion-box ul>li{padding:0;margin:0;border-top:1px dashed #eee}#suggestion-box ul{list-style:none;width:100%;clear:both}#suggestion-box ul>li a{display:block;height:100%;color:inherit;text-decoration:none;padding:5px;font-size:.813rem;font-weight:500}#suggestion-box .selected{background-color:#f4f4f4}#suggestion-box #suggestion-header{margin-right:10px;margin-top:5px;font-weight:500;font-size:.813rem;color:#999;text-align:right}
 
 
 // spinner LOADING
