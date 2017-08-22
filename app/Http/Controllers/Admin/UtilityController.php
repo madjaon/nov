@@ -35,6 +35,7 @@ class UtilityController extends Controller
         //get all image in all table (has image field)
         $data = array();
         $images = array();
+        // su dung danh sach file anh da luu vao database
         $images1 = DB::table('posts')->where('image', '!=', '')->lists('image');
         $images2 = DB::table('post_types')->where('image', '!=', '')->lists('image');
         $images3 = DB::table('post_tags')->where('image', '!=', '')->lists('image');
@@ -42,6 +43,8 @@ class UtilityController extends Controller
         $images1 = array_merge($images1, $images2);
         $images1 = array_merge($images1, $images3);
         $images = array_merge($images1, $images4);
+        // su dung danh sach file anh tren host (thu muc images)
+        // $images = self::getimageswithdir('images/');
         //tim domain cua host
         $domainSource = CommonMethod::getDomainSource();
         //vong lap kiem tra anh goc neu co thi moi tao thumbnail
@@ -125,7 +128,7 @@ class UtilityController extends Controller
         $position = !empty($request->position)?$request->position:null;
         $status = !empty($request->status)?$request->status:null;
         // get all images to gen watermark
-        $lists = self::getimagestogenwatermark($dir, $status);
+        $lists = self::getimageswithdir($dir, $status);
         // gen watermark
         foreach($lists as $value) {
             //bo /images/ phia truoc dir de lay savePath
@@ -138,7 +141,7 @@ class UtilityController extends Controller
 
     // get all images no inside thumb/ folder
     // status: tao watermark cho anh thumbnails hay khong?
-    private function getimagestogenwatermark($dir = 'images/', $status = INACTIVE)
+    private function getimageswithdir($dir = 'images/', $status = INACTIVE)
     {
         $lists = self::get_filelist_as_array($dir);
         // thay the dau \ thanh dau /
