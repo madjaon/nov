@@ -96,8 +96,8 @@ class UtilityController extends Controller
                         $thumb3 = '/images/'.$savePath3.'/'.$name;
                         if(!file_exists(public_path().$thumb) || !file_exists(public_path().$thumb2) || !file_exists(public_path().$thumb3)) {
                             $data[] = CommonMethod::createThumb($imageUrl, $domainSource, $savePath, IMAGE_WIDTH, IMAGE_HEIGHT);
-                            CommonMethod::createThumb($imageUrl, $domainSource, str_replace('/thumb', '/thumb2', $savePath2), IMAGE_WIDTH_2, IMAGE_HEIGHT_2);
-                            CommonMethod::createThumb($imageUrl, $domainSource, str_replace('/thumb', '/thumb3', $savePath3), IMAGE_WIDTH_3, IMAGE_HEIGHT_3);
+                            CommonMethod::createThumb($imageUrl, $domainSource, $savePath2, IMAGE_WIDTH_2, IMAGE_HEIGHT_2);
+                            CommonMethod::createThumb($imageUrl, $domainSource, $savePath3, IMAGE_WIDTH_3, IMAGE_HEIGHT_3);
                         }
                     }
                 }
