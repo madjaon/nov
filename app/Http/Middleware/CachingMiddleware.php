@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Crypt;
 use DB;
+use Cache;
 
 class CachingMiddleware
 {
@@ -59,23 +60,26 @@ class CachingMiddleware
             $cacheName = $cacheName.'_mobile';
         }
 
-        if(!\Cache::has($cacheName)) {
+        if(!Cache::has($cacheName)) {
             $response = $next($this->request);
 
             $response->original = '';
 
-            // \Cache::put($cacheName, $response, $this->lifeTime);
+            // Cache::put($cacheName, $response, $this->lifeTime);
 
-            \Cache::forever($cacheName, $response);
+            Cache::forever($cacheName, $response);
 
             return $response;
         } else {
-            return \Cache::get($cacheName);
+            return Cache::get($cacheName);
         }
     }
 
     protected function isCached() {
         if(app()->environment('local')) return false;
+
+        if(CACHE == 2) return false;
+
         $cacheRoute = collect();
         // allow controller & deny actions (in routes)
         $cacheRoute->put('App\Http\Controllers\Site\SiteController', collect(['errorreporting','rating','contact']));
@@ -137,7 +141,8 @@ class CachingMiddleware
                 $this->{$method}($content, $placeholder, $replace) :
                 $content;
         }
-
+        // minify response html
+        $content = $this->optimizeHtml($content);
         return $content;
     }
 
@@ -160,6 +165,43 @@ class CachingMiddleware
         return $response;
     }
 
+    private function optimizeHtml($content)
+    {
+        // if site then minify
+        preg_match('/([a-z]*)@/i', $this->request->route()->getActionName(), $matches);
+        $controllerName = $matches[1];
+        if($controllerName == 'SiteController') {
+            if(strpos($content,'<pre>') !== false)
+            {
+                $replace = array(
+                    // '/<!--[^\[](.*?)[^\]]-->/s' => '',
+                    '/<!--[^\[](.*?)[^\]]-->(<!--history-->)/s' => '',
+                    "/<\?php/"                  => '<?php ',
+                    "/\r/"                      => '',
+                    "/>\n</"                    => '><',
+                    "/>\s+\n</"                 => '><',
+                    "/>\n\s+</"                 => '><',
+                    "/>\s</"                    => '><',
+                );
+            } else {
+                $replace = array(
+                    // '/<!--[^\[](.*?)[^\]]-->/s' => '',
+                    '/<!--[^\[](.*?)[^\]]-->(<!--history-->)/s' => '',
+                    "/<\?php/"                  => '<?php ',
+                    "/\n([\S])/"                => '$1',
+                    "/\r/"                      => '',
+                    "/\n/"                      => '',
+                    "/\t/"                      => '',
+                    "/ +/"                      => ' ',
+                    "/>\s</"                    => '><',
+                );
+            }
+            $content = preg_replace(array_keys($replace), array_values($replace), $content);
+            ini_set('zlib.output_compression', 'On'); // If you like to enable GZip, too!
+        }
+        return $content;
+    }
+
     private function historyFromCookie() {
         $cookie = $this->cookie;
         if(!empty($cookie)) {
@@ -169,8 +211,8 @@ class CachingMiddleware
                     // cache name
                     $cacheName = 'history_'.$cookie;
                     // get cache
-                    if(\Cache::has($cacheName)) {
-                        return \Cache::get($cacheName);
+                    if(Cache::has($cacheName)) {
+                        return Cache::get($cacheName);
                     }
                 }
                 // query
@@ -201,8 +243,8 @@ class CachingMiddleware
                         if(CACHE == 1) {
                             // put cache
                             $html = view('site.common.history', ['data' => $data])->render();
-                            // \Cache::put($cacheName, $html, $this->lifeTime);
-                            \Cache::forever($cacheName, $html);
+                            // Cache::put($cacheName, $html, $this->lifeTime);
+                            Cache::forever($cacheName, $html);
                         }
                         // return view
                         return view('site.common.history', ['data' => $data])->render();
