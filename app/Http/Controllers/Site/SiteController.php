@@ -345,12 +345,6 @@ class SiteController extends Controller
             ->first();
         if(isset($post)) {
 
-            //update count view post
-            if(!request()->session()->has('posts-'.$post->id)) {
-                DB::table('posts')->whereId($post->id)->increment('view');
-                request()->session()->put('posts-'.$post->id, 1);
-            }
-
             $post->patterns = CommonMethod::replaceText($post->patterns);
             $post->summary = CommonMethod::replaceText($post->summary);
             $post->description = CommonMethod::replaceText($post->description);
@@ -367,7 +361,7 @@ class SiteController extends Controller
                 $post->meta_keyword = 'Đọc truyện '.$postName.', doc truyen '.$postNameNoLatin;
             }
             if(empty($post->meta_description)) {
-                $post->meta_description = CommonMethod::limit_text(strip_tags($post->description), 200);
+                $post->meta_description = CommonMethod::limit_text(strip_tags($post->description), 260);
             }
             if(empty($post->meta_image)) {
                 $post->meta_image = '/img/img600x315.jpg';
@@ -466,12 +460,6 @@ class SiteController extends Controller
                 ->first();
             if(isset($data)) {
 
-                //update count view post
-                if(!request()->session()->has('posts-'.$post->id.'-'.$data->id)) {
-                    DB::table('posts')->whereId($post->id)->increment('view');
-                    request()->session()->put('posts-'.$post->id.'-'.$data->id, 1);
-                }
-
                 // auto meta post for seo
                 // $postName = ucwords(mb_strtolower($post->name));
                 $postName = mb_convert_case($post->name, MB_CASE_TITLE, "UTF-8");
@@ -483,7 +471,7 @@ class SiteController extends Controller
                     $data->meta_keyword = $postName.' - '.$data->name;
                 }
                 if(empty($data->meta_description)) {
-                    $data->meta_description = CommonMethod::limit_text(strip_tags($data->description), 200);
+                    $data->meta_description = CommonMethod::limit_text(strip_tags($data->description), 260);
                 }
                 if(empty($data->meta_image)) {
                     $data->meta_image = '/img/img600x315.jpg';
@@ -902,6 +890,9 @@ class SiteController extends Controller
             $ratingCount = $post->rating_count + 1;
             DB::table('posts')->where('id', $id)->update(['rating_value' => $ratingValue, 'rating_count' => $ratingCount]);
             $res = ['ratingValue' => $ratingValue, 'ratingCount' => $ratingCount];
+            // cache of this post must clear
+            $cacheName = '/' . $post->slug;
+            CommonMethod::forgetCache($cacheName);
         }
         return response()->json($res);
     }
