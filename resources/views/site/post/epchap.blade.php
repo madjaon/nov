@@ -38,15 +38,15 @@
     ?>
     @include('site.common.breadcrumb', $breadcrumb)
 
-    <h1 class="my-3 text-center">{!! $h1 !!}</h1>
+    <h1 class="my-3 text-center">{{ $h1 }}</h1>
 
     @if(!empty($post->name2))
-      <div class="mb-2 text-muted text-center">{!! $post->name2 !!}</div>
+      <div class="mb-2 text-muted text-center">{{ $post->name2 }}</div>
     @endif
 
     <div class="text-center mb-3 d-flex justify-content-center align-items-center">
       @if(isset($data->epPrev))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        <a href="{{ CommonUrl::getUrl2($post->slug, $data->epPrev->slug) }}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @endif
@@ -54,7 +54,7 @@
       {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'custom-select m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="{{ CommonUrl::getUrl2($post->slug, $data->epNext->slug) }}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @else
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @endif
@@ -62,16 +62,16 @@
 
     @include('site.common.ad', ['posPc' => 19, 'posMobile' => 20])
 
-    @if(!empty($data->description))<div class="mb-3" {!! $themestext !!}>{!! $data->description !!}</div>@endif
+    @if(!empty($data->description))<div class="mb-3" {{ $themestext }}>{!! $data->description !!}</div>@endif
 
     @include('site.common.ad', ['posPc' => 21, 'posMobile' => 22])
 
-    <h2 class="mb-3 text-muted text-center">{!! $data->name !!}</h2>
+    <h2 class="mb-3 text-muted text-center">{{ $data->name }}</h2>
 
     <div class="text-center mb-3 d-flex justify-content-center align-items-center">
       @if(isset($data->epPrev))
-        <input type="hidden" id="prev" value="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}">
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epPrev->slug) !!}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+        <input type="hidden" id="prev" value="{{ CommonUrl::getUrl2($post->slug, $data->epPrev->slug) }}">
+        <a href="{{ CommonUrl::getUrl2($post->slug, $data->epPrev->slug) }}" class="btn btn-primary m-2" rel="prev"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
       @else
         <input type="hidden" id="prev" value="">
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
@@ -80,8 +80,8 @@
       {!! Form::select(null, $post->epchapArray, CommonUrl::getUrl2($post->slug, $data->slug), array('class' =>'custom-select m-2', 'style'=>'width:200px;', 'onchange'=>'javascript:location.href = this.value;')) !!}
 
       @if(isset($data->epNext))
-        <input type="hidden" id="next" value="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}">
-        <a href="{!! CommonUrl::getUrl2($post->slug, $data->epNext->slug) !!}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+        <input type="hidden" id="next" value="{{ CommonUrl::getUrl2($post->slug, $data->epNext->slug) }}">
+        <a href="{{ CommonUrl::getUrl2($post->slug, $data->epNext->slug) }}" class="btn btn-primary m-2" rel="next"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
       @else
         <input type="hidden" id="next" value="">
         <a class="btn btn-secondary m-2 disabled"><i class="fa fa-arrow-right" aria-hidden="true"></i></a>
@@ -98,11 +98,11 @@
     </div>
 
     <div class="comment mb-5">
-      <div class="fb-comments" data-numposts="10" data-colorscheme="dark" data-width="100%" data-href="{!! url($post->slug) !!}"></div>
+      <div class="fb-comments" data-numposts="10" data-colorscheme="dark" data-width="100%" data-href="{{ url($post->slug) }}"></div>
     </div>
   
     @push('epchap')
-      <script src="{!! asset('js/epchap.js') !!}"></script>
+      <script src="{{ asset('js/epchap.js') }}"></script>
     @endpush
     
   </div>

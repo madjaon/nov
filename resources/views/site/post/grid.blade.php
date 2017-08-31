@@ -13,13 +13,13 @@
     ?>
     <div class="col-6 col-sm-3">
       <figure class="figure text-center grid-item">
-        <a href="{!! $url !!}" title="{!! $value->name !!}" class="d-block">
-          <img src="{!! url($image) !!}" class="figure-img img-thumbnail img-fluid rounded" alt="{!! $value->name !!}">
-          <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
-          <span class="badge badge-warning">{!! CommonMethod::numberFormatDot($value->view) !!} lượt đọc</span>
+        <a href="{{ $url }}" title="{{ $value->name }}" class="d-block">
+          <img src="{{ url($image) }}" class="figure-img img-thumbnail img-fluid rounded" alt="{{ $value->name }}">
+          <span class="badge badge-{{ $badge }}">{{ $kind }}</span>
+          <span class="badge badge-warning">{{ CommonMethod::numberFormatDot($value->view) }} lượt đọc</span>
         </a>
         <figcaption class="figure-caption">
-          <a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a>
+          <a href="{{ $url }}" title="{{ $value->name }}">{{ $value->name }}</a>
         </figcaption>
       </figure>
     </div>

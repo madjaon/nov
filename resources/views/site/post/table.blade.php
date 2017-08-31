@@ -21,20 +21,20 @@
         <tr>
           <td class="align-middle">
             <h3 class="my-0">
-              <a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a>
+              <a href="{{ $url }}" title="{{ $value->name }}">{{ $value->name }}</a>
               @if(isset($kind))
-              <span class="badge badge-success badge-pill ml-2">{!! $kind !!}</span>
+              <span class="badge badge-success badge-pill ml-2">{{ $kind }}</span>
               @endif
             </h3>
           </td>
           <td class="align-middle text-center">
             @if(isset($dataEp[$key]))
-            <a href="{!! $url2 !!}" title="{!! $dataEp[$key]->name !!}">{!! $epchap !!}</a>
+            <a href="{{ $url2 }}" title="{{ $dataEp[$key]->name }}">{{ $epchap }}</a>
             @endif
           </td>
           <td class="align-middle text-center">
             @if(isset($dataEp[$key]))
-            {!! CommonMethod::time_elapsed_string($dataEp[$key]->start_date) !!}
+            {{ CommonMethod::time_elapsed_string($dataEp[$key]->start_date) }}
             @endif
           </td>
         </tr>

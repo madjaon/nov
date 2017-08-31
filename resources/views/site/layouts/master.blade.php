@@ -5,7 +5,7 @@
 <script>
   window.fbAsyncInit = function() {
     FB.init({
-      appId      : '{!! $configfbappid !!}',
+      appId      : '{{ $configfbappid }}',
       xfbml      : true,
       version    : 'v2.9'
     });
@@ -61,7 +61,7 @@
     @include('site.common.ad', ['posPc' => 6])
   </div>
   @push('scroll')
-    <script src="{!! asset('js/scroll.js') !!}"></script>
+    <script src="{{ asset('js/scroll.js') }}"></script>
     <style>@media(min-width:1200px){.container{width:1000px;}}</style>
   @endpush
 @endif

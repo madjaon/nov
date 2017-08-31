@@ -14,17 +14,17 @@
         }
       ?>
       <li class="media mb-3 pb-3 card-item">
-        <a href="{!! $url !!}" title="{!! $value->name !!}">
-          <img class="d-flex mr-3 img-thumbnail img-fluid" src="{!! url($image) !!}" alt="{!! $value->name !!}">
+        <a href="{{ $url }}" title="{{ $value->name }}">
+          <img class="d-flex mr-3 img-thumbnail img-fluid" src="{{ url($image) }}" alt="{{ $value->name }}">
         </a>
         <div class="media-body">
-          <h2 class="mt-0 mb-2 card-item-title"><a href="{!! $url !!}" title="{!! $value->name !!}">{!! $value->name !!}</a></h2>
+          <h2 class="mt-0 mb-2 card-item-title"><a href="{{ $url }}" title="{{ $value->name }}">{{ $value->name }}</a></h2>
           @if(!empty($authors[$key]))
           <div class="mb-2 authors">Tác giả: {!! $authors[$key] !!}</div>
           @endif
           <div class="d-flex align-items-center">
-            <span class="badge badge-{!! $badge !!}">{!! $kind !!}</span>
-            <small class="ml-2 text-muted">{!! CommonMethod::numberFormatDot($value->view) !!} lượt đọc</small>
+            <span class="badge badge-{{ $badge }}">{{ $kind }}</span>
+            <small class="ml-2 text-muted">{{ CommonMethod::numberFormatDot($value->view) }} lượt đọc</small>
           </div>
         </div>
       </li>
