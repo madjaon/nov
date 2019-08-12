@@ -1,13 +1,13 @@
-<?php 
+<?php
 namespace App\Helpers;
 use DB;
 use App\Helpers\CommonQuery;
 
 class CommonProvider
 {
-	static function sharedata()
-	{
-		// get config data
+    static function sharedata()
+    {
+        // get config data
         $config = DB::table('configs')->first();
         view()->share('configcredit', $config->credit);
         view()->share('configcode', $config->code);
@@ -23,15 +23,15 @@ class CommonProvider
         // getMenuMobile
         view()->share('menumobile', self::getMenuMobile());
 
-        // all menu 
+        // all menu
         // (warning: co the su dung CommonProvider + cache Middleware se khong the danh dau current menu link (active menu). Neu muon su dung active menu link theo trang. neu bi nhu vay ma khong tim duoc cach -> chuyen sang view share = AppServiceProvider).
         // view()->share('topmenu', self::getMenu());
         // view()->share('sidemenu', self::getMenu(MENUTYPE2));
         // view()->share('bottommenu', self::getMenu(MENUTYPE3));
         // view()->share('mobilemenu', self::getMenu(MENUTYPE4));
-	}
+    }
 
-	private static function getPostTop($topPattern, $topName)
+    private static function getPostTop($topPattern, $topName)
     {
         if($topPattern == '') {
             return null;
@@ -135,7 +135,7 @@ class CommonProvider
                         $output .= '<ul>';
                     }
                     $output .= self::_visit($data, $type, $value->id);
-                    $output .= '</ul></li>';    
+                    $output .= '</ul></li>';
                 } else {
                     $output .= '</li>';
                 }

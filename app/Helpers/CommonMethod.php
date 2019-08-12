@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Helpers;
 use Image;
 
@@ -166,7 +166,7 @@ class CommonMethod
     }
     //full url with http://domain....
     static function getfullurl($url, $domain, $parameters = null) {
-	    if (filter_var($url, FILTER_VALIDATE_URL)) { 
+	    if (filter_var($url, FILTER_VALIDATE_URL)) {
 	        $result = self::convertUrlEncode($url);
 	    } else {
 	    	//if url co chua domain (k co http://) thi check de tao full url
@@ -284,9 +284,9 @@ class CommonMethod
 			//remove query ?param=.... neu co
 	        $name = basename(self::removeParameters($imageUrl));
 	        //change file name image
-	        $name = self::changeFileNameImage($name, 1);	
+	        $name = self::changeFileNameImage($name, 1);
         }
-        
+
         //result path
         $imageResult = '/images/'.$savePath.'/'.$name;
         //if exist image then return result
@@ -617,7 +617,7 @@ class CommonMethod
 		} else {
 			return '';
 		}
-		
+
 	}
 
 	// echo time_elapsed_string('2013-05-01 00:22:35');
@@ -680,16 +680,16 @@ class CommonMethod
         curl_setopt($c, CURLOPT_MAXREDIRS, 10);
         //if SAFE_MODE or OPEN_BASEDIR is set,then FollowLocation cant be used.. so...
         $follow_allowed= ( ini_get('open_basedir') || ini_get('safe_mode')) ? false:true;  if ($follow_allowed){curl_setopt($c, CURLOPT_FOLLOWLOCATION, 1);}
-        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 9);
+        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 90);
         curl_setopt($c, CURLOPT_REFERER, $url);
-        curl_setopt($c, CURLOPT_TIMEOUT, 60);
+        curl_setopt($c, CURLOPT_TIMEOUT, 0);
         curl_setopt($c, CURLOPT_AUTOREFERER, true);
         curl_setopt($c, CURLOPT_ENCODING, 'gzip,deflate');
         $data=curl_exec($c);$status=curl_getinfo($c);curl_close($c);
-        
+
         preg_match('/(http(|s)):\/\/(.*?)\/(.*\/|)/si',  $status['url'],$link);
         //correct assets URLs(i.e. retrieved url is: http://site.com/DIR/SUBDIR/page.html... then href="./image.JPG" becomes href="http://site.com/DIR/SUBDIR/image.JPG", but  href="/image.JPG" needs to become href="http://site.com/image.JPG")
-        
+
         //inside all links(except starting with HTTP,javascript:,HTTPS,//,/ ) insert that current DIRECTORY url (href="./image.JPG" becomes href="http://site.com/DIR/SUBDIR/image.JPG")
         $data=preg_replace('/(src|href|action)=(\'|\")((?!(http|https|javascript:|\/\/|\/)).*?)(\'|\")/si','$1=$2'.$link[0].'$3$4$5', $data);
         //inside all links(except starting with HTTP,javascript:,HTTPS,//)    insert that DOMAIN url (href="/image.JPG" becomes href="http://site.com/image.JPG")

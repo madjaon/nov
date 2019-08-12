@@ -37,7 +37,7 @@ class SiteController extends Controller
 
         //seo meta
         $seo = DB::table('configs')->where('status', ACTIVE)->first();
-        
+
         // return view
         return view('site.index', ['data' => $data, 'dataEp' => $dataEp, 'data2' => $data2, 'seo' => $seo]);
     }
@@ -65,7 +65,7 @@ class SiteController extends Controller
             $seo->meta_keyword = 'tác giả truyện, tac gia truyen';
             $seo->meta_description = 'Danh sách các tác giả truyện, tiểu thuyết';
             $seo->meta_image = '/img/img600x315.jpg';
-            
+
             // return view
             return view('site.post.author', ['data' => $data, 'seo' => $seo]);
         }
@@ -76,7 +76,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+
         // query
         $tag = DB::table('post_tags')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -126,7 +126,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+
         // query
         $type = DB::table('post_types')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -176,7 +176,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+
         // query
         $seri = DB::table('post_series')
             ->select('id', 'name', 'slug', 'patterns', 'summary', 'description', 'image', 'meta_title', 'meta_keyword', 'meta_description', 'meta_image')
@@ -230,7 +230,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+
         // query
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'image', 'type', 'kind', 'view')
@@ -269,7 +269,7 @@ class SiteController extends Controller
         trimRequest($request);
         // check page
         $page = ($request->page)?$request->page:1;
-        
+
         // query
         $data = DB::table('posts')
             ->select('id', 'name', 'slug', 'name2', 'image', 'type', 'kind', 'view')
@@ -369,7 +369,7 @@ class SiteController extends Controller
 
             // tinh trang kind
             $post->kindName = CommonOption::getKindPost($post->kind);
-     
+
             // nation
             $post->nationName = CommonOption::getNation($post->nation);
 
@@ -401,7 +401,7 @@ class SiteController extends Controller
             $epsLastest = $this->getEpchapListByPostId($post->id, 'desc')->take(PAGINATE_RELATED)->get();
             $post->epsLastest = $epsLastest;
 
-            // list post by type 
+            // list post by type
             // $related = $this->getPostRelated($post->id, [$post->id], $post->type_main_id);
 
             // first & last epchap
@@ -501,7 +501,7 @@ class SiteController extends Controller
                 // epchap dua vao position (bat buoc phai nhap dung position)
                 $epPrev = $this->getEpchapListByPostId($post->id, 'desc')->where('position', '<', $data->position)->first();
                 $epNext = $this->getEpchapListByPostId($post->id, 'asc')->where('position', '>', $data->position)->first();
-                
+
                 // gan gia tri vao $data
                 if(isset($epPrev)) {
                     $data->epPrev = $epPrev;
@@ -513,8 +513,8 @@ class SiteController extends Controller
 
                 // return view
                 return response()->view('site.post.epchap', [
-                        'post' => $post, 
-                        'data' => $data, 
+                        'post' => $post,
+                        'data' => $data,
                     ]);
             }
         }
@@ -542,7 +542,7 @@ class SiteController extends Controller
         if($request->s == '' || strlen($request->s) < 2 || strlen($request->s) > 255) {
             return view('site.post.search', ['data' => null, 'seo' => $seo, 'request' => $request]);
         }
-        
+
         // query
         // post
         $data = $this->searchQueryPostTag($request->s)->paginate(PAGINATE);
@@ -559,7 +559,7 @@ class SiteController extends Controller
         if($request->s == '' || strlen($request->s) < 2 || strlen($request->s) > 255) {
             return null;
         }
-        
+
         $array = array();
         // AJAX SEARCH
         // Search theo ten post va ten tac gia
@@ -588,7 +588,7 @@ class SiteController extends Controller
         }
 
         $res = ['results' => $array];
-        
+
         return response()->json($res);
     }
     public function sitemap()
@@ -715,7 +715,7 @@ class SiteController extends Controller
     }
     // search query
     // to full text search (mysql) working
-    // my.ini (my.cnf) add after line [mysqld] before restart sql service: 
+    // my.ini (my.cnf) add after line [mysqld] before restart sql service:
     // innodb_ft_min_token_size = 2
     // ft_min_word_len = 2
     // run: mysql> REPAIR TABLE tbl_name QUICK;
@@ -723,7 +723,7 @@ class SiteController extends Controller
     // https://stackoverflow.com/questions/25338456/laravel-union-paginate-at-the-same-time
     private function searchQueryPostTag($s)
     {
-        // addslashes: xu ly chuoi gay loi cau lenh sql. 
+        // addslashes: xu ly chuoi gay loi cau lenh sql.
         $s = '+'. str_replace(' ', ' +', addslashes(trim($s)));
         $data = DB::table('posts')
             ->leftJoin('post_tag_relations', 'posts.id', '=', 'post_tag_relations.post_id')
@@ -758,14 +758,14 @@ class SiteController extends Controller
         }
         return $authors;
     }
-    /* 
+    /*
     * contact
     */
     public function contact(Request $request)
     {
         CommonMethod::forgetCache('/lien-he');
         CommonMethod::forgetCache('/contact');
-        
+
         //
         $now = strtotime(date('Y-m-d H:i:s'));
         $range = 300; //second
@@ -868,7 +868,7 @@ class SiteController extends Controller
         $id = ($request->id)?$request->id:0;
 
         $res = [];
-        
+
         $ratingCookieName = 'rating' . $id;
         if(isset($_COOKIE[$ratingCookieName])) {
             return response()->json($res);
@@ -896,5 +896,5 @@ class SiteController extends Controller
         }
         return response()->json($res);
     }
-    
+
 }
