@@ -12,8 +12,8 @@
   <link rel="manifest" href="{{ url('img/manifest.json') }}">
   <link rel="mask-icon" href="{{ url('img/safari-pinned-tab.svg') }}" color="#5bbad5">
   <link rel="shortcut icon" href="{{ url('img/favicon.ico') }}">
-  <meta name="apple-mobile-web-app-title" content="Truyen 2K">
-  <meta name="application-name" content="Truyen 2K">
+  <meta name="apple-mobile-web-app-title" content="TruyenX">
+  <meta name="application-name" content="TruyenX">
   <meta name="msapplication-config" content="{{ url('img/browserconfig.xml') }}">
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">

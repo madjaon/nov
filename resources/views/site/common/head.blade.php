@@ -15,7 +15,7 @@
   <meta name="title" content="{{ $meta_title }}">
   <meta name="keywords" content="{{ $meta_keyword }}">
   <meta name="description" content="{{ $meta_description }}">
-  <meta property="og:site_name" content="Truyen 2K" />
+  <meta property="og:site_name" content="TruyenX" />
   <meta property="og:url" content="{{ url()->current() }}" />
   <meta property="og:title" content="{{ $meta_title }}" />
   <meta property="og:description" content="{{ $meta_description }}" />
@@ -43,9 +43,9 @@
   @endif
 
   <meta name="csrf-token" content="%%csrf_token%%">
-  
+
   <title>@yield('title')</title>
-  
+
   <link rel="alternate" hreflang="vi" href="{{ env('APP_URL', 'https://truyen2k.com') }}" />
 
   @if(isset($pagePrev))
@@ -70,8 +70,8 @@
   <link rel="manifest" href="{{ url('img/manifest.json') }}">
   <link rel="mask-icon" href="{{ url('img/safari-pinned-tab.svg') }}" color="#5bbad5">
   <link rel="shortcut icon" href="{{ url('img/favicon.ico') }}">
-  <meta name="apple-mobile-web-app-title" content="Truyen 2K">
-  <meta name="application-name" content="Truyen 2K">
+  <meta name="apple-mobile-web-app-title" content="TruyenX">
+  <meta name="application-name" content="TruyenX">
   <meta name="msapplication-config" content="{{ url('img/browserconfig.xml') }}">
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">

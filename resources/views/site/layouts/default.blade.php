@@ -1,9 +1,9 @@
 @include('site.common.head')
 @if(isset($isEpchap))
-<?php 
+<?php
   $themescolor = isset($_COOKIE['themescolor'])?$_COOKIE['themescolor']:null;
   if(isset($themescolor)) {
-    $themescolorClass = 'class="'.$themescolor.'"';
+    $themescolorClass = 'class='.$themescolor;
   } else {
     $themescolorClass = '';
   }

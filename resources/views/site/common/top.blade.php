@@ -1,4 +1,4 @@
-<?php 
+<?php
   if(isset($isHome)) {
     $effect = 'animated swing';
   } else {
@@ -15,9 +15,9 @@
   <div class="container">
     <div class="row">
       <div class="col-8">
-        <a href="{{ url('/') }}" class="d-flex justify-content-start align-items-center py-2 logo" title="Truyện 2K">
-          <img src="{{ url('img/logomobile.png') }}" alt="Truyen 2K" class="mr-2 animated tada"><span class="pt-2 {{ $effect }}">Truyện 2K</span>
-        </a>  
+        <a href="{{ url('/') }}" class="d-flex justify-content-start align-items-center py-2 logo" title="TruyệnX">
+          <img src="{{ url('img/logomobile.png') }}" alt="TruyệnX" class="mr-2 animated tada"><span class="pt-2 {{ $effect }}">TruyệnX</span>
+        </a>
       </div>
       <div class="col-4">
         <a class="d-flex justify-content-end py-2 text-primary" onclick="document.getElementById('menumobile').style.display='block'"><i class="fa fa-align-justify menuicon" aria-hidden="true"></i></a>
@@ -44,7 +44,7 @@
 <header class="mb-4" {{ $themesmenuDisplay }}>
   <nav class="navbar navbar-expand-sm py-1">
     <div class="container">
-      <a class="navbar-brand p-0 d-flex align-items-center" href="{{ url('/') }}" title="Truyện 2K"><img src="{{ url('img/logo.png') }}" alt="Truyen 2K" class="mr-2 animated tada"><span class="{{ $effect }}">Truyện 2K</span></a>
+      <a class="navbar-brand p-0 d-flex align-items-center" href="{{ url('/') }}" title="TruyệnX"><img src="{{ url('img/logo.png') }}" alt="TruyệnX" class="mr-2 animated tada"><span class="{{ $effect }}">TruyệnX</span></a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
           <li class="nav-item dropdown">

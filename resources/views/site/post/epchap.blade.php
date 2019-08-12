@@ -1,4 +1,4 @@
-<?php 
+<?php
   $h1 = $data->h1;
   $title = ($data->meta_title!='')?$data->meta_title:$h1;
   $extendData = array(
@@ -14,9 +14,9 @@
   $themeslineheight = isset($_COOKIE['themeslineheight'])?$_COOKIE['themeslineheight']:'2';
   $themesmenu = isset($_COOKIE['themesmenu'])?$_COOKIE['themesmenu']:null;
   if(isset($themesfontsize) || isset($themeslineheight)) {
-    $themestext = 'style="font-size: '.$themesfontsize.'; line-height: '.$themeslineheight.';"';
+    $themestext = 'style=font-size:'.$themesfontsize.';line-height:'.$themeslineheight.';';
   } else {
-    $themestext = 'style="font-size: 1.250rem; line-height: 2;"';
+    $themestext = 'style=font-size:1.250rem;line-height:2;';
   }
 ?>
 @extends('site.layouts.default', $extendData)
@@ -28,7 +28,7 @@
 <div class="row">
   <div class="col">
 
-    <?php 
+    <?php
       $breadcrumb = array();
       foreach($post->types as $value) {
         $breadcrumb[] = ['name' => $value->name, 'link' => CommonUrl::getUrlPostType($value->slug)];
@@ -100,11 +100,11 @@
     <div class="comment mb-5">
       <div class="fb-comments" data-numposts="10" data-colorscheme="dark" data-width="100%" data-href="{{ url($post->slug) }}"></div>
     </div>
-  
+
     @push('epchap')
       <script src="{{ asset('js/epchap.js') }}"></script>
     @endpush
-    
+
   </div>
 </div>
 
