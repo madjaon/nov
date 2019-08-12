@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
 // use DB;
 // use Cache;
 // use App\Helpers\CommonQuery;
@@ -17,8 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
-
         // get config data
         // if(CACHE == 1) {
         //     if(Cache::has('configsite')) {
