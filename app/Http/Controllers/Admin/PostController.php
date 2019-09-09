@@ -24,7 +24,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         trimRequest($request);
-        if($request->except('page')) {
+        if($request->except('page') && !empty(self::checkSearchInput($request))) {
             $data = self::searchPost($request);
         } else {
             $data = Post::orderBy('start_date', 'desc')->orderBy('id', 'desc')->paginate(PAGINATION);
@@ -35,41 +35,44 @@ class PostController extends Controller
     private function searchPost($request)
     {
         $data = DB::table('posts')->where(function ($query) use ($request) {
-            if ($request->name != '') {
+            if(!empty($request->name)) {
                 $slug = CommonMethod::buildSlug($request->name);
                 $query = $query->where('slug', 'like', '%'.$slug.'%');
                 $query = $query->orWhere('name', 'like', '%'.$request->name.'%');
                 $query = $query->orWhere('name2', 'like', '%'.$request->name.'%');
                 $query = $query->orWhere('id', $request->name);
             }
-            if($request->type_id != '') {
+            if(!empty($request->ids)) {
+                $query = $query->whereIn('id', explode(',', $request->ids));
+            }
+            if(!empty($request->type_id)) {
                 $listPostId = DB::table('post_type_relations')
                     ->where('type_id', $request->type_id)
                     ->pluck('post_id');
                 $query = $query->whereIn('id', $listPostId);
             }
-            if($request->type != '') {
+            if(!empty($request->type)) {
                 $query = $query->where('type', $request->type);
             }
-            if($request->kind != '') {
+            if(!empty($request->kind)) {
                 $query = $query->where('kind', $request->kind);
             }
-            if($request->seri != '') {
+            if(!empty($request->seri)) {
                 $query = $query->where('seri', $request->seri);
             }
-            if($request->nation != '') {
+            if(!empty($request->nation)) {
                 $query = $query->where('nation', $request->nation);
             }
-            if($request->source != '') {
+            if(!empty($request->source)) {
                 $query = $query->where('source', $request->source);
             }
-            if($request->status != '') {
+            if(!empty($request->status)) {
                 $query = $query->where('status', $request->status);
             }
-            if($request->start_date != ''){
+            if(!empty($request->start_date)) {
                 $query = $query->where('start_date', '>=', CommonMethod::datetimeConvert($request->start_date, '00:00:00', 1));
             }
-            if($request->end_date != ''){
+            if(!empty($request->end_date)) {
                 $query = $query->where('start_date', '<=', CommonMethod::datetimeConvert($request->end_date, '23:59:59', 1));
             }
         })
@@ -77,6 +80,26 @@ class PostController extends Controller
         ->orderBy('id', 'desc')
         ->paginate(PAGINATION);
         return $data;
+    }
+
+    private function checkSearchInput($request)
+    {
+        if(empty($request->name)
+            && empty($request->ids)
+            && empty($request->type_id)
+            && empty($request->type)
+            && empty($request->kind)
+            && empty($request->seri)
+            && empty($request->nation)
+            && empty($request->source)
+            && empty($request->status)
+            && empty($request->start_date)
+            && empty($request->end_date)
+        )
+        {
+            return null;
+        }
+        return 1;
     }
 
     /**
@@ -271,8 +294,8 @@ class PostController extends Controller
         $id = $request->id;
         $field = $request->field;
         if($id && $field) {
-            $data = Post::find($id);    
-            if(count($data) > 0) {
+            $data = Post::find($id);
+            if(!empty($data)) {
                 $status = ($data->$field == ACTIVE)?INACTIVE:ACTIVE;
                 $data->update([$field=>$status]);
                 Cache::flush();
@@ -289,7 +312,7 @@ class PostController extends Controller
         if($id && $field) {
             foreach($id as $key => $value) {
                 $data = Post::find($value);
-                if(count($data) > 0) {
+                if(!empty($data)) {
                     $status = ($data->$field == ACTIVE)?INACTIVE:ACTIVE;
                     $data->update([$field=>$status]);
                 }

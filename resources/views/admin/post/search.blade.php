@@ -7,6 +7,10 @@
 				<input name="name" type="text" value="{{ $request->name }}" class="form-control" placeholder="Name/ID">
 			</div>
 			<div class="input-group" style="width: 90px; display:inline-block;">
+				<label>IDs</label>
+				<input name="ids" type="text" value="{{ $request->ids }}" class="form-control" placeholder="Danh sách IDs" title="Danh sách ID, ngăn cách bằng dấu phẩy">
+			</div>
+			<div class="input-group" style="width: 90px; display:inline-block;">
 				<label>Tình trạng</label>
 			  	{{ Form::select('kind', array_add(CommonOption::kindPostArray(), '', '-- chọn'), $request->kind, array('class' =>'form-control')) }}
 			</div>

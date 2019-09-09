@@ -20,7 +20,14 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Posts</h3><i> - Total: {{ $data->total() }}</i>
+				@php
+					if(!empty($data)) {
+						$total = $data->total();
+					} else {
+						$total = 0;
+					}
+				@endphp
+				<h3 class="box-title">Posts</h3><i> - Total: {{ $total }}</i>
 			</div>
 			<div class="box-body table-responsive no-padding">
 				<table class="table table-hover">
@@ -38,7 +45,7 @@
 						<th style="width:320px;">Action</th>
 					</tr>
 					@foreach($data as $key => $value)
-					<?php 
+					<?php
 						$thumbnail = str_replace('/images/', '/thumbs/', $value->image);
 						$thumbnail = str_replace('/thumb/', '/', $thumbnail);
 					?>
