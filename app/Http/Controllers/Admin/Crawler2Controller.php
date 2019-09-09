@@ -682,12 +682,32 @@ class Crawler2Controller extends Controller
         return redirect()->route('admin.crawler2.index')->with('warning', 'Không thấy link chap.');
     }
 
+    /**
+     * Loại bỏ tag thừa. domain (truyenfull)
+     * @param  [type] $desc [description]
+     * @return [type]       [description]
+     */
     private function removeTag($desc)
     {
+        if(strpos($desc, '<img') !== false) {
+            $desc = preg_replace("/<em>(.*?)<\/em>/", "", $desc);
+        }
         $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
         $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "", $desc);
         // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
-        $desc = strip_tags($desc, '<p><br><b><strong><em><i>');
+        $desc = strip_tags($desc, '<p><br><b><strong><i><em>');
+        // remove label domain
+        $desc = str_replace('Truyện FULL', '', $desc);
+        $desc = str_replace('truyện FULL', '', $desc);
+        $desc = str_replace('Truyện được copy tại', '', $desc);
+        $desc = str_replace('https://truyenfull.vn', '', $desc);
+        $desc = str_replace('truyenfull.vn', '', $desc);
+        $desc = str_replace('Bạn đang đọc truyện tại', '', $desc);
+        $desc = str_replace('Truyện YY', '', $desc);
+        $desc = str_replace('Nguồn: https://truyenfull.vn', '', $desc);
+        $desc = str_replace('Ủng hộ chỉ với 1 click và 5s!', '', $desc);
+        $desc = preg_replace("/(http(.*?))/", "", $desc);
+        $desc = preg_replace("/http(.*?)\//", "", $desc);
         return $desc;
     }
 }
