@@ -29,7 +29,7 @@ class Crawler2Controller extends Controller
             dd('Permission denied! Please back!');
         }
     }
-    
+
     public function index()
     {
         // source pattern
@@ -148,9 +148,9 @@ class Crawler2Controller extends Controller
             }
             //loai bo tag trong noi dung
             if(!empty($desc)) {
-                $desc = strip_tags($desc, '<p><br><b><strong><em><i>');
-                // $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
-                // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+                $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+                $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
+                $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
             }
             // tinh trang hoan thanh
             foreach($html->find('.text-success') as $element) {
@@ -168,7 +168,7 @@ class Crawler2Controller extends Controller
             foreach($html->find('.source') as $element) {
                 $source = trim($element->plaintext);
             }
-            //insert 
+            //insert
             $data = Post::create([
                 'name' => $title,
                 'slug' => $slug,
@@ -197,7 +197,7 @@ class Crawler2Controller extends Controller
                             $authorIds[] = $aut->id;
                         } else {
                             $authorSlug = CommonMethod::buildSlug($author);
-                            //insert 
+                            //insert
                             $tag = PostTag::create([
                                 'name' => $author,
                                 'slug' => $authorSlug
@@ -275,7 +275,7 @@ class Crawler2Controller extends Controller
     }
 
     public function truyenfullpostchap(Request $request)
-    {    
+    {
         trimRequest($request);
         if(empty($request->url) || empty($request->type_main_id)) {
             return redirect()->route('admin.crawler2.index')->with('warning', 'Không đủ dữ liệu');
@@ -301,9 +301,9 @@ class Crawler2Controller extends Controller
         }
         //loai bo tag trong noi dung
         if(!empty($desc)) {
-            $desc = strip_tags($desc, '<p><br><b><strong><em><i>');
-            // $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
-            // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+            $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+            $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
+            $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
         }
         // tinh trang hoan thanh
         foreach($html->find('.text-success') as $element) {
@@ -321,7 +321,7 @@ class Crawler2Controller extends Controller
         foreach($html->find('.source') as $element) {
             $source = trim($element->plaintext);
         }
-        //insert 
+        //insert
         $data = Post::create([
             'name' => $title,
             'slug' => $slug,
@@ -346,7 +346,7 @@ class Crawler2Controller extends Controller
                         $authorIds[] = $aut->id;
                     } else {
                         $authorSlug = CommonMethod::buildSlug($author);
-                        //insert 
+                        //insert
                         $tag = PostTag::create([
                             'name' => $author,
                             'slug' => $authorSlug
@@ -456,7 +456,7 @@ class Crawler2Controller extends Controller
                 $request->description_pattern_delete = '.ads-holder';
                 $request->source = 'truyenfull.vn';
                 break;
-            
+
             default:
                 # code...
                 break;
@@ -548,7 +548,8 @@ class Crawler2Controller extends Controller
         //loai bo tag trong noi dung
         if(!empty($desc)) {
             $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
-            // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+            $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
+            $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
         }
         // insert
         $data = PostEp::create([
@@ -586,7 +587,7 @@ class Crawler2Controller extends Controller
         //     // delete post ep
         //     PostEp::where('post_id', $value)->delete();
         //     $data->delete();
-            
+
         // }
         // dd('ok');
 
@@ -599,7 +600,7 @@ class Crawler2Controller extends Controller
         //             ->lists('source_url', 'id');
         // dd($posts);
         $posts = [
-            
+
         ];
         if(!empty($posts)) {
             foreach($posts as $key => $value) {
