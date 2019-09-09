@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Function global
 use Jenssegers\Agent\Agent;
 
@@ -55,7 +55,7 @@ define('MENUTYPE3', 3);
 //  menu mobile
 define('MENUTYPE4', 4);
 // pagination
-define('PAGINATION', 30);
+define('PAGINATION', 100);
 define('PAGINATE', 36);
 define('PAGINATE_LATEST', 24);
 define('PAGINATE_HOT', 12);
@@ -64,7 +64,7 @@ define('PAGINATE_BOX', 36);
 // SLIDER
 define('SLIDER1', 1); // slider on top home page
 define('SLIDER2', 2); // slider on bottom page
-define('SLIDER3', 3); //  
+define('SLIDER3', 3); //
 // replace string
 define('CONTACTFORM', '/%ContactForm%/');
 // trang thai crawler
