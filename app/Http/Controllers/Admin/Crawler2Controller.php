@@ -148,7 +148,7 @@ class Crawler2Controller extends Controller
             }
             //loai bo tag trong noi dung
             if(!empty($desc)) {
-                $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+                $desc = strip_tags($desc, '<p><br><b><strong><i>');
                 $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
                 $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
             }
@@ -301,7 +301,7 @@ class Crawler2Controller extends Controller
         }
         //loai bo tag trong noi dung
         if(!empty($desc)) {
-            $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+            $desc = strip_tags($desc, '<p><br><b><strong><i>');
             $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
             $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
         }
@@ -547,7 +547,7 @@ class Crawler2Controller extends Controller
         }
         //loai bo tag trong noi dung
         if(!empty($desc)) {
-            $desc = strip_tags($desc, '<p><br><b><strong><em><i><img>');
+            $desc = strip_tags($desc, '<p><br><b><strong><i>');
             $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
             $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
         }
