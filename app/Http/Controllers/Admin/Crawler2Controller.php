@@ -706,8 +706,8 @@ class Crawler2Controller extends Controller
         $desc = str_replace('Truyện YY', '', $desc);
         $desc = str_replace('Nguồn: https://truyenfull.vn', '', $desc);
         $desc = str_replace('Ủng hộ chỉ với 1 click và 5s!', '', $desc);
-        $desc = preg_replace("/(http(.*?))/", "", $desc);
-        $desc = preg_replace("/http(.*?)\//", "", $desc);
+        $desc = preg_replace("/(http(.*?))/", '', $desc);
+        $desc = preg_replace("/http(.*?)\//", '', $desc);
         return $desc;
     }
 }

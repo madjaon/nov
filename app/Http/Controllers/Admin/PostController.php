@@ -23,42 +23,42 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        // $data = PostEp::select('id', 'description')->take(2000)->get();
-        // if($data) {
-        //     foreach($data as $value) {
-        //         $desc = $value->description;
-        //         if(strpos($desc, '<img') !== false) {
-        //             $desc = preg_replace("/<em>(.*?)<\/em>/", "", $desc);
-        //         }
-        //         $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
-        //         $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "", $desc);
-        //         // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
-        //         $desc = strip_tags($desc, '<p><br><b><strong><i><em>');
-        //         // remove label domain
-        //         $desc = str_replace('Truyện FULL', '', $desc);
-        //         $desc = str_replace('truyện FULL', '', $desc);
-        //         $desc = str_replace('Truyện được copy tại', '', $desc);
-        //         $desc = str_replace('https://truyenfull.vn', '', $desc);
-        //         $desc = str_replace('truyenfull.vn', '', $desc);
-        //         $desc = str_replace('Bạn đang đọc truyện tại', '', $desc);
-        //         $desc = str_replace('Truyện YY', '', $desc);
-        //         $desc = str_replace('Nguồn: https://truyenfull.vn', '', $desc);
-        //         $desc = str_replace('Ủng hộ chỉ với 1 click và 5s!', '', $desc);
-        //         $desc = preg_replace("/(http(.*?))/", "", $desc);
-        //         $desc = preg_replace("/http(.*?)\//", "", $desc);
-        //         // echo $value->id . '<br>';
-        //         $value->update(['description' => $desc]);
-        //     }
-        // }
-        // dd('ok');
-
-        trimRequest($request);
-        if($request->except('page') && !empty(self::checkSearchInput($request))) {
-            $data = self::searchPost($request);
-        } else {
-            $data = Post::orderBy('start_date', 'desc')->orderBy('id', 'desc')->paginate(PAGINATION);
+        $data = PostEp::select('id', 'description')->take(2000)->get();
+        if($data) {
+            foreach($data as $value) {
+                $desc = $value->description;
+                if(strpos($desc, '<img') !== false) {
+                    $desc = preg_replace("/<em>(.*?)<\/em>/", "", $desc);
+                }
+                $desc = preg_replace("/<img[^>]+\>/i", "", $desc);
+                $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "", $desc);
+                // $desc = preg_replace('/<a href=\"(.*?)\">(.*?)<\/a>/', "\\2", $desc);
+                $desc = strip_tags($desc, '<p><br><b><strong><i><em>');
+                // remove label domain
+                $desc = str_replace('Truyện FULL', '', $desc);
+                $desc = str_replace('truyện FULL', '', $desc);
+                $desc = str_replace('Truyện được copy tại', '', $desc);
+                $desc = str_replace('https://truyenfull.vn', '', $desc);
+                $desc = str_replace('truyenfull.vn', '', $desc);
+                $desc = str_replace('Bạn đang đọc truyện tại', '', $desc);
+                $desc = str_replace('Truyện YY', '', $desc);
+                $desc = str_replace('Nguồn: https://truyenfull.vn', '', $desc);
+                $desc = str_replace('Ủng hộ chỉ với 1 click và 5s!', '', $desc);
+                $desc = preg_replace("/(http(.*?))/", '', $desc);
+                $desc = preg_replace("/http(.*?)\//", '', $desc);
+                // echo $value->id . '<br>';
+                $value->update(['description' => $desc]);
+            }
         }
-        return view('admin.post.index', ['data' => $data, 'request' => $request]);
+        dd('ok');
+
+        // trimRequest($request);
+        // if($request->except('page') && !empty(self::checkSearchInput($request))) {
+        //     $data = self::searchPost($request);
+        // } else {
+        //     $data = Post::orderBy('start_date', 'desc')->orderBy('id', 'desc')->paginate(PAGINATION);
+        // }
+        // return view('admin.post.index', ['data' => $data, 'request' => $request]);
     }
 
     private function searchPost($request)
